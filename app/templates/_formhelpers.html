@@ -1,0 +1,36 @@
+{% macro render_field(field) %}
+  <div class="form-group required">
+  {{ field(**kwargs)|safe }}
+</div>
+{% endmacro %}
+
+{% macro render_table(headers, table) %}
+<table id="example" class="compact table-striped table-bordered table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th class="select-checkbox"/>
+      {% for header in headers %}
+        <th>{{header}}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <th class="select-checkbox"/>
+      {% for header in headers %}
+        <th>{{header}}</th>
+      {% endfor %}
+    </tr>
+  </tfoot>
+  <tbody>
+    {% for data in table %}
+    <tr>
+      <th class="select-checkbox"/>
+      {% for header in headers %}
+        <td>{{data[header]}}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endmacro %}

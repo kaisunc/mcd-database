@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "./_formhelpers.html" import render_field %}
+{% block title %}Login{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="card card-container">
+            <!-- <img class="profile-img-card" src="//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120" alt="" /> -->
+            <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+            <p id="profile-name" class="profile-name-card"></p>
+            <form class="form-signin" method="post">
+                  {{ form.csrf_token }}
+                  {{ render_field(form.username) }}
+                  {{ render_field(form.password) }}
+                        {{ form.submit(class="btn waves-effect waves-light") }}    
+            </form><!-- /form -->
+            <a href="#" class="forgot-password">
+                Forgot the password?
+            </a>
+        </div><!-- /card-container -->
+    </div><!-- /container -->{% endblock %}

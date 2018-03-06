@@ -1,0 +1,59 @@
+<!-- current dt login equinoxin.dt1 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ title }} | MCD Database</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap-4.0.0-beta.3/dist/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="static/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="shortcut icon" >
+    {% block css %}{% endblock %}
+    <script src="../static/lib/jquery-3.2.1.js" type="text/javascript"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    {% block js %}{% endblock %}    
+</head>
+<body>
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a href="{{ url_for('home.homepage') }}" class="navbar-brand">MCD DB</a>
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+        {% if current_user.is_authenticated %}
+          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.projects') }}">Projects</a></li>
+          <li class="nav-item"  namespace="asset"><a class="nav-link" href="{{ url_for('home.assets') }}">Assets</a></li>
+          <li class="nav-item" namespace="shot"><a class="nav-link" href="{{ url_for('home.shots') }}">Shots</a></li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="{{ url_for('home.status') }}">Status</a>
+              <a class="dropdown-item" href="{{ url_for('home.pipeline') }}">Pipeline</a>
+              <a class="dropdown-item" href="{{ url_for('home.process') }}">Process</a>
+              <a class="dropdown-item" href="{{ url_for('home.task') }}">Task</a>
+              <a class="dropdown-item" href="{{ url_for('home.asset_type') }}">Asset Type</a>
+            </div>
+          </li>
+
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
+          <li class="nav-item"><a class="nav-link"> <i class="fa fa-user" aria-hidden="true" style="color: #992222"></i>    {{ current_user.username }}!</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('home.homepage') }}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <a href="{{ url_for('home.homepage') }}" class="navbar-toggler-icon"></a>        
+  </nav>   
+  <div class="wrapper">
+    {% block body %}
+    {% endblock %}
+    <div class="push"></div>
+  </div>
+  <footer class="container">
+    <p>© Julio 2017</p>
+  </footer>    
+  {% block run_scripts %}{% endblock %}
+</body>
+
+</html>

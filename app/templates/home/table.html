@@ -1,0 +1,88 @@
+{% from "./_formhelpers.html" import render_field %}
+
+{% extends "base.html" %}
+{% block title %}Projects{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/datatables.css"/>
+    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css"/>
+    <link rel="stylesheet" type="text/css" href="static/lib/Editor-1.7.2/css/editor.dataTables.css">
+{% endblock %}
+
+{% block js %}
+  <script src="../static/lib/socket.io.js" type="text/javascript"></script>
+  {% include "./home/datatables_lib.html" %}
+{% endblock %}
+
+{% block body %}
+{% include "./home/toolbar.html" %}
+<table id={{namespace}} class="compact table-striped table-bordered table-hover" cellspacing="0" width="100%">
+
+</table>
+{% endblock %}
+
+{% block run_scripts %}
+<script>
+  var editor;
+  var table;
+  var data;
+  var socket;
+  var temp;
+  var hide;
+  var namespace = {{namespace}};
+  $(document).ready(function() {
+    namespace = {{namespace}};
+    field_list = {{field_list}};
+    {% if hide is defined %}
+      hide = {{hide}};
+    {% endif %}
+    {% include "./home/datatables_init.js" %}
+  
+    $( ".dt_add" ).bind({
+      click: function() {
+        editor.create({
+          buttons: 'Create'
+        });
+      },
+      mouseenter: function() {
+
+      }
+    });
+    $( ".dt_remove" ).bind({
+      click: function() {
+        editor
+        .title( 'Delete row' )
+        .buttons( 'Confirm delete' )
+        .message( 'Are you sure you want to remove this row?' )
+        .remove(table.rows( { selected: true } ).indexes());
+      },
+      mouseenter: function() {
+
+      }
+    });
+
+    $( ".dt_edit" ).bind({
+      click: function() {
+        editor
+        .title( 'Update Entry')
+        .buttons( 'Update' )
+        .edit(table.rows( { selected: true } ).indexes());
+      },
+      mouseenter: function() {
+
+      }
+    });
+
+
+    $(".nav-item").removeClass("active");
+    $(".nav-item[namespace='" + namespace + "']").addClass("active");
+    if(namespace == "status" || namespace == "task" || namespace == "pipeline" || namespace == "process"){
+      $(".nav-item.dropdown").addClass("active");
+    }
+
+  });
+
+</script>
+{% endblock %}
+
+

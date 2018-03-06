@@ -1,0 +1,838 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"jinja",
+				"jinja2_escapejs_filter"
+			],
+			[
+				"jin",
+				"jinja2_escapejs_filter"
+			],
+			[
+				"dropdown",
+				"dropdown-item"
+			],
+			[
+				"opi",
+				"option_list"
+			],
+			[
+				"option",
+				"option_list"
+			],
+			[
+				"sta",
+				"status_choices"
+			],
+			[
+				"int",
+				"Integer"
+			],
+			[
+				"v",
+				"v"
+			],
+			[
+				"statu",
+				"status_id"
+			],
+			[
+				"st",
+				"status_id"
+			],
+			[
+				"d",
+				"d"
+			],
+			[
+				"over",
+				"overflow"
+			],
+			[
+				"status",
+				"status_id"
+			],
+			[
+				"add",
+				"add_project"
+			],
+			[
+				"colu",
+				"columns"
+			],
+			[
+				"se",
+				"select-checkbox"
+			],
+			[
+				"column",
+				"columnDefs"
+			],
+			[
+				"cols",
+				"cols"
+			],
+			[
+				"P",
+				"POST"
+			],
+			[
+				"inlin",
+				"inline-block"
+			],
+			[
+				"mar",
+				"margin-top"
+			],
+			[
+				"http",
+				"httplib2"
+			],
+			[
+				"cs",
+				"_csrf_token"
+			],
+			[
+				"re",
+				"redirect"
+			],
+			[
+				"Pass",
+				"PasswordField"
+			],
+			[
+				"sports",
+				"sports_dirs"
+			],
+			[
+				"spor",
+				"sports_dirs"
+			],
+			[
+				"devel",
+				"develop_dirs"
+			],
+			[
+				"integra",
+				"integrate_dirs"
+			],
+			[
+				"integ",
+				"integrate_dirs"
+			],
+			[
+				"intern",
+				"internal_dirs"
+			],
+			[
+				"folder",
+				"folders_in_project"
+			],
+			[
+				"project",
+				"project_types"
+			],
+			[
+				"fold",
+				"folders_in_project_list"
+			],
+			[
+				"getP",
+				"getProjects"
+			],
+			[
+				"tactic",
+				"tactic_server_ip"
+			],
+			[
+				"process",
+				"processListWidget"
+			],
+			[
+				"proce",
+				"processListWidget"
+			],
+			[
+				"line",
+				"lineeditwidget"
+			],
+			[
+				"angle",
+				"angleOffset"
+			],
+			[
+				"back",
+				"background-color"
+			],
+			[
+				"tri",
+				"triggered"
+			],
+			[
+				"clear",
+				"clearRect"
+			],
+			[
+				"dis",
+				"displayPrevious"
+			],
+			[
+				"trigger",
+				"triggerRelease"
+			],
+			[
+				"rota",
+				"rotateAngle"
+			],
+			[
+				"rot",
+				"rotateAngle"
+			],
+			[
+				"ex",
+				"example-container"
+			],
+			[
+				"font-",
+				"font-size"
+			],
+			[
+				"mcd_id",
+				"mcd_id_value"
+			],
+			[
+				"invne",
+				"inventory_path"
+			],
+			[
+				"inli",
+				"inline"
+			],
+			[
+				"font",
+				"font-family"
+			],
+			[
+				"tex",
+				"text-align"
+			],
+			[
+				"depts_",
+				"depts_in_project_list"
+			],
+			[
+				"get",
+				"getSceneData"
+			],
+			[
+				"row",
+				"rowsWithFiles"
+			],
+			[
+				"ren",
+				"RenderLayer"
+			],
+			[
+				"filename",
+				"filenamePrefix"
+			],
+			[
+				"image",
+				"imageFilePrefix"
+			],
+			[
+				"renderPass",
+				"renderPassData"
+			],
+			[
+				"renderL",
+				"renderLayerData"
+			],
+			[
+				"base",
+				"baseFilename"
+			],
+			[
+				"whole",
+				"wholeWidth"
+			],
+			[
+				"height",
+				"heightScaleFactor"
+			],
+			[
+				"width",
+				"widthScaleFactor"
+			],
+			[
+				"scale",
+				"scaleToNearest"
+			],
+			[
+				"wid",
+				"widthScaleFactor"
+			],
+			[
+				"a",
+				"accurateLength"
+			],
+			[
+				"fl_tools",
+				"fl_tools"
+			],
+			[
+				"instance",
+				"instancesInScene"
+			],
+			[
+				"librar",
+				"libraryExport"
+			],
+			[
+				"alig",
+				"align-content"
+			],
+			[
+				"produ",
+				"productionType"
+			],
+			[
+				"date",
+				"datetime"
+			],
+			[
+				"ic",
+				"icons"
+			],
+			[
+				"maya",
+				"maya_scripts"
+			],
+			[
+				"art-",
+				"Art-1405260002"
+			],
+			[
+				"curren",
+				"currentFrame"
+			],
+			[
+				"make",
+				"makeThumbnail"
+			],
+			[
+				"j",
+				"j"
+			],
+			[
+				"build",
+				"buildList"
+			],
+			[
+				"input",
+				"inputSizeX"
+			],
+			[
+				"inputPos",
+				"inputPosX"
+			],
+			[
+				"inputP",
+				"inputPosX"
+			],
+			[
+				"eex",
+				"execute_python_script"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 137.0,
+		"last_filter": "Package Control: inst",
+		"selected_items":
+		[
+			[
+				"Package Control: inst",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"json",
+				"Pretty JSON: Validate"
+			],
+			[
+				"pretty",
+				"Pretty JSON: Validate"
+			],
+			[
+				"Snippet: ",
+				"Snippet: Comment"
+			],
+			[
+				"re",
+				"Package Control: Remove Package"
+			],
+			[
+				"pack",
+				"Package Control: Remove Package"
+			]
+		],
+		"width": 436.0
+	},
+	"console":
+	{
+		"height": 469.0,
+		"history":
+		[
+			"ssh"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/julio/Dropbox/Projects/mcd_database/mcd_database.sublime-project",
+		"//mcd-one/database/assets/scripts/manga_scripts/templates/manga_image.template",
+		"//mcd-one/database/assets/scripts/dhtmlxGantt/index1.html",
+		"//mcd-one/database/assets/scripts/adobe_scripts/index.html",
+		"//mcd-one/database/assets/scripts/maya_scripts/qt_tactic_main.py",
+		"/C/Users/julio/Dropbox/Projects/tactic_file_manager/tactic.py",
+		"/C/Users/julio/AppData/Roaming/Sublime Text 3/Packages/Pretty JSON/Pretty JSON.sublime-settings",
+		"//salt/salt-master/salt/backup/deadline.sls",
+		"/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/saves/elites/IRONCLAD.autosave",
+		"/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/saves/good/IRONCLAD.autosave",
+		"/C/Users/julio/Dropbox/Projects/sts_save_editor/cards.py",
+		"/C/Users/julio/Dropbox/Projects/sts_save_editor/data/cards.py",
+		"//salt/salt-master/salt/nvidia.sls",
+		"//salt/salt-master/salt/scripts/open_deadline10_firewall.bat",
+		"//salt/salt-master/salt/scripts/net_use_deadline10.bat",
+		"//salt/salt-master/salt/win/repo-ng/deadline10.sls",
+		"//salt/salt-master/salt/scripts/stop_deadline_service.bat",
+		"//salt/salt-master/salt/scripts/start_deadline_service.bat",
+		"//salt/salt-master/salt/misc/deadline10/test.txt",
+		"//salt/salt-master/salt/scripts/deadline_service.bat",
+		"//salt/salt-master/salt/scripts/enable_deadline.bat",
+		"//salt/salt-master/salt/testwin.sls",
+		"//salt/salt-master/salt/top.sls",
+		"//salt/salt-master/salt/arnold.sls",
+		"//salt/salt-master/salt/miner.sls",
+		"/C/Users/julio/Desktop/Slay.the.Spire.Patch.9/runs/IRONCLAD/1517997388.run",
+		"/C/Users/julio/Dropbox/Projects/skype_notifications/sheets_skype.py",
+		"//mcd-one/database/assets/scripts/mcd_scripts/sheets_skype.py",
+		"/C/Users/julio/Dropbox/Projects/flash_tools/centerElements.jsfl",
+		"/C/Users/julio/Desktop/Slay.the.Spire.Patch.9/info.displayconfig",
+		"/C/Users/julio/Dropbox/Projects/spaceteam/spaceteam.py",
+		"/C/Users/julio/Desktop/Slay.the.Spire.Patch.9/config.json",
+		"/C/Users/julio/Dropbox/Projects/flash_tools/converttoSymbol.jsfl",
+		"/C/Users/julio/AppData/Local/Adobe/Flash CC 2015/en_US/Configuration/Commands/fl_tool.jsfl",
+		"//mcd-one/database/assets/scripts/adobe_scripts/jsx/AN_exportCoordinates.jsfl",
+		"/E/xmr stuff/raytracer/bin/config.txt",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/env.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/config.py",
+		"/C/Users/julio/Dropbox/Projects/flash_tools/install_flash_tools.bat",
+		"/C/software/illustrator_serial.txt",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/home/views.py",
+		"/C/Users/julio/Dropbox/Projects/spaceteam/scenario.py",
+		"/C/Users/julio/Dropbox/Projects/spaceteam/game.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/lib/bootstrap-4.0.0-beta.2/dist/css/bootstrap.css",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/lib/DataTables/datatables.js",
+		"//mcd-one/mcd_backup/電子遊藝/5909_開心消消樂/01_doc____企劃文件/h5_phone消消樂老虎機_Prototype_20160714/resources/screens/1dec1497-2038-4234-aa8d-da508a7f03bf-1468468345606.js",
+		"/C/Apache22/mcd_project_folders/templates/archive_template.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/toolbar.html",
+		"/C/Users/julio/Dropbox/Apache22/mcd_project_folders/templates/archive_template.html",
+		"/C/Users/julio/Dropbox/Apache22/mcd_project_folders/main.py",
+		"/C/Users/julio/Dropbox/Apache22/mcd_project_folders/templates/archive_template1.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/lib/bootstrap-4.0.0-beta.3/scss/_buttons.scss",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/lib/bootstrap-4.0.0-beta.2/scss/_buttons.scss",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/datatables_lib.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/README.md",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/process.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/versions/bf39b0c60635_.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/assets.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/task.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/shots.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/status.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/projects.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/asset.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/project_form.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/__init__.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/home/__init__.py",
+		"/C/Apache22/spaceteam/spaceteam.py",
+		"/C/Apache22/spaceteam/game.py",
+		"/C/Apache22/mcd_project_folders/main.py",
+		"//salt/salt-master/salt/scripts/vray_license.bat",
+		"/C/Users/julio/Downloads/vray_license.bat",
+		"//salt/salt-master/salt/installers/config.xml",
+		"/C/Program Files/Chaos Group/V-Ray/3dsmax 2017 for x64/uninstall/install.log",
+		"/C/Program Files/Chaos Group/V-Ray/3dsmax 2017 for x64/utils/vrayinstall.ms",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/add_project_form.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/base.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/_formhelpers.html",
+		"/C/Users/julio/Dropbox/Projects/spaceteam/templates/lounge.html",
+		"/C/Users/julio/Desktop/deadline.ini",
+		"/C/Users/julio/Desktop/hosts",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/home/events.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/auth/views.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/home/forms.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/auth/login.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/auth/register.html",
+		"/C/Users/julio/Dropbox/Projects/spaceteam/templates/login.html",
+		"/C/Users/julio/Dropbox/Projects/spaceteam/templates/game.html",
+		"/C/Users/julio/Dropbox/Projects/spaceteam/jqui01.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_bot/add_bot.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_bot/main.py",
+		"//mcd-one/database/assets/scripts/image_scripts/jc_render_cleaner.py",
+		"//mcd-one/database/assets/scripts/image_scripts/sequence_crop.py",
+		"/C/Users/julio/Dropbox/Projects/salt_control_panel/data/saltcmd_presets_mcd.txt",
+		"//salt/salt-master/salt/deadline.sls",
+		"//salt/salt-master/salt/win/repo-ng/renderman.sls",
+		"//salt/salt-master/salt/deadline10.sls",
+		"//salt/salt-master/salt/win/repo-ng/deadline.sls",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/auth/forms.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/models.py",
+		"//mcd-one/database/assets/scripts/mcd_scripts/sheets_skype.bat",
+		"//mcd-one/database/assets/scripts/mcd_scripts/mcd_wiki_skype.bat",
+		"/C/Users/julio/Dropbox/Projects/mcd_bot/secret.txt",
+		"//mcd-one/database/assets/scripts/mcd_scripts/wiki_skype.py",
+		"//mcd-one/database/assets/scripts/tactic_scripts/skype_rest.py",
+		"/C/skype.txt",
+		"//mcd-one/database/assets/scripts/tactic_scripts/tt_notify_daily_duty.bat",
+		"//mcd-one/database/assets/scripts/tactic_scripts/tt_notify_daily_duty.py",
+		"/C/Users/julio/Dropbox/Projects/wiki_skype/wiki_skype.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_bot/echo.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_bot/tasks.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/run.py",
+		"//mcd-one/database/apps/3d_apps/mayaPlugin/RedShift/Redshift 2.5.32 Win/Instructions.txt",
+		"//salt/salt-master/salt/redshift.sls",
+		"//salt/salt-master/salt/win/repo-ng/redshift.sls",
+		"//salt/salt-master/salt/renderman.sls",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/js/lib/DataTables/FixedHeader-3.1.3/js/dataTables.fixedHeader.js",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/js/lib/DataTables/DataTables-1.10.16/js/dataTables.jqueryui.js",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/js/lib/DataTables/DataTables-1.10.16/js/jquery.dataTables.js",
+		"/C/Users/julio/Dropbox/scripts/tactic_scripts/tt_update_animation_db_login.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/forms.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/versions/fd30b02ac104_.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/versions/ecf3d0e73d79_.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/auth/_formhelpers.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/css/style.css",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/dashboard.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/index.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/versions/bbc5464ddc58_.py",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/versions/2c40e79521c9_.py"
+	],
+	"find":
+	{
+		"height": 26.0
+	},
+	"find_in_files":
+	{
+		"height": 105.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"bottled ",
+			"cy",
+			"codex",
+			"color_codes",
+			"relics",
+			"event",
+			"relics",
+			"window",
+			"self",
+			"window",
+			"boss_relics",
+			"window",
+			"with",
+			"fileOpen",
+			"tacticLoad",
+			"load",
+			";",
+			"`",
+			"`{",
+			"renderfarm2",
+			"renderfarm1",
+			"renderfarm2",
+			"192.168.160.90",
+			"-L \"renderfarm1-vm6.bb.com,renderfarm1-vm7.bb.com,renderfarm1-vm8.bb.com\"",
+			"Deadline8",
+			"8.0",
+			"values_expr",
+			"task_model",
+			"del",
+			"\\\\mcd-one\\database\\assets\\scripts\\adobe_scripts\\jsx\\",
+			"User",
+			"user",
+			"User",
+			"user",
+			"User",
+			"user",
+			"User",
+			"user",
+			"username",
+			"backref",
+			"project",
+			"len",
+			" data-original-title=",
+			"dropdown-item",
+			"#",
+			"process",
+			"shot",
+			"namespace",
+			"project",
+			"\n    ",
+			"status",
+			"option_list",
+			", 'option_list': option_list",
+			"newDB",
+			"status_choices",
+			"table",
+			"status_choices",
+			"pipeline",
+			"project",
+			"data",
+			"namespace",
+			"\"",
+			"project",
+			"/project",
+			"example",
+			"status_id",
+			"table",
+			"data",
+			"delete_project",
+			"add_project",
+			"vray_adv_36003_max2017_x64.exe",
+			"2018",
+			"/",
+			"\\",
+			"\"",
+			".btn",
+			"field_group",
+			"form_",
+			"</div>",
+			"ids",
+			"     ",
+			"\n    ",
+			"project",
+			"username",
+			"'':",
+			"}\n",
+			"data",
+			"100px",
+			"\n                  ",
+			"<a",
+			"active",
+			"<li",
+			"css",
+			"select",
+			"\"",
+			"\"entries\"",
+			"entries",
+			"th",
+			"database",
+			"option",
+			"status_options",
+			"\"./",
+			"username",
+			"dashboard",
+			"\n<",
+			"render_field"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 35.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 282.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/Python/Python.sublime-build",
+	"project": "mcd_database.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 260.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
