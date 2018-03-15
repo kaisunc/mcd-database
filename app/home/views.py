@@ -1,9 +1,14 @@
 
 from flask import flash, request, redirect, render_template, url_for, json
 from flask_login import login_required
+from werkzeug import secure_filename
 import jinja2
 
+from ..models import Media_Type, Media
+
 from . import home
+from . import events
+from events import *
 # from forms import AddProjectForm, AddStatusForm
 # from .. import db
 # from ..models import Project, Status, Asset
@@ -37,59 +42,35 @@ def jinja2_escapejs_filter(value):
 def homepage():
     return render_template('home/index.html', title="Welcome")
 
-@home.route('/projects', methods=['GET'])    
+@home.route('/media', methods=['GET'])    
 @login_required
-def projects():
-    namespace = jinja2_escapejs_filter("project")
-    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'status', 'type': 'select'}, {'name': 'assigned', 'type': 'select'}, {'name': 'assets', 'type': 'inline'}])
+def media():
+    namespace = jinja2_escapejs_filter("media")
+    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'media_type', 'type': 'select'}, {'name': 'url', 'type': 'text'}, {'name': 'tags', 'type': 'text'},{'name': 'assigned', 'type': 'select'}])
     hide = jinja2_escapejs_filter(['timestamp'])
-    return render_template('home/table.html', title='Projects', namespace=namespace, field_list=field_list, hide=hide)
 
-@home.route('/status', methods=['GET'])
-@login_required
-def status():
-    namespace = jinja2_escapejs_filter("status")
-    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}])    
-    return render_template('home/table.html', title='Status', namespace=namespace, field_list=field_list)
+    media_types = Media_Type.query.all()
+    mt = []
+    for t in media_types:
+        data = {"name": t.name, "id": t.id}
+        mt.append(data)
 
-@home.route('/task', methods=['GET'])
-@login_required
-def task():
-    namespace = jinja2_escapejs_filter('task')
-    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'parent_key', 'type': 'text'}, {'name': 'process', 'type': 'select'}])
-    return render_template('home/table.html', title='Tasks', namespace=namespace, field_list=field_list)
+    return render_template('home/table.html', title='Database', namespace=namespace, field_list=field_list, hide=hide, data=mt)
 
-@home.route('/assets', methods=['GET'])
-@login_required
-def assets():
-    namespace = jinja2_escapejs_filter('asset')
-    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'project', 'type': 'select'}, {'name': 'process', 'type': 'checkbox'}, {'name': 'asset_type', 'type': 'select'}])
-    return render_template('home/table.html', title="Assets", namespace=namespace, field_list=field_list)
 
-@home.route('/asset_type', methods=['GET'])
+@home.route('/media_type', methods=['GET'])
 @login_required
-def asset_type():
-    namespace = jinja2_escapejs_filter('asset_type')
-    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}])
-    return render_template('home/table.html', title="Asset type", namespace=namespace, field_list=field_list)
+def media_type():
+    namespace = jinja2_escapejs_filter("media_type")
+    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'name_chn', 'type': 'text'}])    
+    return render_template('home/table.html', title='Type', namespace=namespace, field_list=field_list, data='')
 
-@home.route('/shots', methods=['GET'])
-@login_required
-def shots():
-    namespace = jinja2_escapejs_filter('shot')
-    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'project', 'type': 'select'}, {'name': 'process', 'type': 'checkbox'}])
-    return render_template('home/table.html', title="Shots", namespace=namespace, field_list=field_list)
-
-@home.route('/process', methods=['GET'])
-@login_required
-def process():
-    namespace = jinja2_escapejs_filter('process')
-    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'pipeline', 'type': 'select'}])
-    return render_template('home/table.html', title="Process", namespace=namespace, field_list=field_list)    
-
-@home.route('/pipeline', methods=['GET'])
-@login_required
-def pipeline():
-    namespace = jinja2_escapejs_filter('pipeline')
-    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}])
-    return render_template('home/table.html', title="Process", namespace=namespace, field_list=field_list)        
+@home.route('/upload', methods=['POST'])
+def upload():
+    if request.method == 'POST':
+        f = request.files['file']
+        #print f.filename
+        #print secure_filename(f.filename)
+        print type(f.filename)
+        f.save(r"C:\\Users\\julio\\source\\" + f.filename)
+        return 'ok'

@@ -190,4 +190,37 @@ body, html {
 
 .btn {
 	border: 1px solid;
+    width: 100%;
+}
+
+.dropdown-menu {
+    width: 100%;
+}
+
+#dz-toolbar {
+    display: none;
+}
+
+#media_drop {
+    display: none;
+}
+
+.category {
+    display: inline-block;
+    width: 200px;
+}
+
+.test {
+    display: inline-block;
+    vertical-align: middle;
+    min-width: 500px;
+}
+
+.selectize-control{
+    overflow: inherit;
+}
+
+.selectize-input{
+    padding: .375em .75em;
+
 }

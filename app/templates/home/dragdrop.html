@@ -1,0 +1,22 @@
+<div class="dropzone" id="media_drop"></div>
+<div class="btn-toolbar" id="dz-toolbar">
+  <div class="btn-group">
+	  <button class="btn dz_close" ><i class="fa fa-times-circle-o"></i></button>
+      <button class="btn dz_add" ><i class="fa fa-share-square-o"></i></button>
+      <button class="btn dz_clear" ><i class="fa fa-trash-o"></i></button>
+  </div>
+  	<div class="category dropdown">
+	    <button id="select_category" type="button" class="btn btn-secondary dropdown-toggle page-len" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="">
+	      Category: 
+	    </button>
+	    <div class="dropdown-menu" aria-labelledby="select_category">
+		    {% for d in data %}
+		      <a class="dropdown-item table-len" href="javascript:void(0);" value="{{d.id}}">{{d.name}}</a>
+		    {% endfor %}
+	    </div>
+    </div>
+  	<div class="test">
+		<input type="text" id="input-tags" class="" value="" placeholder="input tag here!">
+    </div>	
+
+</div>

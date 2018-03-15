@@ -7,45 +7,76 @@
     <link rel="stylesheet" type="text/css" href="static/lib/DataTables/datatables.css"/>
     <link rel="stylesheet" type="text/css" href="static/lib/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css"/>
     <link rel="stylesheet" type="text/css" href="static/lib/Editor-1.7.2/css/editor.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="static/lib/dropzone/dropzone.css">
+    <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize-bootstrap4.css">
 {% endblock %}
 
 {% block js %}
   <script src="../static/lib/socket.io.js" type="text/javascript"></script>
+  <script src="./static/lib/dropzone/dropzone.js"></script>
+  <script src="./static/lib/selectize/js/standalone/selectize.js"></script>
+  <script src="./static/lib/selectize/js/index.js"></script>
+  <script>
+    Dropzone.autoDiscover = false;
+  </script>
   {% include "./home/datatables_lib.html" %}
 {% endblock %}
 
 {% block body %}
 {% include "./home/toolbar.html" %}
+{% include "./home/dragdrop.html" %}
 <table id={{namespace}} class="compact table-striped table-bordered table-hover" cellspacing="0" width="100%">
 
 </table>
+
 {% endblock %}
 
 {% block run_scripts %}
 <script>
+  var myDropzone = new Dropzone("#media_drop", {
+    url: "{{ url_for('home.upload')}}",
+    autoProcessQueue: false,
+  });
+
   var editor;
   var table;
-  var data;
   var socket;
   var temp;
   var hide;
-  var namespace = {{namespace}};
+  var select;
+  var category;
+  var optx;
+
   $(document).ready(function() {
     namespace = {{namespace}};
     field_list = {{field_list}};
+
+
     {% if hide is defined %}
       hide = {{hide}};
     {% endif %}
     {% include "./home/datatables_init.js" %}
-  
+    //document.removeEventListener('keypress',  keyPressed);
     $( ".dt_add" ).bind({
       click: function() {
-        editor.create({
-          buttons: 'Create'
-        });
-      },
-      mouseenter: function() {
+        if(namespace == 'media'){
+          if($("#media_drop").css("display") == "block"){
+            $('#media_drop').css("display", "none");  
+            $('#dz-toolbar').css("display", "none");
+            $('#dt-toolbar').css("display", "block");
+            $('#media_wrapper').css("display", "block");
 
+          } else if($("#media_drop").css("display") == "none"){ //open dropzone and dz toolbar
+            $('#media_drop').css("display", "block");  
+            $('#dz-toolbar').css("display", "block");
+            $('#dt-toolbar').css("display", "none");
+            $('#media_wrapper').css("display", "none");
+          }
+        } else if(namespace == 'media_type'){
+          editor.create({
+            buttons: 'Create'
+          });          
+        }
       }
     });
     $( ".dt_remove" ).bind({
@@ -55,9 +86,6 @@
         .buttons( 'Confirm delete' )
         .message( 'Are you sure you want to remove this row?' )
         .remove(table.rows( { selected: true } ).indexes());
-      },
-      mouseenter: function() {
-
       }
     });
 
@@ -67,12 +95,52 @@
         .title( 'Update Entry')
         .buttons( 'Update' )
         .edit(table.rows( { selected: true } ).indexes());
-      },
-      mouseenter: function() {
-
       }
     });
 
+    $( ".dz_close" ).bind({
+      click: function() {
+        if($("#media_drop").css("display") == "block"){
+          $('#media_drop').css("display", "none");  
+          $('#dz-toolbar').css("display", "none");
+          $('#dt-toolbar').css("display", "flex");
+          $('#media_wrapper').css("display", "block");
+
+        } else if($("#media_drop").css("display") == "none"){ //open dropzone and dz toolbar
+          $('#media_drop').css("display", "block");  
+          $('#dz-toolbar').css("display", "block");
+          $('#dt-toolbar').css("display", "none");
+          $('#media_wrapper').css("display", "none");
+        }
+      }
+    });    
+
+    $( ".dz_add" ).bind({
+      click: function() {
+        myDropzone.options.autoProcessQueue = true;
+        myDropzone.processQueue();
+        category = $('#select_category').val();        
+
+        tags = selectize.items;        
+        acceptedFiles = myDropzone.getAcceptedFiles();
+        for(j=0;j<acceptedFiles.length;j++){
+
+          name = acceptedFiles[j].name;
+          data = {"name": name, "media_type": category, "tags": tags.join(",")};
+          
+          socket.emit('create', {'namespace': namespace, 'data': data, 'field_list': field_list});
+        }
+      }
+    });  
+
+    $( ".dz_clear" ).bind({
+      click: function() {
+        var acceptedFiles = myDropzone.getAcceptedFiles();
+        for(i=0; i < acceptedFiles.length; i++){
+          myDropzone.removeFile(acceptedFiles[i]);
+        };
+      }
+    });           
 
     $(".nav-item").removeClass("active");
     $(".nav-item[namespace='" + namespace + "']").addClass("active");
@@ -80,6 +148,20 @@
       $(".nav-item.dropdown").addClass("active");
     }
 
+    $(".dropdown-menu a").click(function(){
+      tt = $(this).parent().parent().find('.dropdown-toggle');
+      $(tt).text($(this).text());
+      $(tt).attr("value", $(this).attr("value"));
+      //console.log($(this).attr("value"));
+    });
+
+    $select = $('#input-tags').selectize({
+      persist: false,
+      createOnBlur: true,
+      create: true
+    });    
+
+    selectize = $select[0].selectize;
   });
 
 </script>

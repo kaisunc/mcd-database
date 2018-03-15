@@ -45,22 +45,10 @@ def convertDB(obj, field_list):
 
 
 def getModel(selector):
-    if selector == "project":
-        model = Project
-    elif selector == "status":
-        model = Status
-    elif selector == "asset":
-        model = Asset
-    elif selector == "shot":
-        model = Shot   
-    elif selector == "task":
-        model = Task
-    elif selector == "process":
-        model = Process
-    elif selector == "pipeline":
-        model = Pipeline
-    elif selector == "asset_type":
-        model = AssetType
+    if selector == "media":
+        model = Media
+    elif selector == "media_type":
+        model = Media_Type
     elif selector == "assigned":
         model = User       
     elif selector == "user":
@@ -98,7 +86,6 @@ def init(*args):
     if len(args) != 0:
         namespace = args[0]["namespace"]
         field_list = args[0]["field_list"]
-
     # dt_data
     model = copy.deepcopy(getModel(namespace))
     data = model.query.all()
@@ -146,6 +133,7 @@ def create(*args):
         data = args[0]["data"]
         field_list = args[0]["field_list"]
 
+    print data
     model = getModel(namespace)
     update = model()
 
@@ -171,7 +159,6 @@ def create(*args):
 
     update = model.query.filter_by(id=pid).first()
     dt_data = convertDB(update, field_list)    
-
     emit('add_response', {'data': dt_data}, broadcast=True)
 
 @socketio.on('update')    

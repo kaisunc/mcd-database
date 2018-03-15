@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"jina",
+				"jinja2_escapejs_filter"
+			],
+			[
+				"media",
+				"media_types"
+			],
+			[
+				"auto",
+				"autoProcessQueue"
+			],
+			[
 				"jinja",
 				"jinja2_escapejs_filter"
 			],
@@ -352,9 +364,163 @@
 	"buffers":
 	[
 		{
+			"file": "app/home/views.py",
 			"settings":
 			{
-				"buffer_size": 0,
+				"buffer_size": 2616,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/home/events.py",
+			"settings":
+			{
+				"buffer_size": 6935,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/home/forms.py",
+			"settings":
+			{
+				"buffer_size": 982,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/__init__.py",
+			"settings":
+			{
+				"buffer_size": 965,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/models.py",
+			"settings":
+			{
+				"buffer_size": 1924,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/static/css/style.css",
+			"settings":
+			{
+				"buffer_size": 3944,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/static/lib/selectize/selectize.js-master/examples/basic.html",
+			"settings":
+			{
+				"buffer_size": 21803,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/templates/test.html",
+			"settings":
+			{
+				"buffer_size": 1088,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/templates/base.html",
+			"settings":
+			{
+				"buffer_size": 2905,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "{% from \"./_formhelpers.html\" import render_field %}\n\n{% extends \"base.html\" %}\n{% block title %}Projects{% endblock %}\n\n{% block css %}\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"static/lib/DataTables/datatables.css\"/>\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"static/lib/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css\"/>\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"static/lib/Editor-1.7.2/css/editor.dataTables.css\">\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"static/lib/dropzone/dropzone.css\">\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"static/lib/selectize/css/stylesheet.css\">\n{% endblock %}\n\n{% block js %}\n  <script src=\"../static/lib/socket.io.js\" type=\"text/javascript\"></script>\n  <script src=\"./static/lib/dropzone/dropzone.js\"></script>\n  <script src=\"./static/lib/selectize/js/standalone/selectize.js\"></script>\n  <script>\n    Dropzone.autoDiscover = false;\n  </script>\n  {% include \"./home/datatables_lib.html\" %}\n{% endblock %}\n\n{% block body %}\n{% include \"./home/toolbar.html\" %}\n{% include \"./home/dragdrop.html\" %}\n<table id={{namespace}} class=\"compact table-striped table-bordered table-hover\" cellspacing=\"0\" width=\"100%\">\n\n</table>\n\n{% endblock %}\n\n{% block run_scripts %}\n<script>\n  var myDropzone = new Dropzone(\"#media_drop\", {\n    url: \"{{ url_for('home.upload')}}\",\n    autoProcessQueue: false,\n  });\n\n  var editor;\n  var table;\n  var socket;\n  var temp;\n  var hide;\n  \n  $(document).ready(function() {\n    namespace = {{namespace}};\n    field_list = {{field_list}};\n\n\n    {% if hide is defined %}\n      hide = {{hide}};\n    {% endif %}\n    {% include \"./home/datatables_init.js\" %}\n\n    $( \".dt_add\" ).bind({\n      click: function() {\n        if(namespace == 'media'){\n          if($(\"#media_drop\").css(\"display\") == \"block\"){\n            $('#media_drop').css(\"display\", \"none\");  \n            $('#dz-toolbar').css(\"display\", \"none\");\n            $('#dt-toolbar').css(\"display\", \"block\");\n            $('#media_wrapper').css(\"display\", \"block\");\n\n          } else if($(\"#media_drop\").css(\"display\") == \"none\"){ //open dropzone and dz toolbar\n            $('#media_drop').css(\"display\", \"block\");  \n            $('#dz-toolbar').css(\"display\", \"block\");\n            $('#dt-toolbar').css(\"display\", \"none\");\n            $('#media_wrapper').css(\"display\", \"none\");\n          }\n        } else if(namespace == 'media_type'){\n          editor.create({\n            buttons: 'Create'\n          });          \n        }\n      },\n      mouseenter: function() {\n\n      }\n    });\n    $( \".dt_remove\" ).bind({\n      click: function() {\n        editor\n        .title( 'Delete row' )\n        .buttons( 'Confirm delete' )\n        .message( 'Are you sure you want to remove this row?' )\n        .remove(table.rows( { selected: true } ).indexes());\n      },\n      mouseenter: function() {\n\n      }\n    });\n\n    $( \".dt_edit\" ).bind({\n      click: function() {\n        editor\n        .title( 'Update Entry')\n        .buttons( 'Update' )\n        .edit(table.rows( { selected: true } ).indexes());\n      },\n      mouseenter: function() {\n\n      }\n    });\n\n    $( \".dz_close\" ).bind({\n      click: function() {\n        if($(\"#media_drop\").css(\"display\") == \"block\"){\n          $('#media_drop').css(\"display\", \"none\");  \n          $('#dz-toolbar').css(\"display\", \"none\");\n          $('#dt-toolbar').css(\"display\", \"flex\");\n          $('#media_wrapper').css(\"display\", \"block\");\n\n        } else if($(\"#media_drop\").css(\"display\") == \"none\"){ //open dropzone and dz toolbar\n          $('#media_drop').css(\"display\", \"block\");  \n          $('#dz-toolbar').css(\"display\", \"block\");\n          $('#dt-toolbar').css(\"display\", \"none\");\n          $('#media_wrapper').css(\"display\", \"none\");\n        }\n\n      },\n      mouseenter: function() {\n\n      }\n    });    \n\n    $( \".dz_add\" ).bind({\n      click: function() {\n        myDropzone.options.autoProcessQueue = true;\n        myDropzone.processQueue();\n      }\n    });  \n\n    $( \".dz_clear\" ).bind({\n      click: function() {\n        var acceptedFiles = myDropzone.getAcceptedFiles();\n        for(i=0; i < acceptedFiles.length; i++){\n          myDropzone.removeFile(acceptedFiles[i]);\n        };\n      }\n    });           \n\n/*    myDropzone.on(\"queuecomplete\", function() {\n        myDropzone.options.autoProcessQueue = false;\n    });*/\n\n    $(\".nav-item\").removeClass(\"active\");\n    $(\".nav-item[namespace='\" + namespace + \"']\").addClass(\"active\");\n    if(namespace == \"status\" || namespace == \"task\" || namespace == \"pipeline\" || namespace == \"process\"){\n      $(\".nav-item.dropdown\").addClass(\"active\");\n    }\n\n    $(function(){\n      $(\".dropdown-menu a\").click(function(){\n        tt = $(this).parent().parent().find('.dropdown-toggle');\n        console.log(tt);\n        $(tt).text($(this).text());\n        //$(\".btn:first-child\").text($(this).text());\n        //$(\".btn:first-child\").val($(this).text());\n     });\n    });    \n    $('#input-tags').selectize({\n    delimiter: ',',\n    persist: false,\n    create: function(input) {\n        return {\n          value: input,\n         text: input\n        }\n      }\n    });\n  });\n\n</script>\n{% endblock %}\n\n\n",
+			"file": "app/templates/home/table.html",
+			"file_size": 5322,
+			"file_write_time": 131653224785334591,
+			"settings":
+			{
+				"buffer_size": 5146,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/templates/home/toolbar.html",
+			"settings":
+			{
+				"buffer_size": 1373,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/templates/home/dragdrop.html",
+			"settings":
+			{
+				"buffer_size": 901,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/static/lib/dropzone/dropzone.js",
+			"settings":
+			{
+				"buffer_size": 92953,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/static/lib/dropzone/dropzone.css",
+			"settings":
+			{
+				"buffer_size": 11547,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/templates/home/datatables_init.js",
+			"settings":
+			{
+				"buffer_size": 3285,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "Major Categories - Must choose\n{\"name\" : \"fonts\", \"name_chn\": \"字型\"},\n{\"name\" : \"softwares\", \"name_chn\": \"軟體\"},\n{\"name\" : \"images\", \"name_chn\": \"圖庫素材\"},\n{\"name\" : \"dealers\", \"name_chn\": \"荷官素材\"},\n{\"name\" : \"\", \"name_chn\": \"向量素材\"},\n{\"name\" : \"effects\", \"name_chn\": \"動態特效素材\"},\n{\"name\" : \"brushes\", \"name_chn\": \"擴充素材(筆刷}/外掛)\",\n{\"name\" : \"music\", \"name_chn\": \"音樂素材\"},\n{\"name\" : \"sfx\", \"name_chn\": \"音效素材\"},\n{\"name\" : \"\", \"name_chn\": \"教學\"}\n\nMajor Tags\n{\"name\" : \"quick\", \"name_chn\": \"快速開發素材\"},\n{\"name\" : \"bbin\", \"name_chn\": \"公司機率遊戲素材\"},\n{\"name\" : \"\", \"name_chn\": \"公司專案音樂音效素材\"},\n{\"name\" : \"\", \"name_chn\": \"外接機率專案素材\"},\n{\"name\" : \"\", \"name_chn\": \"他廠素材\"},\n\n\n\nchoose internal or external\n\nfile type categories\n\n1. fonts\n2. software\n3. images \n4. effects\n5. addons/plugins\n6. music\n7. sfx\n8. web templates\n9. tutorials\n\ntags can also have multiple parents, these should be hard coded into the application\nunspecified tags can be created and assigned to any item in the db\n\nspecified tags are recommended in the UI when uploaded to specific category\n\n1. drag and drop (files, directory)\n2. choose category\n3. choose tags and/or add tags\n4. confirm\n\nin the background\n1. generate thumbnails or use generic thumb for category\n2. \n\n\nTag Schema\nfulltext search on column tags\n",
+			"settings":
+			{
+				"buffer_size": 1257,
+				"line_ending": "Windows",
+				"name": "Major Categories - Must choose"
+			}
+		},
+		{
+			"file": "/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/preferences/STSPlayer",
+			"settings":
+			{
+				"buffer_size": 152,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/templates/home/index.html",
+			"settings":
+			{
+				"buffer_size": 511,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		}
@@ -446,14 +612,46 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
+	"expanded_folders":
+	[
+		"/C/Users/julio/Dropbox/Projects/mcd_database",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/auth",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/css",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/dropzone",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/auth",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home"
+	],
 	"file_history":
 	[
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/examples/basic.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/auth/views.py",
+		"/C/Users/julio/Dropbox/Projects/test/Dropzone simple example.html",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/table.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/table.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home/forms.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/dropzone/dropzone.js",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/dropzone/dropzone.scss",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/dropzone/dropzone.css",
+		"/C/Users/julio/Dropbox/Projects/tactic_file_manager/tactic.py",
+		"//mcd-one/database/assets/scripts/maya_scripts/qt_tactic_main.py",
+		"/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/saves/IRONCLAD.autosave",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/run.py",
+		"/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/preferences/STSPlayer",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home/views.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/models.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/config.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/__init__.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/auth/forms.py",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/mcd_database.sublime-project",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/README.md",
 		"//mcd-one/database/assets/scripts/manga_scripts/templates/manga_image.template",
 		"//mcd-one/database/assets/scripts/dhtmlxGantt/index1.html",
 		"//mcd-one/database/assets/scripts/adobe_scripts/index.html",
-		"//mcd-one/database/assets/scripts/maya_scripts/qt_tactic_main.py",
-		"/C/Users/julio/Dropbox/Projects/tactic_file_manager/tactic.py",
 		"/C/Users/julio/AppData/Roaming/Sublime Text 3/Packages/Pretty JSON/Pretty JSON.sublime-settings",
 		"//salt/salt-master/salt/backup/deadline.sls",
 		"/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/saves/elites/IRONCLAD.autosave",
@@ -557,29 +755,11 @@
 		"//mcd-one/database/assets/scripts/tactic_scripts/tt_notify_daily_duty.py",
 		"/C/Users/julio/Dropbox/Projects/wiki_skype/wiki_skype.py",
 		"/C/Users/julio/Dropbox/Projects/mcd_bot/echo.py",
-		"/C/Users/julio/Dropbox/Projects/mcd_bot/tasks.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/run.py",
-		"//mcd-one/database/apps/3d_apps/mayaPlugin/RedShift/Redshift 2.5.32 Win/Instructions.txt",
-		"//salt/salt-master/salt/redshift.sls",
-		"//salt/salt-master/salt/win/repo-ng/redshift.sls",
-		"//salt/salt-master/salt/renderman.sls",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/js/lib/DataTables/FixedHeader-3.1.3/js/dataTables.fixedHeader.js",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/js/lib/DataTables/DataTables-1.10.16/js/dataTables.jqueryui.js",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/js/lib/DataTables/DataTables-1.10.16/js/jquery.dataTables.js",
-		"/C/Users/julio/Dropbox/scripts/tactic_scripts/tt_update_animation_db_login.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/forms.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/versions/fd30b02ac104_.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/versions/ecf3d0e73d79_.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/auth/_formhelpers.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/css/style.css",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/dashboard.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/index.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/versions/bbc5464ddc58_.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/versions/2c40e79521c9_.py"
+		"/C/Users/julio/Dropbox/Projects/mcd_bot/tasks.py"
 	],
 	"find":
 	{
-		"height": 26.0
+		"height": 40.0
 	},
 	"find_in_files":
 	{
@@ -593,6 +773,24 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"widows",
+			"dropzone",
+			"btn",
+			"select_category",
+			"btnGroupDrop2",
+			"th",
+			"console",
+			"{{",
+			"from",
+			"myDropzone",
+			"adPhotosDropzone",
+			"dropzone",
+			";",
+			"self.base_filename",
+			"photo",
+			"photos",
+			"\t",
+			"renderfarm_manager",
 			"bottled ",
 			"cy",
 			"codex",
@@ -716,23 +914,504 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 5,
 			"sheets":
 			[
 				{
 					"buffer": 0,
+					"file": "app/home/views.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 2616,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								989,
+								989
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 429.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "app/home/events.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6935,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1767,
+								1767
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "app/home/forms.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 982,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								452,
+								452
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "app/__init__.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 965,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								950,
+								950
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "app/models.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1924,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1924,
+								1924
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "app/static/css/style.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3944,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3944,
+								3944
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2832.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "app/static/lib/selectize/selectize.js-master/examples/basic.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 21803,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1744,
+								1744
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 4,
+			"sheets":
+			[
+				{
+					"buffer": 7,
+					"file": "app/templates/test.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1088,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								750,
+								651
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "app/templates/base.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2905,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2871,
+								2848
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "app/templates/home/table.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5146,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5146,
+								5146
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1755.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "app/templates/home/toolbar.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1373,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								945,
+								945
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "app/templates/home/dragdrop.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 901,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								901,
+								901
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "app/static/lib/dropzone/dropzone.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 92953,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								78406,
+								78406
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 42840.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 15,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "app/static/lib/dropzone/dropzone.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11547,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4319,
+								4319
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 14,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "app/templates/home/datatables_init.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3285,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2641,
+								2641
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 972.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1257,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1256,
+								1256
+							]
+						],
+						"settings":
+						{
+							"auto_name": "Major Categories - Must choose",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/preferences/STSPlayer",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 152,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								152,
+								152
 							]
 						],
 						"settings":
@@ -743,7 +1422,37 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 16,
+					"type": "text"
+				},
+				{
+					"buffer": 17,
+					"file": "app/templates/home/index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 511,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								511,
+								511
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 17,
 					"type": "text"
 				}
 			]
@@ -755,7 +1464,7 @@
 	},
 	"input":
 	{
-		"height": 35.0
+		"height": 38.0
 	},
 	"layout":
 	{
@@ -766,11 +1475,18 @@
 				0,
 				1,
 				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
 			]
 		],
 		"cols":
 		[
 			0.0,
+			0.416956521739,
 			1.0
 		],
 		"rows":

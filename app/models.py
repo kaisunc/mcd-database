@@ -29,8 +29,24 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User: {}>'.format(self.username)
 
+class Media(db.Model):
+    __tablename__ = 'media'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text())
+    media_type = db.Column(db.Integer, db.ForeignKey('media_type.id'))
+    timestamp = db.Column(db.DateTime(), server_default=db.func.now(), server_onupdate=db.func.now())
+    assigned = db.Column(db.Integer, db.ForeignKey('user.id'))
+    url = db.Column(db.Text())
+    tags = db.Column(db.Text())
+    description = db.Column(db.Text())
+
+class Media_Type(db.Model):
+    __tablename__ = 'media_type'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text())    
+    name_chn = db.Column(db.Text())
+
 @login_manager.user_loader
 def load_user(user_id):
     #return User.query.get(int(user_id))
     return User.query.get(int(user_id))
-        

@@ -1,0 +1,280 @@
+/* line 90, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control {
+  position: relative;
+}
+
+/* line 94, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown, .selectize-input, .selectize-input input {
+  color: #303030;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  -webkit-font-smoothing: inherit;
+}
+
+/* line 102, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input, .selectize-control.single .selectize-input.input-active {
+  background: #fff;
+  cursor: text;
+  display: inline-block;
+}
+
+/* line 108, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input {
+  border: 1px solid #d0d0d0;
+  padding: 2.5px 2.5px;
+  display: inline-block;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: .25rem;
+}
+
+/* line 120, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control.multi .selectize-input.has-items {
+  padding: calc(8px - 2px - 0) 8px calc(8px - 2px - 3px - 0);
+}
+
+/* line 127, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input.full {
+  background-color: #fff;
+}
+
+/* line 130, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input.disabled, .selectize-input.disabled * {
+  cursor: default !important;
+}
+
+/* line 133, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input.focus {
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* line 136, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input.dropdown-active {
+  -webkit-border-radius: 3px 3px 0 0;
+  -moz-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
+}
+
+/* line 140, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input > * {
+  vertical-align: baseline;
+  display: -moz-inline-stack;
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+}
+
+/* line 147, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control.multi .selectize-input > div {
+  cursor: pointer;
+  margin: 0 3px 3px 0;
+  padding: 2px 6px;
+  background: #f2f2f2;
+  color: #303030;
+  border: 0 solid #d0d0d0;
+}
+
+/* line 155, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control.multi .selectize-input > div.active {
+  background: #e8e8e8;
+  color: #303030;
+  border: 0 solid #cacaca;
+}
+
+/* line 162, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control.multi .selectize-input.disabled > div, .selectize-control.multi .selectize-input.disabled > div.active {
+  color: #7d7d7d;
+  background: white;
+  border: 0 solid white;
+}
+
+/* line 168, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input > input {
+  display: inline-block !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  max-width: 100% !important;
+  margin: 0 2px 0 0 !important;
+  text-indent: 0 !important;
+  border: 0 none !important;
+  background: none !important;
+  line-height: inherit !important;
+  -webkit-user-select: auto !important;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 169, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input > input::-ms-clear {
+  display: none;
+}
+
+/* line 184, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input > input:focus {
+  outline: none !important;
+}
+
+/* line 188, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input::after {
+  content: ' ';
+  display: block;
+  clear: left;
+}
+
+/* line 194, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-input.dropdown-active::before {
+  content: ' ';
+  display: block;
+  position: absolute;
+  background: #f0f0f0;
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+/* line 205, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown {
+  position: absolute;
+  z-index: 10;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  margin: -1px 0 0 0;
+  border-top: 0 none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  -webkit-border-radius: 0 0 3px 3px;
+  -moz-border-radius: 0 0 3px 3px;
+  border-radius: 0 0 3px 3px;
+}
+
+/* line 216, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown [data-selectable] {
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* line 219, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown [data-selectable] .highlight {
+  background: rgba(125, 168, 208, 0.2);
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  border-radius: 1px;
+}
+
+/* line 224, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown .option, .selectize-dropdown .optgroup-header {
+  padding: 5px 8px;
+}
+
+/* line 227, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown .option, .selectize-dropdown [data-disabled], .selectize-dropdown [data-disabled] [data-selectable].option {
+  cursor: inherit;
+  opacity: 0.5;
+}
+
+/* line 231, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown [data-selectable].option {
+  opacity: 1;
+}
+
+/* line 234, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown .optgroup:first-child .optgroup-header {
+  border-top: 0 none;
+}
+
+/* line 237, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown .optgroup-header {
+  color: #303030;
+  background: #fff;
+  cursor: default;
+}
+
+/* line 242, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown .active {
+  background-color: #f5fafd;
+  color: #495c68;
+}
+
+/* line 245, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown .active.create {
+  color: #495c68;
+}
+
+/* line 249, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown .create {
+  color: rgba(48, 48, 48, 0.5);
+}
+
+/* line 254, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-dropdown-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 200px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* line 262, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control.single .selectize-input, .selectize-control.single .selectize-input input {
+  cursor: pointer;
+}
+
+/* line 263, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control.single .selectize-input.input-active, .selectize-control.single .selectize-input.input-active input {
+  cursor: text;
+}
+
+/* line 265, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control.single .selectize-input:after {
+  content: ' ';
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  margin-top: -3px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 5px 0 5px;
+  border-color: #808080 transparent transparent transparent;
+}
+
+/* line 278, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control.single .selectize-input.dropdown-active:after {
+  margin-top: -4px;
+  border-width: 0 5px 5px 5px;
+  border-color: transparent transparent #808080 transparent;
+}
+
+/* line 286, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control.rtl.single .selectize-input:after {
+  left: 15px;
+  right: auto;
+}
+
+/* line 290, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control.rtl .selectize-input > input {
+  margin: 0 4px 0 -2px !important;
+}
+
+/* line 295, C:/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize-bootstrap-4-style-master/selectize.scss */
+.selectize-control .selectize-input.disabled {
+  opacity: 0.5;
+  background-color: #fafafa;
+}
+
+/*# sourceMappingURL=../selectize.map */

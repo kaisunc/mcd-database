@@ -4,11 +4,12 @@
     }); 
 
     socket.on('init_response', function(msg) {
+
       data = JSON.parse(msg["data"]);
-      console.log(data);
       columns = JSON.parse(msg["columns"]);
       columnDefs = JSON.parse(msg["columnDefs"]);
       fields = JSON.parse(msg["fields"]);
+
 
       editor = new $.fn.dataTable.Editor( {
           data: data,
@@ -16,8 +17,10 @@
             var output = { data: [] };
             for(var k in d.data);
 
+
             if ( d.action === 'create' ) {
               socket.emit('create', {'namespace': namespace, 'data': d.data[k], 'field_list': field_list});
+              
             }
             else if ( d.action === 'edit' ) {
               socket.emit('update', {'namespace': namespace, 'id': k, 'data':d.data[k], 'field_list': field_list});
@@ -38,10 +41,19 @@
 
 
       $('#' + namespace).on( 'click', 'tbody td:not(:first-child)', function (e) {
-      editor.inline( this, {
+        $("div.DTE_Field_InputControl select").children().each(function(){
+          $(this).removeAttr("selected")
+        });        
+        var media_type = $(this).text();
+        editor.inline( this, {
           drawType: 'page',
+          onBlur: 'submit',
+          onReturn: 'submit',
           submit: 'changed'
         } );
+
+        $("div.DTE_Field_InputControl select option:contains('" + media_type + "')").attr("selected", "selected");
+        $("div.DTE_Field_InputControl select option:contains('" + media_type + "')").prop("selected", "selected");
       } );  
 
       table = $('#' + namespace).DataTable( {
@@ -73,9 +85,9 @@
     });    
 
     socket.on('add_response', function(msg) {
-      console.log('stuff added');
       data = JSON.parse(msg["data"]);
-      table.row.add(data).draw();
+      temp = data;
+      //table.row.add(data).draw();
     })
 
     socket.on('update_response', function(msg) {
