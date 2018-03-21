@@ -4,7 +4,7 @@ from flask_login import login_required
 from werkzeug import secure_filename
 import jinja2
 
-from ..models import Media_Type, Media
+from ..models import *
 
 from . import home
 from . import events
@@ -45,25 +45,38 @@ def homepage():
 @home.route('/media', methods=['GET'])    
 @login_required
 def media():
+    # pass variables from python to js by escaping
     namespace = jinja2_escapejs_filter("media")
-    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'media_type', 'type': 'select'}, {'name': 'url', 'type': 'text'}, {'name': 'tags', 'type': 'text'},{'name': 'assigned', 'type': 'select'}])
-    hide = jinja2_escapejs_filter(['timestamp'])
+    #field_list = Media.query.all()[0].field_list()
+    # field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'category', 'type': 'select'}, {'name': 'url', 'type': 'text'}, {'name': 'tags', 'type': 'text'},{'name': 'assigned', 'type': 'select'}])
+    # hide = jinja2_escapejs_filter(['timestamp'])
 
-    media_types = Media_Type.query.all()
-    mt = []
-    for t in media_types:
-        data = {"name": t.name, "id": t.id}
-        mt.append(data)
+    # categorys = Media_Type.query.all()
+    # mt = []
+    # for t in categorys:
+    #     data = {"name": t.name, "id": t.id}
+    #     mt.append(data)
 
-    return render_template('home/table.html', title='Database', namespace=namespace, field_list=field_list, hide=hide, data=mt)
+    #return render_template('home/table.html', title='Database', namespace=namespace, field_list=field_list, hide=hide, data=mt)
+    return render_template('home/table.html', title='Database', namespace=namespace)
 
 
-@home.route('/media_type', methods=['GET'])
+@home.route('/category', methods=['GET'])
 @login_required
-def media_type():
-    namespace = jinja2_escapejs_filter("media_type")
-    field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'name_chn', 'type': 'text'}])    
-    return render_template('home/table.html', title='Type', namespace=namespace, field_list=field_list, data='')
+def category():
+    namespace = jinja2_escapejs_filter("category")
+    #namespace = "category"
+    #field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'name_chn', 'type': 'text'}])    
+    return render_template('home/table.html', title='Category', namespace=namespace)
+
+@home.route('/user', methods=['GET'])
+@login_required
+def user():
+    namespace = jinja2_escapejs_filter("user")
+    #namespace = "category"
+    #field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'name_chn', 'type': 'text'}])    
+    return render_template('home/table.html', title='Users', namespace=namespace)
+
 
 @home.route('/upload', methods=['POST'])
 def upload():

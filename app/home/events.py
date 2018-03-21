@@ -6,105 +6,54 @@ from ..models import *
 import copy
 # match columns to model and match dt column name to db column name
 # column name is USUALLY matched to model name, but not always. ie. assigned > user
-# 
-model_prefs = [{'model': 'user', 'column': ['assigned'], 'choice':'username'}]   
-
-# convert a db obj to datatables json data
-def convertDB(obj, field_list):
-    #status_choices = {option.id: option.name for option in Status.query.all()}
-    # add or remove columns from model
-    def massage(dbDict):
-        newDB = {}
-        for k,v in dbDict.iteritems():
-            if k == "_sa_instance_state":
-                continue
-            for f in field_list:
-                if k == f['name'] and f['type'] == 'select': # add options into datatable data
-                    for pref in model_prefs:
-                        if k in pref['column']:
-                            model = getModel(pref['model'])
-                            choices = {option.id: getattr(option, pref['choice'])  for option in model.query.all()}
-                        else:
-                            model = getModel(k)
-                            choices = {option.id: option.name for option in model.query.all()}
-                        if v != None:
-                            v = choices[v]
-                        else:
-                            v = ""              
-            newDB[k] = v
-            newDB['select-checkbox'] = ""
-        return newDB
-
-    dt_data = []
-    if type(obj) is list:
-        for row in obj:
-            dt_data.append(massage(row.__dict__))
-    else:
-        dt_data = massage(obj.__dict__)
-    return json.dumps(dt_data)   
-
-
-def getModel(selector):
-    if selector == "media":
-        model = Media
-    elif selector == "media_type":
-        model = Media_Type
-    elif selector == "assigned":
-        model = User       
-    elif selector == "user":
-        model = User          
-    else:
-        return False
-    return model
-
-# gets from name, id from model
-def getOptions(model, namespace):
-    option_model = getModel(model)
-    # not alway 'name', so need a way to specify custom columns to query from.
-    options = []
-    if namespace == "asset":
-        option_model = option_model.query.filter(Process.pipeline == 1)
-    elif namespace == "shot":
-        option_model = option_model.query.filter(Process.pipeline == 2)
-    else:
-        option_model = option_model.query.all() 
-    for option in option_model:
-        if model == "assigned":
-            label = getattr(option, "username")
-        else:
-            label = getattr(option, "name")        
-        data = {"label": label, "value": option.id}
-        options.append(data)
-    return options
 
 # fields == input form fields
 # columns == simple list of columns
 # column def == json descriptor of columns
+
+fields = []
 @socketio.on('init')
 def init(*args):
+    global fields
     namespace = ""
     if len(args) != 0:
         namespace = args[0]["namespace"]
-        field_list = args[0]["field_list"]
-    # dt_data
-    model = copy.deepcopy(getModel(namespace))
-    data = model.query.all()
-    dt_data = convertDB(data, field_list)    
+
+    model = getModel(namespace)
+    items = model.query.all()
 
     fields = []
-    for f in field_list:
-        field = {'label': f['name'].title(), 'name': f['name']}
-        if f['type'] == 'select' or f['type'] == 'checkbox':
-            options = getOptions(f['name'], namespace)
-            field = {'label': f['name'].title(), 'name':f['name'],'options': options, 'type': f['type']}
-        elif f['type'] == 'inline':
-            print 'inline'
+    ignore = ["id", "timestamp"]
+    for column in items[0].__table__.columns.items():
+        if column[0] == "id":
+            pass
+        else:
+            col ={}
+            col['name'] = column[0]
+            col['label'] = column[0].title()
 
-        fields.append(field)
-    headers = model.__table__.columns.keys()
+            if str(column[1].type) == "TEXT":
+                col["type"] = "text"
+            elif str(column[1].type) == "DATETIME":
+                col["type"] = "datetime"
+            elif str(column[1].type) == "INTEGER":
+                if len(column[1].foreign_keys) == 1:
+                    col['type'] = "select"
+                    model = [m.target_fullname for m in column[1].foreign_keys][0].split(".")[0]
+                    options = asOptions(model)
+                    col['options'] = options
+                else:
+                    col["type"] = "text"
+
+            fields.append(col)
+
+    dt_data = []
+    for row in items:
+        dt_data.append(row.as_dict())
+
+    headers = items[0].__table__.columns.keys()
     headers.insert(0, "select-checkbox")
 
-    # columns and columnDef
     columnDefs = []
     columns = []
     for idx, header in enumerate(headers):
@@ -116,24 +65,20 @@ def init(*args):
         columnDefs.append(columnDef)
         columns.append(column)
 
-    # append custom columns 
     columnDefs = json.dumps(columnDefs)
-    columns = json.dumps(columns) # 
+    columns = json.dumps(columns) #
     fields = json.dumps(fields) # input fields and type
+    dt_data = json.dumps(dt_data)
 
     emit('init_response', {'data': dt_data, 'columns': columns, 'columnDefs': columnDefs, 'fields': fields}, broadcast=False)
 
-
-# 
 @socketio.on('create')
 def create(*args):
     namespace = ""
     if len(args) != 0:
         namespace = args[0]["namespace"]
         data = args[0]["data"]
-        field_list = args[0]["field_list"]
 
-    print data
     model = getModel(namespace)
     update = model()
 
@@ -158,17 +103,17 @@ def create(*args):
     db.session.commit()
 
     update = model.query.filter_by(id=pid).first()
-    dt_data = convertDB(update, field_list)    
+    dt_data = json.dumps(update.as_dict())
     emit('add_response', {'data': dt_data}, broadcast=True)
 
-@socketio.on('update')    
+@socketio.on('update')
 def update(*args):
+    global fields
     namespace = ""
     if len(args) != 0:
         namespace = args[0]["namespace"]
         pid = args[0]["id"]
         data = args[0]["data"]
-        field_list = args[0]["field_list"]
 
     model = getModel(namespace)
     update = model.query.filter_by(id=pid).first()
@@ -178,14 +123,14 @@ def update(*args):
     now = db.func.now()
     for k, v in data.iteritems():
         setattr(update, k, v)
-        if 'timestampe' in cols:
+        if 'timestamp' in cols:
             update.timestamp = now
     db.session.commit()
 
     update = model.query.filter_by(id=pid).first()
-    dt_data = convertDB(update, field_list)    
-   
-    emit('update_response', {'data': dt_data}, broadcast=True)
+    #dt_data = convertDB(update, field_list)
+    dt_data = json.dumps(update.as_dict())
+    emit('update_response', {'data': dt_data}, broadcast=False)
 
 @socketio.on('remove')
 def remove(*args):
@@ -194,11 +139,18 @@ def remove(*args):
         namespace = args[0]["namespace"]
         ids = args[0]["ids"]
 
+    db.session.flush()
     model = getModel(namespace)
 
     for i in ids:
-        model.query.filter_by(id=i).delete()
-    db.session.commit()
-    ids = json.dumps(ids)
+        delete = model.query.filter_by(id=i).first()
+        print delete
 
-    emit('delete_response', {'ids': ids}, broadcast=True)
+    db.session.delete(delete)
+    db.session.commit()
+    try:
+        ids = json.dumps(ids)
+        emit('delete_response', {'ids': ids}, broadcast=True)
+    except:
+        #db.session.rollback()
+        print 'something wrong'

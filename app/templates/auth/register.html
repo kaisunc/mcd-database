@@ -9,7 +9,7 @@
     <span>Register for Account</span>
     <form action="" method="post" class="form" role="form">
       {{form.csrf_token}}
-      {{ render_field(form.username) }}
+      {{ render_field(form.name) }}
       {{ render_field(form.password) }}
       {{ render_field(form.confirm_password) }}
       {{ form.submit(class="btn waves-effect waves-light") }}    

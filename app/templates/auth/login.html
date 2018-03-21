@@ -9,7 +9,7 @@
             <p id="profile-name" class="profile-name-card"></p>
             <form class="form-signin" method="post">
                   {{ form.csrf_token }}
-                  {{ render_field(form.username) }}
+                  {{ render_field(form.name) }}
                   {{ render_field(form.password) }}
                         {{ form.submit(class="btn waves-effect waves-light") }}    
             </form><!-- /form -->

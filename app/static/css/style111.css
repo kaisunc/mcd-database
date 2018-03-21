@@ -205,11 +205,6 @@ body, html {
     display: none;
 }
 
-.category {
-    display: inline-block;
-    width: 200px;
-}
-
 .test {
     display: inline-block;
     vertical-align: middle;

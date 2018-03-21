@@ -4,22 +4,33 @@
 {% block title %}Projects{% endblock %}
 
 {% block css %}
-    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/datatables.css"/>
-    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css"/>
-    <link rel="stylesheet" type="text/css" href="static/lib/Editor-1.7.2/css/editor.dataTables.css">
-    <link rel="stylesheet" type="text/css" href="static/lib/dropzone/dropzone.css">
-    <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize-bootstrap4.css">
+    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/datatables.min.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="static/lib/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css"/> -->
+    <!-- <link rel="stylesheet" type="text/css" href="static/lib/Editor-1.7.2/css/editor.dataTables.min.css"> -->
+    <link rel="stylesheet" type="text/css" href="static/lib/Editor-1.7.2/css/editor.bootstrap4.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Select-1.2.5/css/select/select.dataTables.min.css"> -->
+    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Select-1.2.5/css/select/select.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Select-1.2.5/css/Buttons-1.5.1/css/buttons.bootstrap4.min.css">
+<!--     <link rel="stylesheet" type="text/css" href="static/lib/dropzone/dropzone.css">
+    <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize-bootstrap4.css"> -->
 {% endblock %}
 
 {% block js %}
   <script src="../static/lib/socket.io.js" type="text/javascript"></script>
-  <script src="./static/lib/dropzone/dropzone.js"></script>
+<!--   <script src="./static/lib/dropzone/dropzone.js"></script>
   <script src="./static/lib/selectize/js/standalone/selectize.js"></script>
   <script src="./static/lib/selectize/js/index.js"></script>
   <script>
     Dropzone.autoDiscover = false;
-  </script>
-  {% include "./home/datatables_lib.html" %}
+  </script> -->
+  <script type="text/javascript" src="static/lib/DataTables/datatables.min.js"></script>
+  <script type="text/javascript" src="static/lib/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+  <script type="text/javascript" src="static/lib/DataTables/Select-1.2.5/js/dataTables.select.min.js"></script>
+  <!-- <script type="text/javascript" src="static/lib/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script> -->
+  <script type="text/javascript" src="static/lib/DataTables/Buttons-1.5.1/js/buttons.bootstrap4.min.js"></script>
+  <script type="text/javascript" src="static/lib/Editor-1.7.2/js/dataTables.editor.min.js"></script>
+  <script type="text/javascript" src="static/lib/Editor-1.7.2/js/editor.bootstrap4.min.js"></script>
+  
 {% endblock %}
 
 {% block body %}
@@ -33,10 +44,10 @@
 
 {% block run_scripts %}
 <script>
-  var myDropzone = new Dropzone("#media_drop", {
+/*  var myDropzone = new Dropzone("#media_drop", {
     url: "{{ url_for('home.upload')}}",
     autoProcessQueue: false,
-  });
+  });*/
 
   var editor;
   var table;
@@ -49,12 +60,10 @@
 
   $(document).ready(function() {
     namespace = {{namespace}};
-    field_list = {{field_list}};
 
-
-    {% if hide is defined %}
+/*    {% if hide is defined %}
       hide = {{hide}};
-    {% endif %}
+    {% endif %}*/
     {% include "./home/datatables_init.js" %}
     //document.removeEventListener('keypress',  keyPressed);
     $( ".dt_add" ).bind({
@@ -72,7 +81,7 @@
             $('#dt-toolbar').css("display", "none");
             $('#media_wrapper').css("display", "none");
           }
-        } else if(namespace == 'media_type'){
+        } else if(namespace == 'category'){
           editor.create({
             buttons: 'Create'
           });          
@@ -122,14 +131,10 @@
         category = $('#select_category').val();        
 
         tags = selectize.items;        
-        acceptedFiles = myDropzone.getAcceptedFiles();
-        for(j=0;j<acceptedFiles.length;j++){
-
-          name = acceptedFiles[j].name;
-          data = {"name": name, "media_type": category, "tags": tags.join(",")};
-          
-          socket.emit('create', {'namespace': namespace, 'data': data, 'field_list': field_list});
-        }
+        //acceptedFiles = myDropzone.getAcceptedFiles();
+        data = {"name": "teswt", "media_type": category, "tags": tags.join(",")};
+        
+        socket.emit('create', {'namespace': namespace, 'data': data, 'field_list': field_list});
       }
     });  
 
@@ -155,13 +160,13 @@
       //console.log($(this).attr("value"));
     });
 
-    $select = $('#input-tags').selectize({
+/*    $select = $('#input-tags').selectize({
       persist: false,
       createOnBlur: true,
       create: true
     });    
 
-    selectize = $select[0].selectize;
+    selectize = $select[0].selectize;*/
   });
 
 </script>

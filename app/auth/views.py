@@ -12,7 +12,7 @@ def register():
 
     if form.validate_on_submit():
         user = User(
-            username=form.username.data,
+            name=form.name.data,
             password=form.password.data
             )
         db.session.add(user)
@@ -26,12 +26,12 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(name=form.name.data).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user)
             return redirect(url_for('home.media'))
         else:
-            flash('Invalid username or password')
+            flash('Invalid name or password')
     return render_template('auth/login.html', form=form, title='Login')
 
 

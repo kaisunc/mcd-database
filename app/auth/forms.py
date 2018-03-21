@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Email, EqualTo
 from ..models import User
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()], render_kw={"placeholder": "Username"})
+    name = StringField('Name', validators=[DataRequired()], render_kw={"placeholder": "Name"})
     #first_name = StringField('First Name', validators=[DataRequired()])
     #last_name = StringField('Last Name', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm_password')], render_kw={"placeholder": "Password"})
@@ -13,12 +13,12 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Register')
 
     # check the db if name is unique
-    def validate_username(self, field):
-        if User.query.filter_by(username=field.data).first():
-            raise ValidationError('Username exists!')
+    def validate_name(self, field):
+        if User.query.filter_by(name=field.data).first():
+            raise ValidationError('Name exists!')
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()], render_kw={"placeholder": "Username"})
+    name = StringField('Name', validators=[DataRequired()], render_kw={"placeholder": "Name"})
     password = PasswordField('Password', validators=[DataRequired()],  render_kw={"placeholder": "Password"})
     submit = SubmitField('Login')
     
