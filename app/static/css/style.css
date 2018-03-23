@@ -218,4 +218,23 @@ body, html {
 .selectize-input{
     padding: .375em .75em;
 
+} 
+.category_menu {
+    display: inline-flex;
+    width: 200px;
+}
+
+.test {
+    display: inline-block;
+    vertical-align: middle;
+    min-width: 500px;
+}
+
+.selectize-control{
+    overflow: inherit;
+}
+
+.selectize-input{
+    padding: .375em .75em;
+
 }

@@ -9,20 +9,20 @@
     <!-- <link rel="stylesheet" type="text/css" href="static/lib/Editor-1.7.2/css/editor.dataTables.min.css"> -->
     <link rel="stylesheet" type="text/css" href="static/lib/Editor-1.7.2/css/editor.bootstrap4.min.css">
     <!-- <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Select-1.2.5/css/select/select.dataTables.min.css"> -->
-    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Select-1.2.5/css/select/select.bootstrap4.min.css">
-    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Select-1.2.5/css/Buttons-1.5.1/css/buttons.bootstrap4.min.css">
-<!--     <link rel="stylesheet" type="text/css" href="static/lib/dropzone/dropzone.css">
-    <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize-bootstrap4.css"> -->
+    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Select-1.2.5/css/select.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="static/lib/dropzone/dropzone.css">
+    <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize-bootstrap4.css">
 {% endblock %}
 
 {% block js %}
   <script src="../static/lib/socket.io.js" type="text/javascript"></script>
-<!--   <script src="./static/lib/dropzone/dropzone.js"></script>
+  <script src="./static/lib/dropzone/dropzone.js"></script>
   <script src="./static/lib/selectize/js/standalone/selectize.js"></script>
   <script src="./static/lib/selectize/js/index.js"></script>
   <script>
     Dropzone.autoDiscover = false;
-  </script> -->
+  </script>
   <script type="text/javascript" src="static/lib/DataTables/datatables.min.js"></script>
   <script type="text/javascript" src="static/lib/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
   <script type="text/javascript" src="static/lib/DataTables/Select-1.2.5/js/dataTables.select.min.js"></script>
@@ -30,7 +30,7 @@
   <script type="text/javascript" src="static/lib/DataTables/Buttons-1.5.1/js/buttons.bootstrap4.min.js"></script>
   <script type="text/javascript" src="static/lib/Editor-1.7.2/js/dataTables.editor.min.js"></script>
   <script type="text/javascript" src="static/lib/Editor-1.7.2/js/editor.bootstrap4.min.js"></script>
-  
+
 {% endblock %}
 
 {% block body %}
@@ -44,10 +44,10 @@
 
 {% block run_scripts %}
 <script>
-/*  var myDropzone = new Dropzone("#media_drop", {
+  var myDropzone = new Dropzone("#media_drop", {
     url: "{{ url_for('home.upload')}}",
     autoProcessQueue: false,
-  });*/
+  });
 
   var editor;
   var table;
@@ -70,13 +70,13 @@
       click: function() {
         if(namespace == 'media'){
           if($("#media_drop").css("display") == "block"){
-            $('#media_drop').css("display", "none");  
+            $('#media_drop').css("display", "none");
             $('#dz-toolbar').css("display", "none");
             $('#dt-toolbar').css("display", "block");
             $('#media_wrapper').css("display", "block");
 
           } else if($("#media_drop").css("display") == "none"){ //open dropzone and dz toolbar
-            $('#media_drop').css("display", "block");  
+            $('#media_drop').css("display", "block");
             $('#dz-toolbar').css("display", "block");
             $('#dt-toolbar').css("display", "none");
             $('#media_wrapper').css("display", "none");
@@ -84,7 +84,7 @@
         } else if(namespace == 'category'){
           editor.create({
             buttons: 'Create'
-          });          
+          });
         }
       }
     });
@@ -110,33 +110,40 @@
     $( ".dz_close" ).bind({
       click: function() {
         if($("#media_drop").css("display") == "block"){
-          $('#media_drop').css("display", "none");  
+          $('#media_drop').css("display", "none");
           $('#dz-toolbar').css("display", "none");
           $('#dt-toolbar').css("display", "flex");
           $('#media_wrapper').css("display", "block");
 
         } else if($("#media_drop").css("display") == "none"){ //open dropzone and dz toolbar
-          $('#media_drop').css("display", "block");  
+          $('#media_drop').css("display", "block");
           $('#dz-toolbar').css("display", "block");
           $('#dt-toolbar').css("display", "none");
           $('#media_wrapper').css("display", "none");
         }
       }
-    });    
+    });
 
     $( ".dz_add" ).bind({
       click: function() {
         myDropzone.options.autoProcessQueue = true;
         myDropzone.processQueue();
-        category = $('#select_category').val();        
+        category = parseInt($('#select_category').val());
+        user_id = parseInt($('i.fa-user').attr('user-id'));
 
-        tags = selectize.items;        
-        //acceptedFiles = myDropzone.getAcceptedFiles();
-        data = {"name": "teswt", "media_type": category, "tags": tags.join(",")};
-        
-        socket.emit('create', {'namespace': namespace, 'data': data, 'field_list': field_list});
+
+        tags = selectize.items.join(",");
+        acceptedFiles = myDropzone.getAcceptedFiles();
+
+        itemlist = [];
+        for(i=0;i<acceptedFiles.length;i++){
+          name = acceptedFiles[i]['name'];
+          data = {"name": name, "category": category, "tags": tags, "assigned": user_id};
+          itemlist.push(data);
+        }
+        socket.emit('create', {'namespace': 'media', 'data': itemlist, 'multiple': 'true'} );
       }
-    });  
+    });
 
     $( ".dz_clear" ).bind({
       click: function() {
@@ -145,7 +152,7 @@
           myDropzone.removeFile(acceptedFiles[i]);
         };
       }
-    });           
+    });
 
     $(".nav-item").removeClass("active");
     $(".nav-item[namespace='" + namespace + "']").addClass("active");
@@ -160,13 +167,13 @@
       //console.log($(this).attr("value"));
     });
 
-/*    $select = $('#input-tags').selectize({
+    $select = $('#input-tags').selectize({
       persist: false,
       createOnBlur: true,
       create: true
-    });    
+    });
 
-    selectize = $select[0].selectize;*/
+    selectize = $select[0].selectize;
   });
 
 </script>

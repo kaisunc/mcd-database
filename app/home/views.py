@@ -45,36 +45,30 @@ def homepage():
 @home.route('/media', methods=['GET'])    
 @login_required
 def media():
-    # pass variables from python to js by escaping
     namespace = jinja2_escapejs_filter("media")
     #field_list = Media.query.all()[0].field_list()
     # field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'category', 'type': 'select'}, {'name': 'url', 'type': 'text'}, {'name': 'tags', 'type': 'text'},{'name': 'assigned', 'type': 'select'}])
     # hide = jinja2_escapejs_filter(['timestamp'])
 
-    # categorys = Media_Type.query.all()
-    # mt = []
-    # for t in categorys:
-    #     data = {"name": t.name, "id": t.id}
-    #     mt.append(data)
+    categorys = Category.query.all()
+    mt = []
+    for t in categorys:
+        data = {"name": t.name, "id": t.id}
+        mt.append(data)
 
-    #return render_template('home/table.html', title='Database', namespace=namespace, field_list=field_list, hide=hide, data=mt)
-    return render_template('home/table.html', title='Database', namespace=namespace)
+    return render_template('home/table.html', title='Database', namespace=namespace, menu=mt)
 
 
 @home.route('/category', methods=['GET'])
 @login_required
 def category():
     namespace = jinja2_escapejs_filter("category")
-    #namespace = "category"
-    #field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'name_chn', 'type': 'text'}])    
     return render_template('home/table.html', title='Category', namespace=namespace)
 
 @home.route('/user', methods=['GET'])
 @login_required
 def user():
     namespace = jinja2_escapejs_filter("user")
-    #namespace = "category"
-    #field_list = jinja2_escapejs_filter([{'name': 'name', 'type': 'text'}, {'name': 'name_chn', 'type': 'text'}])    
     return render_template('home/table.html', title='Users', namespace=namespace)
 
 
@@ -82,8 +76,5 @@ def user():
 def upload():
     if request.method == 'POST':
         f = request.files['file']
-        #print f.filename
-        #print secure_filename(f.filename)
-        print type(f.filename)
         f.save(r"C:\\Users\\julio\\source\\" + f.filename)
         return 'ok'

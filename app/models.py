@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import db, login_manager
 
 class Datatable():
-    def as_dict(self):
+    def dt_data_row(self):
         t = {c.name: getattr(self, c.name) for c in self.__table__.columns}    
         t["select-checkbox"] = ""
         return t
@@ -27,6 +27,7 @@ class Datatable():
 
         temp["select-checkbox"] = ""
         return temp
+
 
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
@@ -63,6 +64,7 @@ class Media(db.Model, Datatable):
     tags = db.Column(db.Text())
     description = db.Column(db.Text())
 
+
 class Category(db.Model, Datatable):
     __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)
@@ -85,7 +87,7 @@ def getModel(selector):
         return False
     return model
 
-def asOptions(namespace):
+def getOptions(namespace):
     model = getModel(namespace)
     items = model.query.all()
     options = []
@@ -93,3 +95,43 @@ def asOptions(namespace):
         data = {"label": option.name, "value": option.id}
         options.append(data)
     return options    
+
+def getFields(model):
+    fields = []
+    columns = []
+    columnDefs = []
+    idx = 0
+    ignore = ["id", "timestamp"]
+    for column in model.__table__.columns.items():
+        idx = idx + 1
+        columns.append({"data": column[0]})
+        columnDef = {"orderable": True, "className": column[0], "title": column[0], "targets": idx}
+        columnDefs.append(columnDef)
+
+        col ={}
+        if column[0] == "id": # no form input for id
+            pass
+        else:
+            col['name'] = column[0]
+            col['label'] = column[0].title()
+
+            if str(column[1].type) == "TEXT":
+                col["type"] = "text"
+            elif str(column[1].type) == "DATETIME":
+                col["type"] = "datetime"
+            elif str(column[1].type) == "INTEGER":
+                if len(column[1].foreign_keys) == 1:
+                    col['type'] = "select"
+                    fk_model = [m.target_fullname for m in column[1].foreign_keys][0].split(".")[0]
+                    options = getOptions(fk_model)
+                    col['options'] = options
+                else:
+                    col["type"] = "text"
+
+            fields.append(col)
+
+    columns.insert(0, {"data": "select-checkbox"})
+    columnDefs.insert(0, {"width": "3%", "orderable": False, "className": "select-checkbox", "title": "select-checkbox", "targets": 0})
+    return fields, columns, columnDefs
+
+    

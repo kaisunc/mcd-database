@@ -28,7 +28,7 @@
           </li>
 
           <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
-          <li class="nav-item"><a class="nav-link"> <i class="fa fa-user" aria-hidden="true" style="color: #992222"></i>    {{ current_user.username }}!</a></li>
+          <li class="nav-item"><a class="nav-link"> <i class="fa fa-user" aria-hidden="true" style="color: #992222" user-id="{{current_user.id}}"></i>    {{ current_user.name }}!</a></li>
         {% else %}
           <li class="nav-item"><a class="nav-link" href="{{ url_for('home.homepage') }}">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
