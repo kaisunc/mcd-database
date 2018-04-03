@@ -1,8 +1,9 @@
 # https://flask-login.readthedocs.io/en/latest/
 from flask_login import UserMixin # provides default flask login implementations
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import re
 from app import db, login_manager
+
 
 class Datatable():
     def dt_data_row(self):
@@ -63,6 +64,7 @@ class Media(db.Model, Datatable):
     url = db.Column(db.Text())
     tags = db.Column(db.Text())
     description = db.Column(db.Text())
+    thumbnail = db.Column(db.Text())
 
 
 class Category(db.Model, Datatable):
@@ -108,6 +110,9 @@ def getFields(model):
         columnDef = {"orderable": True, "className": column[0], "title": column[0], "targets": idx}
         columnDefs.append(columnDef)
 
+        if column[0] == "thumbnail":
+            columns[-1]['render'] = "thumb_render"
+
         col ={}
         if column[0] == "id": # no form input for id
             pass
@@ -125,6 +130,8 @@ def getFields(model):
                     fk_model = [m.target_fullname for m in column[1].foreign_keys][0].split(".")[0]
                     options = getOptions(fk_model)
                     col['options'] = options
+                    columns[-1]['render'] = "render" # keyword render will assign js render function
+
                 else:
                     col["type"] = "text"
 

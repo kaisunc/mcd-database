@@ -238,3 +238,7 @@ body, html {
     padding: .375em .75em;
 
 }
+
+.thumbs{
+    width: 60px;
+}

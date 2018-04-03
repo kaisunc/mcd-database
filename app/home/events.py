@@ -32,6 +32,26 @@ input: model name, query model
 output: json list, {label: '', value: ''}
 
 '''
+@socketio.on('ajax_socket')
+def ajax_socket(*args):
+    namespace = "media"
+
+    # if len(args) != 0:
+    #     namespace = args[0]["namespace"]
+
+    model = getModel(namespace)
+
+    items = model.query.all()
+    fields, columns, columnDefs = getFields(model)
+
+    dt_data = []
+    for row in items:
+        #dt_data.append(row.dt_data_row())
+        dt_data.append(row.as_dict1(fields))
+
+    t = json.dumps({"data": dt_data})
+    emit('init_response', t, broadcast=False)
+
 fields = []
 @socketio.on('init')
 def init(*args):
@@ -123,13 +143,13 @@ def update(*args):
         if 'timestamp' in cols:
             update.timestamp = now
     db.session.commit()
-
     update = model.query.filter_by(id=pid).first()
     #dt_data = json.dumps(update.dt_data_row())
 
     dt_data = json.dumps(update.as_dict1(fields))
     emit('update_response', {'data': dt_data}, broadcast=False)
 
+# if category is in use by any media, can't delete
 @socketio.on('remove')
 def remove(*args):
     namespace = ""
@@ -141,12 +161,11 @@ def remove(*args):
     model = getModel(namespace)
 
     for i in ids:
-        delete = model.query.filter_by(id=i).first()
+        delete = model.query.filter_by(id=i).one()
         db.session.delete(delete)
     db.session.commit()
     try:
         ids = json.dumps(ids)
         emit('delete_response', {'ids': ids}, broadcast=True)
     except:
-        #db.session.rollback()
         print 'something wrong'

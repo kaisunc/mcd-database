@@ -4,13 +4,24 @@
     }); 
 
     socket.on('init_response', function(msg) {
+      render =  function ( data, meta, row ) {return data.label;};
+      thumb_render = function ( data, meta, row ) {return '<img class="thumbs" src="'+data+'"/>';};
       data = JSON.parse(msg["data"]);
       fields = JSON.parse(msg["fields"]);
       columns = JSON.parse(msg["columns"]);
-      render =  function ( data, meta, row ) {return data.label;};
-
-      columns = [{'data': 'select-checkbox'}, {'data': 'id'}, {'data': 'name'}, {'data': 'category', 'render': render}, {'data': 'timestamp'}, {'data': 'assigned', 'render': render}, {'data': 'url'}, {'data': 'tags'}, {'data': 'description'}]
       columnDefs = JSON.parse(msg["columnDefs"]);
+
+      for(i=0;i<columns.length;i++){
+        if(columns[i]['render'] == 'render'){
+          columns[i]['render'] = render;
+        };
+        if(columns[i]['render'] == 'thumb_render'){
+          columns[i]['render'] = thumb_render;
+        };
+      };
+      //columns = [{'data': 'select-checkbox'}, {'data': 'id'}, {'data': 'name'}, {'data': 'category', 'render': render}, {'data': 'timestamp'}, {'data': 'assigned'}, {'data': 'url'}, {'data': 'tags'}, {'data': 'description'}, {'data': 'thumbnail', 'render': thumb_render}]
+      
+
 
       editor = new $.fn.dataTable.Editor( {
           data: data,
@@ -19,11 +30,9 @@
             for(var k in d.data); //get the id
 
             if ( d.action === 'create' ) {
-              socket.emit('create', {'namespace': namespace, 'data': d.data[k]});
+              socket.emit('create', {'namespace': namespace, 'data': d.data[k], 'multiple': 'false'});
             }
             else if ( d.action === 'edit' ) {
-              table.row(k).remove();
-              temp = d.data;
               socket.emit('update', {'namespace': namespace, 'id': k, 'data':d.data[k]});
             }
             else if ( d.action === 'remove' ) {
@@ -40,14 +49,7 @@
           fields: fields
       } );   
 
-/*      $('#' + namespace).on( 'click', 'tbody td:not(:first-child)', function (e) {
-        editor.inline( this );
-      } );  */
-
       $('#' + namespace).on( 'click', 'tbody td:not(:first-child)', function (e) {
-/*        $("div.DTE_Field_InputControl select").children().each(function(){
-          $(this).removeAttr("selected")
-        }); */       
         var category = $(this).text();
         editor.inline( this, {
           drawType: 'page',
@@ -78,11 +80,16 @@
             { extend: 'remove', editor: editor }
           ]  
       });    
-      
     });    
 
     socket.on('add_response', function(msg) {
       data = JSON.parse(msg["data"]);
+      category = data['category']['label'];
+      file_id = data['id'];
+      myDropzone.options.url = "upload?category=" + category + "&file_id=" + file_id;
+      console.log(myDropzone.options.url);
+      myDropzone.options.autoProcessQueue = true;
+      myDropzone.processQueue();      
       table.row.add(data).draw();
     })
 

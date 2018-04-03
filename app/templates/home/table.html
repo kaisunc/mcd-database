@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="static/lib/dropzone/dropzone.css">
     <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize-bootstrap4.css">
+    <!-- <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize.css"> -->
 {% endblock %}
 
 {% block js %}
@@ -44,10 +45,34 @@
 
 {% block run_scripts %}
 <script>
+  var thumbs =[];
   var myDropzone = new Dropzone("#media_drop", {
     url: "{{ url_for('home.upload')}}",
+    maxFilesize: 10000, //10GB
     autoProcessQueue: false,
+    thumbnailWidth: 120
   });
+
+  function dz_clear(){
+    var acceptedFiles = myDropzone.getAcceptedFiles();
+    for(i=0; i < acceptedFiles.length; i++){
+      myDropzone.removeFile(acceptedFiles[i]);
+    };      
+  }
+
+  myDropzone.on("addedfile", function(file) {
+    ext = file.name.split(".");
+  });
+
+  myDropzone.on("thumbnail", function(file, dataUri) {
+    t = [file, dataUri];
+    thumbs.push(t);
+  });
+
+/*  myDropzone.on("queuecomplete", function(file) {
+    myDropzone.options.autoProcessQueue = false;     
+    dz_clear(); 
+  });*/
 
   var editor;
   var table;
@@ -59,13 +84,10 @@
   var optx;
 
   $(document).ready(function() {
-    namespace = {{namespace}};
+    //namespace = JSON.parse("{{namespace}}");
+    namespace = "{{namespace}}";
 
-/*    {% if hide is defined %}
-      hide = {{hide}};
-    {% endif %}*/
     {% include "./home/datatables_init.js" %}
-    //document.removeEventListener('keypress',  keyPressed);
     $( ".dt_add" ).bind({
       click: function() {
         if(namespace == 'media'){
@@ -126,11 +148,10 @@
 
     $( ".dz_add" ).bind({
       click: function() {
-        myDropzone.options.autoProcessQueue = true;
-        myDropzone.processQueue();
+        //myDropzone.options.autoProcessQueue = true;
+        //myDropzone.processQueue();
         category = parseInt($('#select_category').val());
         user_id = parseInt($('i.fa-user').attr('user-id'));
-
 
         tags = selectize.items.join(",");
         acceptedFiles = myDropzone.getAcceptedFiles();
@@ -138,33 +159,36 @@
         itemlist = [];
         for(i=0;i<acceptedFiles.length;i++){
           name = acceptedFiles[i]['name'];
-          data = {"name": name, "category": category, "tags": tags, "assigned": user_id};
+          for(j=0;j<thumbs.length;j++){
+            if(thumbs[j][0].name == name){
+              thumb = thumbs[j][1];
+            }
+          }
+          data = {"name": name, "category": category, "tags": tags, "assigned": user_id, "thumbnail": thumb};
           itemlist.push(data);
+        
         }
         socket.emit('create', {'namespace': 'media', 'data': itemlist, 'multiple': 'true'} );
       }
     });
 
+
     $( ".dz_clear" ).bind({
       click: function() {
-        var acceptedFiles = myDropzone.getAcceptedFiles();
-        for(i=0; i < acceptedFiles.length; i++){
-          myDropzone.removeFile(acceptedFiles[i]);
-        };
+        dz_clear();
       }
     });
 
-    $(".nav-item").removeClass("active");
+/*    $(".nav-item").removeClass("active");
     $(".nav-item[namespace='" + namespace + "']").addClass("active");
     if(namespace == "status" || namespace == "task" || namespace == "pipeline" || namespace == "process"){
       $(".nav-item.dropdown").addClass("active");
-    }
+    }*/
 
     $(".dropdown-menu a").click(function(){
       tt = $(this).parent().parent().find('.dropdown-toggle');
       $(tt).text($(this).text());
       $(tt).attr("value", $(this).attr("value"));
-      //console.log($(this).attr("value"));
     });
 
     $select = $('#input-tags').selectize({
