@@ -4,6 +4,8 @@ from .. import db, socketio
 
 from ..models import *
 
+
+
 '''
 fields
 target: editor
@@ -32,24 +34,70 @@ input: model name, query model
 output: json list, {label: '', value: ''}
 
 '''
+
+
 @socketio.on('ajax_socket')
 def ajax_socket(*args):
-    namespace = "media"
+    '''
+    main entry point for displaying datatables
+    settings = {u'search': {u'regex': False, u'value': u''}, u'draw': 1, u'start': 0, u'length': 20, u'order': [{u'column': 1, u'dir': u'desc'}], u'columns': [{u'orderable': False, u'search': {u'regex': False, u'value': u''}, u'data': u'select-checkbox', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'id', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'name', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'category', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'timestamp', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'assigned', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'url', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'tags', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'description', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'thumbnail', u'name': u'', u'searchable': True}]}
+    settings = {u'search': {u'regex': False, u'value': u''}, u'draw': 2, u'start': 0, u'length': 20, u'order': [{u'column': 2, u'dir': u'asc'}], u'columns': [{u'orderable': False, u'search': {u'regex': False, u'value': u''}, u'data': u'select-checkbox', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'id', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'name', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'category', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'timestamp', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'assigned', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'url', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'tags', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'description', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'thumbnail', u'name': u'', u'searchable': True}]}
 
-    # if len(args) != 0:
-    #     namespace = args[0]["namespace"]
+    columns = [{u'mData': u'select-checkbox', u'data': u'select-checkbox'}, {u'mData': u'id', u'data': u'id'}, {u'mData': u'name', u'data': u'name'}, {u'mData': u'category', u'data': u'category'}, {u'mData': u'timestamp', u'data': u'timestamp'}, {u'mData': u'assigned', u'data': u'assigned'}, {u'mData': u'url', u'data': u'url'}, {u'mData': u'tags', u'data': u'tags'}, {u'mData': u'description', u'data': u'description'}, {u'mData': u'thumbnail', u'data': u'thumbnail'}]
+
+    '''
+    namespace = args[0]['namespace']
+    settings = args[0]['settings']
+    columns = args[0]['columns']
+    columnDefs = args[0]['columnDefs']
+    fields = args[0]['fields']
+    lower = False
 
     model = getModel(namespace)
-
     items = model.query.all()
-    fields, columns, columnDefs = getFields(model)
+
+    start = int(settings['start'])
+    length = int(settings['length'])
+    sort_column = int(settings['order'][0]['column']) # column number
+    sort_column_name = columns[sort_column]['data'] # column name
+    sort_direction = settings['order'][0]['dir']
+
+    def is_reverse(str_direction):
+        ''' Maps the 'desc' and 'asc' words to True or False. '''
+        return True if str_direction == 'desc' else False
 
     dt_data = []
     for row in items:
-        #dt_data.append(row.dt_data_row())
         dt_data.append(row.as_dict1(fields))
+    recordsTotal = len(dt_data)
 
-    t = json.dumps({"data": dt_data})
+    for f in fields:
+        if f['d_type'] == 'integer':
+            lower = False
+        else:
+            lower = True
+
+    if lower == True:        
+        dt_data = sorted(dt_data, key=lambda x: x['name'].lower(), reverse=is_reverse(sort_direction))
+    else:
+        dt_data = sorted(dt_data, key=lambda x: x['name'], reverse=is_reverse(sort_direction))
+
+
+
+    # if search returns only one page
+    if len(dt_data) <= length:
+        # display only one page
+        dt_data = dt_data[start:]
+    else:
+        limit = -len(dt_data) + start + length
+        if limit < 0:
+            # display pagination
+            dt_data = dt_data[start:limit]
+        else:
+            # display last page of pagination
+            dt_data = dt_data[start:]
+
+    t = json.dumps({"draw": settings['draw'], "recordsTotal": recordsTotal, "recordsFiltered": recordsTotal, "data": dt_data})
     emit('init_response', t, broadcast=False)
 
 fields = []

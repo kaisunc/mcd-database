@@ -12,22 +12,24 @@ class Datatable():
         return t
 
     def as_dict1(self, fields):
-        menus = []
+        selections = []
         for f in fields:
             if f['type'] == 'select':
-                menus.append(f)        
+                selections.append(f)        
 
-        temp = {}
-        for c in self.__table__.columns:
-            temp[c.name] = getattr(self, c.name)
-            for menu in menus:
-                if c.name == menu['name']:
-                    for opt in menu['options']:
-                        if getattr(self, c.name) == opt['value']:
-                            temp[c.name] = opt
+        cols = {}
+        for col in self.__table__.columns:
+            cols[col.name] = getattr(self, col.name)
+            for select in selections:
+                if col.name == select['name']:
+                    for opt in select['options']:
+                        if getattr(self, col.name) == opt['value']:
+                            cols[col.name] = opt
 
-        temp["select-checkbox"] = ""
-        return temp
+        cols["select-checkbox"] = ""
+        return cols
+
+        
 
 
 class User(UserMixin, db.Model):
@@ -122,9 +124,12 @@ def getFields(model):
 
             if str(column[1].type) == "TEXT":
                 col["type"] = "text"
+                col["d_type"] = "text"
             elif str(column[1].type) == "DATETIME":
                 col["type"] = "datetime"
+                col["d_type"] = "datetime"
             elif str(column[1].type) == "INTEGER":
+                col["d_type"] = "integer"
                 if len(column[1].foreign_keys) == 1:
                     col['type'] = "select"
                     fk_model = [m.target_fullname for m in column[1].foreign_keys][0].split(".")[0]

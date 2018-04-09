@@ -18,7 +18,7 @@
     thumb_render = function ( data, meta, row ) {return '<img class="thumbs" src="'+data+'"/>';};
 
     data = JSON.parse("{{data}}");
-    console.log('here');
+    console.log(data);
     columns = JSON.parse("{{columns}}");    
     columnDefs = JSON.parse("{{columnDefs}}");
     for(i=0;i<columns.length;i++){
@@ -31,7 +31,7 @@
     };    
     table = $('#media').DataTable( {
         "dom": 't<"bottom"irp><"clear">',
-        "pageLength": 100,
+        "pageLength": 20,
         data: data,
         "rowId": 'id',
         "columns": columns,        

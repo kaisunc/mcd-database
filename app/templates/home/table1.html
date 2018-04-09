@@ -1,0 +1,306 @@
+{% from "./_formhelpers.html" import render_field %}
+
+{% extends "base.html" %}
+{% block title %}Projects{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/datatables.min.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="static/lib/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css"/> -->
+    <!-- <link rel="stylesheet" type="text/css" href="static/lib/Editor-1.7.2/css/editor.dataTables.min.css"> -->
+    <link rel="stylesheet" type="text/css" href="static/lib/Editor-1.7.2/css/editor.bootstrap4.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Select-1.2.5/css/select/select.dataTables.min.css"> -->
+    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Select-1.2.5/css/select.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="static/lib/dropzone/dropzone.css">
+    <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize-bootstrap4.css">
+    <!-- <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize.css"> -->
+{% endblock %}
+
+{% block js %}
+  <script src="../static/lib/socket.io.js" type="text/javascript"></script>
+  <script src="./static/lib/dropzone/dropzone.js"></script>
+  <script src="./static/lib/selectize/js/standalone/selectize.js"></script>
+  <script src="./static/lib/selectize/js/index.js"></script>
+  <script>
+    Dropzone.autoDiscover = false;
+  </script>
+  <script type="text/javascript" src="static/lib/DataTables/datatables.min.js"></script>
+  <script type="text/javascript" src="static/lib/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+  <script type="text/javascript" src="static/lib/DataTables/Select-1.2.5/js/dataTables.select.min.js"></script>
+  <!-- <script type="text/javascript" src="static/lib/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script> -->
+  <script type="text/javascript" src="static/lib/DataTables/Buttons-1.5.1/js/buttons.bootstrap4.min.js"></script>
+  <script type="text/javascript" src="static/lib/Editor-1.7.2/js/dataTables.editor.min.js"></script>
+  <script type="text/javascript" src="static/lib/Editor-1.7.2/js/editor.bootstrap4.min.js"></script>
+
+{% endblock %}
+
+{% block body %}
+{% include "./home/toolbar.html" %}
+{% include "./home/dragdrop.html" %}
+<table id={{namespace}} class="compact table-striped table-bordered table-hover" cellspacing="0" width="100%">
+
+</table>
+
+{% endblock %}
+
+{% block run_scripts %}
+<script>
+  var thumbs =[];
+  var myDropzone = new Dropzone("#media_drop", {
+    url: "{{ url_for('home.upload')}}",
+    maxFilesize: 10000, //10GB
+    autoProcessQueue: false,
+    thumbnailWidth: 120
+  });
+
+  function dz_clear(){
+    var acceptedFiles = myDropzone.getAcceptedFiles();
+    for(i=0; i < acceptedFiles.length; i++){
+      myDropzone.removeFile(acceptedFiles[i]);
+    };      
+  }
+
+  myDropzone.on("addedfile", function(file) {
+    ext = file.name.split(".");
+  });
+
+  myDropzone.on("thumbnail", function(file, dataUri) {
+    t = [file, dataUri];
+    thumbs.push(t);
+  });
+
+  var editor;
+  var table;
+  var socket;
+  var temp;
+  var hide;
+  var select;
+  var category;
+  var optx;
+
+  var output;
+  var columns;
+  var fields;
+
+  $(document).ready(function() {
+    namespace = "{{namespace}}";
+    socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    render =  function ( data, meta, row ) {return data.label;};
+    thumb_render = function ( data, meta, row ) {return '<img class="thumbs" src="'+data+'"/>';};
+
+    columns = JSON.parse("{{columns}}");    
+    columnDefs = JSON.parse("{{columnDefs}}");
+    fields = JSON.parse("{{fields}}")
+    for(i=0;i<columns.length;i++){
+      if(columns[i]['render'] == 'render'){
+        columns[i]['render'] = render;
+      };
+      if(columns[i]['render'] == 'thumb_render'){
+        columns[i]['render'] = thumb_render;
+      };
+    };    
+
+    table = $('#' + namespace).DataTable( {
+        "dom": '<"top"p>t<"bottom"ip><"clear">',
+        "pageLength": 20,
+        "processing": true,
+        "serverSide": true,
+        "ajax": function (data, callback, settings) {
+                  socket.emit('ajax_socket', {'namespace': 'media', 'settings':data, 'columns': columns, 'fields': fields, 'columnDefs': columnDefs});
+                  socket.on('init_response', function(response){
+                    output = JSON.parse(response);
+                    callback(output);  
+                  })
+                },
+        "rowId": 'id',
+        "columns": columns,        
+        "columnDefs": columnDefs,      
+        "order": [[ 1, "desc" ]],        
+        "select": {
+            "style": 'os',
+            "selector": 'td:first-child'
+        }
+    });      
+
+/*    editor = new $.fn.dataTable.Editor( {
+        data: output,
+        ajax: function ( method, url, d, successCallback, errorCallback ) {
+          var output = { data: [] };
+          for(var k in d.data); //get the id
+
+          if ( d.action === 'create' ) {
+            socket.emit('create', {'namespace': namespace, 'data': d.data[k], 'multiple': 'false'});
+          }
+          else if ( d.action === 'edit' ) {
+            socket.emit('update', {'namespace': namespace, 'id': k, 'data':d.data[k]});
+          }
+          else if ( d.action === 'remove' ) {
+            var k = [];
+            $.each( d.data, function (id) {
+              k.push(id);
+            } );
+            socket.emit('remove', {'namespace': namespace, 'ids': k});
+          }
+          successCallback(output);
+        },
+        table: '#' + namespace,
+        idSrc:  'id',
+        fields: fields
+    } );   
+
+    $('#' + namespace).on( 'click', 'tbody td:not(:first-child)', function (e) {
+      var category = $(this).text();
+
+      editor.inline( this, {
+        drawType: 'page',
+        onBlur: 'submit',
+        onReturn: 'submit',
+        submit: 'changed'
+      } );
+
+      $("div.DTE_Field_InputControl select option:contains('" + category + "')").attr("selected", "selected");
+      $("div.DTE_Field_InputControl select option:contains('" + category + "')").prop("selected", "selected");
+    } ); */
+
+    socket.on('add_response', function(msg) {
+      data = JSON.parse(msg["data"]);
+      category = data['category']['label'];
+      file_id = data['id'];
+      myDropzone.options.url = "upload?category=" + category + "&file_id=" + file_id;
+      console.log(myDropzone.options.url);
+      myDropzone.options.autoProcessQueue = true;
+      myDropzone.processQueue();      
+      table.row.add(data).draw();
+    })
+
+    socket.on('update_response', function(msg) {
+      console.log(msg);
+      d = JSON.parse(msg.data);
+      table.row.add(d).draw('page');
+    })
+
+    socket.on('delete_response', function(msg) {
+      data = JSON.parse(msg['ids']);
+      for(i=0;i<data.length;i++){
+        id = data[i];
+        table.row('#' + parseInt(id)).remove().draw();
+      }
+    })
+
+    $('.table-len').on("click", function(event){
+      var length = $(this).attr('value')
+      table.page.len(length).draw();
+    });
+
+    $('.table-search').on( 'keyup', function () {
+      table.search( this.value ).draw();
+    } );  
+
+    $( ".dt_add" ).bind({
+      click: function() {
+        if(namespace == 'media'){
+          if($("#media_drop").css("display") == "block"){
+            $('#media_drop').css("display", "none");
+            $('#dz-toolbar').css("display", "none");
+            $('#dt-toolbar').css("display", "block");
+            $('#media_wrapper').css("display", "block");
+
+          } else if($("#media_drop").css("display") == "none"){ //open dropzone and dz toolbar
+            $('#media_drop').css("display", "block");
+            $('#dz-toolbar').css("display", "block");
+            $('#dt-toolbar').css("display", "none");
+            $('#media_wrapper').css("display", "none");
+          }
+        } else if(namespace == 'category'){
+          editor.create({
+            buttons: 'Create'
+          });
+        }
+      }
+    });
+    $( ".dt_remove" ).bind({
+      click: function() {
+        editor
+        .title( 'Delete row' )
+        .buttons( 'Confirm delete' )
+        .message( 'Are you sure you want to remove this row?' )
+        .remove(table.rows( { selected: true } ).indexes());
+      }
+    });
+
+    $( ".dt_edit" ).bind({
+      click: function() {
+        editor
+        .title( 'Update Entry')
+        .buttons( 'Update' )
+        .edit(table.rows( { selected: true } ).indexes());
+      }
+    });
+
+    $( ".dz_close" ).bind({
+      click: function() {
+        if($("#media_drop").css("display") == "block"){
+          $('#media_drop').css("display", "none");
+          $('#dz-toolbar').css("display", "none");
+          $('#dt-toolbar').css("display", "flex");
+          $('#media_wrapper').css("display", "block");
+
+        } else if($("#media_drop").css("display") == "none"){ //open dropzone and dz toolbar
+          $('#media_drop').css("display", "block");
+          $('#dz-toolbar').css("display", "block");
+          $('#dt-toolbar').css("display", "none");
+          $('#media_wrapper').css("display", "none");
+        }
+      }
+    });
+
+    $( ".dz_add" ).bind({
+      click: function() {
+        category = parseInt($('#select_category').val());
+        user_id = parseInt($('i.fa-user').attr('user-id'));
+
+        tags = selectize.items.join(",");
+        acceptedFiles = myDropzone.getAcceptedFiles();
+
+        itemlist = [];
+        for(i=0;i<acceptedFiles.length;i++){
+          name = acceptedFiles[i]['name'];
+          for(j=0;j<thumbs.length;j++){
+            if(thumbs[j][0].name == name){
+              thumb = thumbs[j][1];
+            }
+          }
+          data = {"name": name, "category": category, "tags": tags, "assigned": user_id, "thumbnail": thumb};
+          itemlist.push(data);
+        
+        }
+        socket.emit('create', {'namespace': 'media', 'data': itemlist, 'multiple': 'true'} );
+      }
+    });
+
+
+    $( ".dz_clear" ).bind({
+      click: function() {
+        dz_clear();
+      }
+    });
+
+    $(".dropdown-menu a").click(function(){
+      tt = $(this).parent().parent().find('.dropdown-toggle');
+      $(tt).text($(this).text());
+      $(tt).attr("value", $(this).attr("value"));
+    });
+
+    $select = $('#input-tags').selectize({
+      persist: false,
+      createOnBlur: true,
+      create: true
+    });
+
+    selectize = $select[0].selectize;
+  });
+
+</script>
+{% endblock %}
+
+

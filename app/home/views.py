@@ -126,8 +126,9 @@ def test_ajax_socket():
 
     columns = jinja2_escapejs_filter(columns)
     columnDefs = jinja2_escapejs_filter(columnDefs)
+    fields = jinja2_escapejs_filter(fields)
 
-    return render_template('home/test_ajax_socket.html', title='test', namespace=json.dumps(namespace), columns=columns, columnDefs=columnDefs)
+    return render_template('home/table1.html', title='test', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
 
 
 @home.route('/ajax', methods=['GET'])
@@ -157,98 +158,3 @@ def ajax_data():
         dt_data.append(row.as_dict1(fields))
     t = {"data": dt_data}
     return json.dumps(t)
-
-@home.route('/ajax1', methods=['GET'])
-def ajax1():
-    request.args
-    print request.args.get('draw')
-    params = request.args.to_dict()
-    print params
-    # for k in request.args:
-    #     print k
-    #q = Mdoel.query.order_by(Post.timestamp.desc()).paginate(page, app.config['POSTS_PER_PAGE'], False)
-
-    t = {"draw": 1,"recordsTotal": 57,"recordsFiltered": 57,"data": [
-[
-      "Gloria",
-      "Little",
-      "Systems Administrator",
-      "New York",
-      "10th Apr 09",
-      "$237,500"
-    ],
-    [
-      "Haley",
-      "Kennedy",
-      "Senior Marketing Designer",
-      "London",
-      "18th Dec 12",
-      "$313,500"
-    ],
-    [
-      "Hermione",
-      "Butler",
-      "Regional Director",
-      "London",
-      "21st Mar 11",
-      "$356,250"
-    ],
-    [
-      "Herrod",
-      "Chandler",
-      "Sales Assistant",
-      "San Francisco",
-      "6th Aug 12",
-      "$137,500"
-    ],
-    [
-      "Hope",
-      "Fuentes",
-      "Secretary",
-      "San Francisco",
-      "12th Feb 10",
-      "$109,850"
-    ],
-    [
-      "Howard",
-      "Hatfield",
-      "Office Manager",
-      "San Francisco",
-      "16th Dec 08",
-      "$164,500"
-    ],
-    [
-      "Jackson",
-      "Bradshaw",
-      "Director",
-      "New York",
-      "26th Sep 08",
-      "$645,750"
-    ],
-    [
-      "Jena",
-      "Gaines",
-      "Office Manager",
-      "London",
-      "19th Dec 08",
-      "$90,560"
-    ],
-    [
-      "Jenette",
-      "Caldwell",
-      "Development Lead",
-      "New York",
-      "3rd Sep 11",
-      "$345,000"
-    ],
-    [
-      "Jennifer",
-      "Chang",
-      "Regional Director",
-      "Singapore",
-      "14th Nov 10",
-      "$357,650"
-    ]
-    ]}
-    return json.dumps(t)
-

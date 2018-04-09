@@ -16,21 +16,24 @@
 
 <script>
   var output;
+  var columns;
+  var fields;
   $(document).ready(function() {
     socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     render =  function ( data, meta, row ) {return data.label;};
     thumb_render = function ( data, meta, row ) {return '<img class="thumbs" src="'+data+'"/>';};
     /*socket.emit('ajax_socket', {'namespace':''});*/
-    socket.on('init_response', function(msg) {
+/*    socket.on('init_response', function(msg) {
       console.log('responded');
       output = JSON.parse(msg);
-    });    
+    }); */   
 
 
     //data = JSON.parse("{{data}}");
 
     columns = JSON.parse("{{columns}}");    
     columnDefs = JSON.parse("{{columnDefs}}");
+    fields = JSON.parse("{{fields}}")
     for(i=0;i<columns.length;i++){
       if(columns[i]['render'] == 'render'){
         columns[i]['render'] = render;
@@ -41,21 +44,21 @@
     };    
     table = $('#media').DataTable( {
         "dom": 't<"bottom"irp><"clear">',
-        "pageLength": 100,
+        "pageLength": 20,
         "processing": true,
         "serverSide": true,
-/*        "ajax": function (data, callback, settings) {
-                  socket.emit('ajax_socket', {'namespace':settings});
-                  socket.on('init_response', function(data){
-                    output = JSON.parse(data);
+        "ajax": function (data, callback, settings) {
+                  socket.emit('ajax_socket', {'namespace': 'media', 'settings':data, 'columns': columns, 'fields': fields, 'columnDefs': columnDefs});
+                  socket.on('init_response', function(response){
+                    output = JSON.parse(response);
                     callback(output);  
                   })
-                },*/
-        "ajax": function (data, callback, settings) {
+                },
+/*        "ajax": function (data, callback, settings) {
                   socket.emit('ajax_socket', {'namespace':settings}, function(data){
                     callback(output);
                   });
-                },                
+                },   */             
         "rowId": 'id',
         "columns": columns,        
         "columnDefs": columnDefs,      
