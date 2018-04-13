@@ -63,8 +63,9 @@ def media():
 @home.route('/category', methods=['GET'])
 @login_required
 def category():
-    namespace = jinja2_escapejs_filter("category")
-    return render_template('home/table.html', title='Category', namespace=namespace)
+    #namespace = jinja2_escapejs_filter("category")
+    namespace = "category"
+    return render_template('home/table.html', title='Category', namespace=namespace, db_filter="")
 
 @home.route('/user', methods=['GET'])
 @login_required

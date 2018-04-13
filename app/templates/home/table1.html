@@ -161,6 +161,10 @@
       $("div.DTE_Field_InputControl select option:contains('" + category + "')").attr("selected", "selected");
       $("div.DTE_Field_InputControl select option:contains('" + category + "')").prop("selected", "selected");
     } ); */
+/*    $('#media thead th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+    } );*/
 
     socket.on('add_response', function(msg) {
       data = JSON.parse(msg["data"]);

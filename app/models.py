@@ -3,14 +3,10 @@ from flask_login import UserMixin # provides default flask login implementations
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
 from app import db, login_manager
-
+import flask_whooshalchemy
 
 class Datatable():
-    def dt_data_row(self):
-        t = {c.name: getattr(self, c.name) for c in self.__table__.columns}    
-        t["select-checkbox"] = ""
-        return t
-
+    # format row as datatable readable json
     def as_dict1(self, fields):
         selections = []
         for f in fields:
@@ -29,7 +25,7 @@ class Datatable():
         cols["select-checkbox"] = ""
         return cols
 
-        
+
 
 
 class User(UserMixin, db.Model):
@@ -58,6 +54,7 @@ class User(UserMixin, db.Model):
 
 class Media(db.Model, Datatable):
     __tablename__ = 'media'
+    __searchable__ = ['name', 'tags']
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text())
     category = db.Column(db.Integer, db.ForeignKey('category.id'))
@@ -136,7 +133,6 @@ def getFields(model):
                     options = getOptions(fk_model)
                     col['options'] = options
                     columns[-1]['render'] = "render" # keyword render will assign js render function
-
                 else:
                     col["type"] = "text"
 
@@ -145,5 +141,40 @@ def getFields(model):
     columns.insert(0, {"data": "select-checkbox"})
     columnDefs.insert(0, {"width": "3%", "orderable": False, "className": "select-checkbox", "title": "select-checkbox", "targets": 0})
     return fields, columns, columnDefs
+
+def is_reverse(str_direction):
+    ''' Maps the 'desc' and 'asc' words to True or False. '''
+    return True if str_direction == 'desc' else False
+
+def custom_sort(data, fields, sort_column_name, sort_direction):
+    lower = False
+    for f in fields:
+        if f['name'] == sort_column_name:
+            if f['d_type'] == 'integer':
+                lower = False
+            elif f['d_type'] == 'text':
+                lower = True
+
+    if lower == True:
+        data = sorted(data, key=lambda x: x[sort_column_name].lower(), reverse=is_reverse(sort_direction))
+    else:
+        data = sorted(data, key=lambda x: x[sort_column_name], reverse=is_reverse(sort_direction))
+
+    return data    
+
+def custom_paging(data, start, length):
+    # if search returns only one page
+    if len(data) <= length:
+        # display only one page
+        data = data[start:]
+    else:
+        limit = -len(data) + start + length
+        if limit < 0:
+            # display pagination
+            data = data[start:limit]
+        else:
+            # display last page of pagination
+            data = data[start:]
+    return data    
 
     

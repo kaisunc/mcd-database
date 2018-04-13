@@ -1,7 +1,6 @@
 from flask import session, json
 from flask_socketio import emit, join_room, leave_room
 from .. import db, socketio
-
 from ..models import *
 
 
@@ -46,15 +45,20 @@ def ajax_socket(*args):
     columns = [{u'mData': u'select-checkbox', u'data': u'select-checkbox'}, {u'mData': u'id', u'data': u'id'}, {u'mData': u'name', u'data': u'name'}, {u'mData': u'category', u'data': u'category'}, {u'mData': u'timestamp', u'data': u'timestamp'}, {u'mData': u'assigned', u'data': u'assigned'}, {u'mData': u'url', u'data': u'url'}, {u'mData': u'tags', u'data': u'tags'}, {u'mData': u'description', u'data': u'description'}, {u'mData': u'thumbnail', u'data': u'thumbnail'}]
 
     '''
+
     namespace = args[0]['namespace']
     settings = args[0]['settings']
     columns = args[0]['columns']
     columnDefs = args[0]['columnDefs']
     fields = args[0]['fields']
-    lower = False
 
     model = getModel(namespace)
-    items = model.query.all()
+
+    # items = model.query.limit(1000).all()
+    # items = model.query.all()
+    # items = model.query.order_by(model.id.desc()).limit(1000)
+    items = model.query.whoosh_search('test').all()
+    # items = model.query.whoosh_search(settings['search']).order_by(model.id.desc()).limit(1000)
 
     start = int(settings['start'])
     length = int(settings['length'])
@@ -62,40 +66,14 @@ def ajax_socket(*args):
     sort_column_name = columns[sort_column]['data'] # column name
     sort_direction = settings['order'][0]['dir']
 
-    def is_reverse(str_direction):
-        ''' Maps the 'desc' and 'asc' words to True or False. '''
-        return True if str_direction == 'desc' else False
-
     dt_data = []
     for row in items:
         dt_data.append(row.as_dict1(fields))
     recordsTotal = len(dt_data)
 
-    for f in fields:
-        if f['d_type'] == 'integer':
-            lower = False
-        else:
-            lower = True
+    dt_data = custom_sort(dt_data, fields, sort_column_name, sort_direction)
+    dt_data = custom_paging(dt_data, start, length)
 
-    if lower == True:        
-        dt_data = sorted(dt_data, key=lambda x: x['name'].lower(), reverse=is_reverse(sort_direction))
-    else:
-        dt_data = sorted(dt_data, key=lambda x: x['name'], reverse=is_reverse(sort_direction))
-
-
-
-    # if search returns only one page
-    if len(dt_data) <= length:
-        # display only one page
-        dt_data = dt_data[start:]
-    else:
-        limit = -len(dt_data) + start + length
-        if limit < 0:
-            # display pagination
-            dt_data = dt_data[start:limit]
-        else:
-            # display last page of pagination
-            dt_data = dt_data[start:]
 
     t = json.dumps({"draw": settings['draw'], "recordsTotal": recordsTotal, "recordsFiltered": recordsTotal, "data": dt_data})
     emit('init_response', t, broadcast=False)
@@ -103,12 +81,12 @@ def ajax_socket(*args):
 fields = []
 @socketio.on('init')
 def init(*args):
-    namespace = ""
     if len(args) != 0:
         namespace = args[0]["namespace"]
 
     model = getModel(namespace)
-    items = model.query.all()
+
+    items = model.query.limit(10000).all()
     fields, columns, columnDefs = getFields(model)
 
     dt_data = []
@@ -120,7 +98,6 @@ def init(*args):
     columns = json.dumps(columns) #
     fields = json.dumps(fields) # input fields and type
     dt_data = json.dumps(dt_data)
-
     emit('init_response', {'data': dt_data, 'columns': columns, 'columnDefs': columnDefs, 'fields': fields}, broadcast=False)
 
 @socketio.on('create')

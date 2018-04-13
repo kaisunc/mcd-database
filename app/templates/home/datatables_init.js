@@ -23,7 +23,7 @@
       
 
 
-/*      editor = new $.fn.dataTable.Editor( {
+      editor = new $.fn.dataTable.Editor( {
           data: data,
           ajax: function ( method, url, d, successCallback, errorCallback ) {
             var output = { data: [] };
@@ -47,7 +47,7 @@
           table: '#' + namespace,
           idSrc:  'id',
           fields: fields
-      } ); */  
+      } );   
 
       $('#' + namespace).on( 'click', 'tbody td:not(:first-child)', function (e) {
         var category = $(this).text();
