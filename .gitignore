@@ -1,2 +1,4 @@
 
 migrations/
+
+whoosh_index/

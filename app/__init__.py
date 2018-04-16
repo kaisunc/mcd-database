@@ -4,7 +4,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-import flask_whooshalchemy as wa
+import flask_whooshalchemy
 from flask_socketio import SocketIO, emit
 
 
@@ -18,8 +18,9 @@ def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(app_config['development'])
     app.config.from_pyfile(config_name)
+    app.config['WHOOSH_BASE'] = "whoosh_index"
     from models import Media
-    wa.whoosh_index(app, Media)
+    flask_whooshalchemy.whoosh_index(app, Media)
 
     db.init_app(app)
     login_manager.init_app(app)
