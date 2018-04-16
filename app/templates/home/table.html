@@ -23,6 +23,9 @@
   <script src="./static/lib/selectize/js/index.js"></script>
   <script>
     Dropzone.autoDiscover = false;
+    var columns = JSON.parse("{{columns}}");    
+    var columnDefs = JSON.parse("{{columnDefs}}");
+    var fields = JSON.parse("{{fields}}");    
   </script>
   <script type="text/javascript" src="static/lib/DataTables/datatables.min.js"></script>
   <script type="text/javascript" src="static/lib/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
@@ -35,6 +38,7 @@
 {% endblock %}
 
 {% block body %}
+
 {% include "./home/toolbar.html" %}
 {% include "./home/dragdrop.html" %}
 <table id={{namespace}} class="compact table-striped table-bordered table-hover" cellspacing="0" width="100%">
@@ -61,18 +65,24 @@
   }
 
   myDropzone.on("addedfile", function(file) {
-    ext = file.name.split(".");
+    image_ext = ["jpg", "jpeg", "bmp", "tif", "tiff", "tga", "png", "psd", "gif", "svg", "ai", "eps"];
+    video_ext = ["mp4", "avi", "wmv", "mov", "qt", "mkv", "ts", "webm", "flv", "rmvb"];
+    audio_ext = ["mp3", "wmv", "pcm", "aiff", "aac", "ogg", "wma", "flac", "alac"];
+    font_ext = ["ttf", "otf", "eot", "woff", "svg", "woff2"];
+    file_ext = ["exe", "zip", "rar"];
+
+    ext = file.name.split('.').pop()
+    if(image_ext.indexOf(ext) > -1){
+      $("#select_category").text("images");
+      $("#select_category").attr("value", 3);
+    }
+    console.log(ext);
   });
 
   myDropzone.on("thumbnail", function(file, dataUri) {
     t = [file, dataUri];
     thumbs.push(t);
   });
-
-/*  myDropzone.on("queuecomplete", function(file) {
-    myDropzone.options.autoProcessQueue = false;     
-    dz_clear(); 
-  });*/
 
   var editor;
   var table;
@@ -83,11 +93,129 @@
   var category;
   var optx;
 
-  $(document).ready(function() {
-    //namespace = JSON.parse("{{namespace}}");
-    namespace = "{{namespace}}";
+  var output;
+  var columns;
+  var fields;
 
-    {% include "./home/datatables_init.js" %}
+  $(document).ready(function() {
+    namespace = "{{namespace}}";
+    socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    render =  function ( data, meta, row ) {return data.label;};
+    thumb_render = function ( data, meta, row ) {return '<img class="thumbs" src="'+data+'"/>';};
+
+/*    columns = JSON.parse("{{columns}}");    
+    columnDefs = JSON.parse("{{columnDefs}}");
+    fields = JSON.parse("{{fields}}")*/
+    for(i=0;i<columns.length;i++){
+      if(columns[i]['render'] == 'render'){
+        columns[i]['render'] = render;
+      };
+      if(columns[i]['render'] == 'thumb_render'){
+        columns[i]['render'] = thumb_render;
+      };
+    };    
+
+    table = $('#' + namespace).DataTable( {
+        "dom": '<"top"p>t<"bottom"ip><"clear">',
+        "pageLength": 20,
+        "processing": true,
+        "serverSide": true,
+        "ajax": function (data, callback, settings) {
+                  socket.emit('ajax_socket', {'namespace': namespace, 'settings':data, 'columns': columns, 'fields': fields, 'columnDefs': columnDefs});
+                  socket.on('init_response', function(response){
+                    output = JSON.parse(response);
+                    callback(output);  
+                  })
+                },
+        "rowId": 'id',
+        "columns": columns,        
+        "columnDefs": columnDefs,      
+        "order": [[ 1, "desc" ]],        
+        "select": {
+            "style": 'os',
+            "selector": 'td:first-child'
+        }
+    });      
+
+    editor = new $.fn.dataTable.Editor( {
+        data: output,
+        ajax: function ( method, url, d, successCallback, errorCallback ) {
+          var output = { data: [] };
+          for(var k in d.data); //get the id
+
+          if ( d.action === 'create' ) {
+            socket.emit('create', {'namespace': namespace, 'data': d.data[k], 'multiple': 'false'});
+          }
+          else if ( d.action === 'edit' ) {
+            socket.emit('update', {'namespace': namespace, 'id': k, 'data':d.data[k]});
+          }
+          else if ( d.action === 'remove' ) {
+            var k = [];
+            $.each( d.data, function (id) {
+              k.push(id);
+            } );
+            socket.emit('remove', {'namespace': namespace, 'ids': k});
+          }
+          successCallback(output);
+        },
+        table: '#' + namespace,
+        idSrc:  'id',
+        fields: fields
+    } );   
+
+    $('#' + namespace).on( 'click', 'tbody td:not(:first-child)', function (e) {
+      var category = $(this).text();
+
+      editor.inline( this, {
+        drawType: 'page',
+        onBlur: 'submit',
+        onReturn: 'submit',
+        submit: 'changed'
+      } );
+
+      $("div.DTE_Field_InputControl select option:contains('" + category + "')").attr("selected", "selected");
+      $("div.DTE_Field_InputControl select option:contains('" + category + "')").prop("selected", "selected");
+    } ); 
+/*    $('#media thead th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+    } );*/
+
+    // upload using request AFTER db inserts data
+    socket.on('add_response', function(msg) {
+      data = JSON.parse(msg["data"]);
+      category = data['category']['label'];
+      file_id = data['id'];
+      myDropzone.options.url = "upload?category=" + category + "&file_id=" + file_id;
+      console.log(myDropzone.options.url);
+      myDropzone.options.autoProcessQueue = true;
+      myDropzone.processQueue();      
+      table.row.add(data).draw();
+    })
+
+    socket.on('update_response', function(msg) {
+      console.log(msg);
+      d = JSON.parse(msg.data);
+      table.row.add(d).draw('page');
+    })
+
+    socket.on('delete_response', function(msg) {
+      data = JSON.parse(msg['ids']);
+      for(i=0;i<data.length;i++){
+        id = data[i];
+        table.row('#' + parseInt(id)).remove().draw();
+      }
+    })
+
+    $('.table-len').on("click", function(event){
+      var length = $(this).attr('value')
+      table.page.len(length).draw();
+    });
+
+    $('.table-search').on( 'keyup', function () {
+      table.search( this.value ).draw();
+    } );  
+
     $( ".dt_add" ).bind({
       click: function() {
         if(namespace == 'media'){
@@ -148,8 +276,6 @@
 
     $( ".dz_add" ).bind({
       click: function() {
-        //myDropzone.options.autoProcessQueue = true;
-        //myDropzone.processQueue();
         category = parseInt($('#select_category').val());
         user_id = parseInt($('i.fa-user').attr('user-id'));
 
@@ -162,6 +288,8 @@
           for(j=0;j<thumbs.length;j++){
             if(thumbs[j][0].name == name){
               thumb = thumbs[j][1];
+            } else {
+              thumb = '';
             }
           }
           data = {"name": name, "category": category, "tags": tags, "assigned": user_id, "thumbnail": thumb};
@@ -178,12 +306,6 @@
         dz_clear();
       }
     });
-
-/*    $(".nav-item").removeClass("active");
-    $(".nav-item[namespace='" + namespace + "']").addClass("active");
-    if(namespace == "status" || namespace == "task" || namespace == "pipeline" || namespace == "process"){
-      $(".nav-item.dropdown").addClass("active");
-    }*/
 
     $(".dropdown-menu a").click(function(){
       tt = $(this).parent().parent().find('.dropdown-toggle');

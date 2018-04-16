@@ -10,8 +10,9 @@
 	      Fonts
 	    </button>
 	    <div class="dropdown-menu" aria-labelledby="select_category">
-		    {% for d in menu %}
-		      <a class="dropdown-item table-len" href="javascript:void(0);" value="{{d.id}}">{{d.name}}</a>
+
+		    {% for d in ff[1].options %}
+		      <a class="dropdown-item table-len" href="javascript:void(0);" value="{{d.value}}">{{d.label}}</a>
 		    {% endfor %}
 	    </div>
     </div>
