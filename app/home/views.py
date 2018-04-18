@@ -53,7 +53,7 @@ def media():
     columns = jinja2_escapejs_filter(columns)
     columnDefs = jinja2_escapejs_filter(columnDefs)
     fields = jinja2_escapejs_filter(fields)
-    
+    print ff
     return render_template('home/table.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff)
 
 
@@ -119,3 +119,7 @@ def download(category, file_id, filename):
     base  = "C:/Users/julio/Dropbox/Projects/mcd_database/assets"
     directory = "%s/%s/%s" % (base, category, str(file_id))
     return send_from_directory(directory=directory, filename=filename)
+
+@home.route('/test')
+def test():
+    return 'ok'

@@ -11,7 +11,7 @@
 	    </button>
 	    <div class="dropdown-menu" aria-labelledby="select_category">
 	    	{% if ff %}
-		    	{% for d in ff[1].options %}
+		    	{% for d in ff[0].options %}
 		      		<a class="dropdown-item table-len" href="javascript:void(0);" value="{{d.value}}">{{d.label}}</a>
 	    		{% endfor %}
     		{% endif %}

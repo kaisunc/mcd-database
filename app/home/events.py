@@ -53,17 +53,12 @@ def ajax_socket(*args):
     columnDefs = args[0]['columnDefs']
     fields = args[0]['fields']
     search = settings['search']['value']
-    print search
     model = getModel(namespace)
-
-    # items = model.query.limit(1000).all()
-    #items = model.query.all()
 
     if search == "":
         items = model.query.order_by(model.id.desc()).limit(1000)
     else:
         items = model.query.whoosh_search(search).all()
-    # items = model.query.whoosh_search(settings['search']).order_by(model.id.desc()).limit(1000)
 
     start = int(settings['start'])
     length = int(settings['length'])

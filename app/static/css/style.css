@@ -242,3 +242,10 @@ body, html {
 .thumbs{
     width: 60px;
 }
+
+.thumbnail{
+    width: 60px;   
+}
+
+div.selectize-dropdown {
+  z-index: 2001; }

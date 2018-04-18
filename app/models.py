@@ -96,12 +96,16 @@ def getOptions(namespace):
         options.append(data)
     return options    
 
+# this MAY need to be customized for each model, it might not be possible to adapt all models.
+# write a js script to modify each model and jinja insert to appropriate page
 def getFields(model):
     fields = []
     columns = []
     columnDefs = []
     idx = 0
     ignore = ["id", "timestamp"]
+
+    # customize dt columns here, either automate or static define 
     for column in model.__table__.columns.items():
         idx = idx + 1
         columns.append({"data": column[0]})
@@ -112,15 +116,20 @@ def getFields(model):
             columns[-1]['render'] = "thumb_render"
 
         col ={}
-        if column[0] == "id": # no form input for id
+        noedit_fields = ["id", "thumbnail", "timestampe", "name"]
+        if column[0] in noedit_fields: # no form input for id
             pass
         else:
             col['name'] = column[0]
             col['label'] = column[0].title()
 
             if str(column[1].type) == "TEXT":
-                col["type"] = "text"
-                col["d_type"] = "text"
+                if column[0] == "tags":
+                    col["type"] = "selectize"
+                    col["d_type"] = "selectize"    
+                else:
+                    col["type"] = "text"
+                    col["d_type"] = "text"
             elif str(column[1].type) == "DATETIME":
                 col["type"] = "datetime"
                 col["d_type"] = "datetime"

@@ -10,14 +10,13 @@
     <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="static/lib/dropzone/dropzone.css">
     <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize-bootstrap4.css">
-    <!-- <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize.css"> -->
+    <link rel="stylesheet" type="text/css" href="static/lib/selectize/css/selectize.css">
 {% endblock %}
 
 {% block js %}
   <script src="../static/lib/socket.io.js" type="text/javascript"></script>
   <script src="./static/lib/dropzone/dropzone.js"></script>
   <script src="./static/lib/selectize/js/standalone/selectize.js"></script>
-  <script src="./static/lib/selectize/js/index.js"></script>
 
   <script>
     Dropzone.autoDiscover = false;
@@ -28,10 +27,11 @@
   <script type="text/javascript" src="static/lib/DataTables/datatables.min.js"></script>
   <script type="text/javascript" src="static/lib/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
   <script type="text/javascript" src="static/lib/DataTables/Select-1.2.5/js/dataTables.select.min.js"></script>
-  <!-- <script type="text/javascript" src="static/lib/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script> -->
+  <script type="text/javascript" src="static/lib/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js"></script>
   <script type="text/javascript" src="static/lib/DataTables/Buttons-1.5.1/js/buttons.bootstrap4.min.js"></script>
   <script type="text/javascript" src="static/lib/Editor-1.7.2/js/dataTables.editor.min.js"></script>
   <script type="text/javascript" src="static/lib/Editor-1.7.2/js/editor.bootstrap4.min.js"></script>
+  <script type="text/javascript" src="static/js/dt_selectize.js"></script>
 
 {% endblock %}
 
@@ -100,12 +100,8 @@
   var editor;
   var table;
   var socket;
-  var temp;
-  var hide;
   var select;
   var category;
-  var optx;
-
   var output;
   var columns;
   var fields;
@@ -119,12 +115,8 @@
       var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
 
       return '<a href="' + url +'" download><img class="thumbs" src="'+data+'"/></a>';
-      //return '<img class="thumbs" src="'+data+'"/>';
     };
 
-/*    columns = JSON.parse("{{columns}}");    
-    columnDefs = JSON.parse("{{columnDefs}}");
-    fields = JSON.parse("{{fields}}")*/
     for(i=0;i<columns.length;i++){
       if(columns[i]['render'] == 'render'){
         columns[i]['render'] = render;
@@ -329,26 +321,15 @@
       $(tt).attr("value", $(this).attr("value"));
     });
 
-    $select = $('#input-tags').selectize({
+/*    $select = $('#input-tags').selectize({
       persist: false,
       createOnBlur: true,
       create: true
     });
 
-    selectize = $select[0].selectize;
+    selectize = $select[0].selectize;*/
   });
 
 </script>
 {% endblock %}
 
-
-    $select = $('tr td.tags').selectize({
-      persist: false,
-      createOnBlur: true,
-      create: function(input) {
-        console.log(input);
-      }
-    });
-    for(k=0;k<$select.length;k++){
-      selectize = $select[k].selectize; 
-    }
