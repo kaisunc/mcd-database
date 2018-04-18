@@ -1,5 +1,5 @@
 import os
-from flask import flash, request, redirect, render_template, url_for, json
+from flask import flash, request, redirect, render_template, url_for, json, send_from_directory
 from flask_login import login_required
 from werkzeug import secure_filename
 import jinja2
@@ -49,7 +49,7 @@ def media():
     model = getModel(namespace)
     items = model.query.all()
     fields, columns, columnDefs = getFields(model)
-    ff = fields
+    ff = fields # for dropzone dropdown menu selection
     columns = jinja2_escapejs_filter(columns)
     columnDefs = jinja2_escapejs_filter(columnDefs)
     fields = jinja2_escapejs_filter(fields)
@@ -79,24 +79,8 @@ def user():
     namespace = jinja2_escapejs_filter("user")
     return render_template('home/table.html', title='Users', namespace=namespace)
 
-
-@home.route('/upload', methods=['POST'])
-def upload():
-    if request.method == 'POST':
-        base_path = "C:/Users/julio/source"
-        f = request.files['file']
-        print request
-        category  = request.args.get('category')
-        file_id = request.args.get('file_id')
-        folder_path = "%s/%s/%s" % (base_path, category, file_id)
-
-        if os.path.isdir(folder_path) is False:
-            os.makedirs(folder_path)
-        file_path = "%s/%s" % (folder_path, f.filename)            
-        f.save(file_path)
-        return "ok"
-
 @home.route('/ajax', methods=['GET'])
+@login_required
 def ajax():
     params = request.args.to_dict()
     print params
@@ -111,3 +95,27 @@ def ajax():
         dt_data.append(row.as_dict1(fields))
     t = {"data": dt_data}
     return json.dumps(t)
+
+@home.route('/upload', methods=['POST'])
+@login_required
+def upload():
+    if request.method == 'POST':
+        base_path = "C:/Users/julio/Dropbox/Projects/mcd_database/assets"
+        # upload = "C:/Users/julio/Dropbox/Projects/mcd_database/app/assets/fonts"
+        f = request.files['file']
+        category  = request.args.get('category')
+        file_id = int(request.args.get('file_id'))
+        folder_path = "%s/%s/%08d" % (base_path, category, file_id)
+
+        if os.path.isdir(folder_path) is False:
+            os.makedirs(folder_path)
+        file_path = "%s/%s" % (folder_path, f.filename)            
+        f.save(file_path)
+        return "ok"
+
+@home.route('/download/<category>/<file_id>/<string:filename>', methods=['GET', 'POST'])
+@login_required
+def download(category, file_id, filename):
+    base  = "C:/Users/julio/Dropbox/Projects/mcd_database/assets"
+    directory = "%s/%s/%s" % (base, category, str(file_id))
+    return send_from_directory(directory=directory, filename=filename)

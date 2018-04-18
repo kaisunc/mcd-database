@@ -58,7 +58,7 @@ def ajax_socket(*args):
 
     # items = model.query.limit(1000).all()
     #items = model.query.all()
-    
+
     if search == "":
         items = model.query.order_by(model.id.desc()).limit(1000)
     else:
@@ -116,16 +116,31 @@ def create(*args):
             multiple = args[0]["multiple"]
         except:
             pass
+    # ---
+    # base_path = "C:/Users/julio/source"
+
+    # category  = request.args.get('category')
+    # file_id = request.args.get('file_id')
+    # folder_path = "%s/%s/%s" % (base_path, category, file_id)
+
+    # if os.path.isdir(folder_path) is False:
+    #     os.makedirs(folder_path)
+    # file_path = "%s/%s" % (folder_path, f.filename)
+
+    #----------
+    def addRow(d):
+        update = model()
+        for k,v in d.iteritems():
+            setattr(update, k, v)
+        db.session.add(update)
+        db.session.flush()
+        return update
 
     model = getModel(namespace)
-    fields, columns, columnDefs = getFields(model)    
+    fields, columns, columnDefs = getFields(model)
     if multiple == 'true':
         for d in data:
-            update = model()
-            for k,v in d.iteritems():
-                setattr(update, k, v)
-            db.session.add(update)
-            db.session.flush()
+            update = addRow(d)
             pids.append(update.id)
 
         db.session.commit()
@@ -137,14 +152,7 @@ def create(*args):
             emit('add_response', {'data': dt_data}, broadcast=True)
 
     else:
-        update = model()
-
-        for k,v in data.iteritems():
-            setattr(update, k, v)
-
-
-        db.session.add(update)
-        db.session.flush()
+        update = addRow(data)
         pid = update.id
 
         db.session.commit()

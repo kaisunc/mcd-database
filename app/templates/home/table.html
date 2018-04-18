@@ -5,10 +5,7 @@
 
 {% block css %}
     <link rel="stylesheet" type="text/css" href="static/lib/DataTables/datatables.min.css"/>
-    <!-- <link rel="stylesheet" type="text/css" href="static/lib/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css"/> -->
-    <!-- <link rel="stylesheet" type="text/css" href="static/lib/Editor-1.7.2/css/editor.dataTables.min.css"> -->
     <link rel="stylesheet" type="text/css" href="static/lib/Editor-1.7.2/css/editor.bootstrap4.min.css">
-    <!-- <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Select-1.2.5/css/select/select.dataTables.min.css"> -->
     <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Select-1.2.5/css/select.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="static/lib/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="static/lib/dropzone/dropzone.css">
@@ -21,6 +18,7 @@
   <script src="./static/lib/dropzone/dropzone.js"></script>
   <script src="./static/lib/selectize/js/standalone/selectize.js"></script>
   <script src="./static/lib/selectize/js/index.js"></script>
+
   <script>
     Dropzone.autoDiscover = false;
     var columns = JSON.parse("{{columns}}");    
@@ -41,6 +39,7 @@
 
 {% include "./home/toolbar.html" %}
 {% include "./home/dragdrop.html" %}
+
 <table id={{namespace}} class="compact table-striped table-bordered table-hover" cellspacing="0" width="100%">
 
 </table>
@@ -75,8 +74,22 @@
     if(image_ext.indexOf(ext) > -1){
       $("#select_category").text("images");
       $("#select_category").attr("value", 3);
+    } else if(audio_ext.indexOf(ext) > -1){
+      $("#select_category").text("sfx");
+      $("#select_category").attr("value", 7);
+    } else if(video_ext.indexOf(ext) > -1){
+      $("#select_category").text("videos");
+      $("#select_category").attr("value", 15);
+    } else if(file_ext.indexOf(ext) > -1){
+      $("#select_category").text("software");
+      $("#select_category").attr("value", 2);
+    } else if(font_ext.indexOf(ext) > -1){
+      $("#select_category").text("fonts");
+      $("#select_category").attr("value", 1);
+    } else {
+      $("#select_category").text("software");
+      $("#select_category").attr("value", 2);      
     }
-    console.log(ext);
   });
 
   myDropzone.on("thumbnail", function(file, dataUri) {
@@ -101,7 +114,13 @@
     namespace = "{{namespace}}";
     socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     render =  function ( data, meta, row ) {return data.label;};
-    thumb_render = function ( data, meta, row ) {return '<img class="thumbs" src="'+data+'"/>';};
+    thumb_render = function ( data, meta, row ) {
+      var id = ("00000000" + row['id']).substr(-8,8);
+      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
+
+      return '<a href="' + url +'" download><img class="thumbs" src="'+data+'"/></a>';
+      //return '<img class="thumbs" src="'+data+'"/>';
+    };
 
 /*    columns = JSON.parse("{{columns}}");    
     columnDefs = JSON.parse("{{columnDefs}}");
@@ -176,25 +195,24 @@
       $("div.DTE_Field_InputControl select option:contains('" + category + "')").attr("selected", "selected");
       $("div.DTE_Field_InputControl select option:contains('" + category + "')").prop("selected", "selected");
     } ); 
-/*    $('#media thead th').each( function () {
-        var title = $(this).text();
-        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
-    } );*/
 
     // upload using request AFTER db inserts data
     socket.on('add_response', function(msg) {
       data = JSON.parse(msg["data"]);
       category = data['category']['label'];
       file_id = data['id'];
+      file_name = data['name'];
+
       myDropzone.options.url = "upload?category=" + category + "&file_id=" + file_id;
-      console.log(myDropzone.options.url);
-      myDropzone.options.autoProcessQueue = true;
-      myDropzone.processQueue();      
-      table.row.add(data).draw();
+      for(i=0;i<myDropzone.files.length;i++){
+        if(myDropzone.files[i].name == file_name){
+          myDropzone.processFile(myDropzone.files[i]);      
+          table.row.add(data).draw();
+        }
+      }
     })
 
     socket.on('update_response', function(msg) {
-      console.log(msg);
       d = JSON.parse(msg.data);
       table.row.add(d).draw('page');
     })
@@ -288,13 +306,11 @@
           for(j=0;j<thumbs.length;j++){
             if(thumbs[j][0].name == name){
               thumb = thumbs[j][1];
+              data = {"name": name, "category": category, "tags": tags, "assigned": user_id, "thumbnail": thumb};
+              itemlist.push(data);
             } else {
-              thumb = '';
             }
           }
-          data = {"name": name, "category": category, "tags": tags, "assigned": user_id, "thumbnail": thumb};
-          itemlist.push(data);
-        
         }
         socket.emit('create', {'namespace': 'media', 'data': itemlist, 'multiple': 'true'} );
       }
@@ -326,3 +342,13 @@
 {% endblock %}
 
 
+    $select = $('tr td.tags').selectize({
+      persist: false,
+      createOnBlur: true,
+      create: function(input) {
+        console.log(input);
+      }
+    });
+    for(k=0;k<$select.length;k++){
+      selectize = $select[k].selectize; 
+    }

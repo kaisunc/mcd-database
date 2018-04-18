@@ -3,7 +3,6 @@ from flask_login import UserMixin # provides default flask login implementations
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
 from app import db, login_manager
-import flask_whooshalchemy
 
 class Datatable():
     # format row as datatable readable json
@@ -60,7 +59,7 @@ class Media(db.Model, Datatable):
     category = db.Column(db.Integer, db.ForeignKey('category.id'))
     timestamp = db.Column(db.DateTime(), server_default=db.func.now(), server_onupdate=db.func.now())
     assigned = db.Column(db.Integer, db.ForeignKey('user.id'))
-    url = db.Column(db.Text())
+    #url = db.Column(db.Text())
     tags = db.Column(db.Text())
     description = db.Column(db.Text())
     thumbnail = db.Column(db.Text())
