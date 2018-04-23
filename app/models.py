@@ -54,6 +54,7 @@ class User(UserMixin, db.Model):
 class Media(db.Model, Datatable):
     __tablename__ = 'media'
     __searchable__ = ['name', 'tags']
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text())
     category = db.Column(db.Integer, db.ForeignKey('category.id'))
@@ -125,8 +126,8 @@ def getFields(model):
 
             if str(column[1].type) == "TEXT":
                 if column[0] == "tags":
-                    col["type"] = "selectize"
-                    col["d_type"] = "selectize"    
+                    col["type"] = "text"
+                    col["d_type"] = "text"    
                 else:
                     col["type"] = "text"
                     col["d_type"] = "text"

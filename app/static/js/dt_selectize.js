@@ -48,7 +48,6 @@ _fieldTypes.selectize = {
             delimiter: ',',
             persist: true,
             create: function(input) {
-                console.log(input);
                 return {
                     value: input,
                     text: input
@@ -58,9 +57,11 @@ _fieldTypes.selectize = {
             labelField: 'label',
             searchField: 'label',
             dropdownParent: 'body'*/
-        }, conf.opts ) );
- 
+        }, [{}] ) );
+        
         conf._selectize = conf._input[0].selectize;
+        //conf._selectize.setTextboxValue("this, is, bollocks");
+        conf._selectize.createItem("newitem", true)
 /*        conf.options = [
           {label:'aaaa', value:'aaaa'},
           {label:'bbbb', value:'bbbb'},
