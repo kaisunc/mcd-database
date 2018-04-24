@@ -4,7 +4,7 @@
 <head>
     <title>{{ title }} | MCD Database</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap-4.0.0-beta.3/dist/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="static/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='lib/font-awesome-4.7.0/css/font-awesome.min.css') }}">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="shortcut icon" >
     {% block css %}{% endblock %}
@@ -19,7 +19,16 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
         {% if current_user.is_authenticated %}
-          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media') }}">Media</a></li>
+          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='addons') }}">Addons</a></li>
+          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='effects') }}">Effects</a></li>
+          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='fonts') }}">Fonts</a></li>
+          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='images') }}">Images</a></li>
+          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='music') }}">Music</a></li>
+          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='sfx') }}">SFX</a></li>
+          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='software') }}">Software</a></li>
+          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='video') }}">Videos</a></li>
+
+          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='upload') }}">Upload</a></li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
@@ -27,12 +36,12 @@
             </div>
           </li>
 
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout',category_filter='addons') }}">Logout</a></li>
           <li class="nav-item"><a class="nav-link"> <i class="fa fa-user" aria-hidden="true" style="color: #992222" user-id="{{current_user.id}}"></i>    {{ current_user.name }}!</a></li>
         {% else %}
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('home.homepage') }}">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('home.homepage',category_filter='addons') }}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register',category_filter='addons') }}">Register</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login',category_filter='addons') }}">Login</a></li>
         {% endif %}
       </ul>
     </div>
@@ -44,7 +53,7 @@
     <div class="push"></div>
   </div>
   <footer class="container">
-    <p>© Julio 2017</p>
+<!--     <p>© Julio 2017</p> -->
   </footer>    
   {% block run_scripts %}{% endblock %}
 </body>

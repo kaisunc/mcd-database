@@ -198,11 +198,11 @@ body, html {
 }
 
 #dz-toolbar {
-    display: none;
+    display: block;
 }
 
 #media_drop {
-    display: none;
+    display: block;
 }
 
 .test {

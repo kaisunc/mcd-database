@@ -46,19 +46,25 @@ def ajax_socket(*args):
 
     '''
 
-
     namespace = args[0]['namespace']
     settings = args[0]['settings']
     columns = args[0]['columns']
     columnDefs = args[0]['columnDefs']
+    category_filter = args[0]['category_filter']
     fields = args[0]['fields']
     search = settings['search']['value']
     model = getModel(namespace)
 
-    if search == "":
-        items = model.query.order_by(model.id.desc()).limit(1000)
+    if category_filter != 'upload':
+        if search == "":
+            items = model.query.filter_by(category=category_filter).order_by(model.id.desc()).limit(1000)
+        else:
+            items = model.query.filter_by(category=category_filter).whoosh_search(search).all()
     else:
-        items = model.query.whoosh_search(search).all()
+        if search == "":
+            items = model.query.order_by(model.id.desc()).limit(1000)
+        else:
+            items = model.query.whoosh_search(search).all()        
 
     start = int(settings['start'])
     length = int(settings['length'])

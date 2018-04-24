@@ -42,20 +42,21 @@ def jinja2_escapejs_filter(value):
 def homepage():
     return render_template('home/index.html', title="Welcome")
 
-@home.route('/media', methods=['GET'])    
+@home.route('/media/<category_filter>', methods=['GET'])    
 @login_required
-def media():
+def media(category_filter):
     namespace = "media"
     model = getModel(namespace)
-    items = model.query.all()
     fields, columns, columnDefs = getFields(model)
     ff = fields # for dropzone dropdown menu selection
     columns = jinja2_escapejs_filter(columns)
     columnDefs = jinja2_escapejs_filter(columnDefs)
     fields = jinja2_escapejs_filter(fields)
-    print ff
-    return render_template('home/table.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff)
 
+    if category_filter == 'upload':
+        return render_template('home/upload.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff, category_filter=category_filter)
+    else:
+        return render_template('home/media.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff, category_filter=category_filter)
 
 @home.route('/category', methods=['GET'])
 @login_required
@@ -68,7 +69,7 @@ def category():
     columns = jinja2_escapejs_filter(columns)
     columnDefs = jinja2_escapejs_filter(columnDefs)
     fields = jinja2_escapejs_filter(fields)
-    return render_template('home/table.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
+    return render_template('home/upload.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
 
     #namespace = "category"
     #return render_template('home/table.html', title='Category', namespace=namespace, db_filter="")
