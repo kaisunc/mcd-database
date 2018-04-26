@@ -52,8 +52,13 @@ def media(category_filter):
                 c[1]['render'] = "thumb_render"    
             elif category_filter == 'sfx' or category_filter == 'music':
                 c[1]['render'] = "sound_render"    
+            elif category_filter == "videos" or category_filter == "tutorial":
+                c[1]['render'] = "video_render"    
+            elif category_filter == "fonts":
+                c[1]['render'] = "font_render"                    
             else:
                 c[1]['render'] = "thumb_render"
+
 
     if category_filter == 'upload':
         return render_template('home/upload.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff, category_filter=category_filter)

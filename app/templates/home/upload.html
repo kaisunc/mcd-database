@@ -24,9 +24,10 @@
   var thumbs =[];
   var myDropzone = new Dropzone("#media_drop", {
     url: "upload",
-    maxFilesize: 10000, //10GB
+    maxFilesize: 100000, //10GB
     autoProcessQueue: false,
-    thumbnailWidth: 120
+    thumbnailWidth: 120,
+    timeout: 3600000 //60mins
   });
 
   function dz_clear(){
@@ -44,8 +45,7 @@
     file_ext = ["exe", "zip", "rar"];
     code_ext = ["js", "jsx", "py", "cpp", "html", "css", "jsx", "xml", "json", "csv", "bat", "sh"]
 
-
-    ext = file.name.split('.').pop()
+    ext = file.name.split('.').pop().toLowerCase();
     if(image_ext.indexOf(ext) > -1){
       $("#select_category").text("images");
       $("#select_category").attr("value", 3);

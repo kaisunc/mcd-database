@@ -86,7 +86,16 @@
       var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];      
       return "<audio controls><source src=" + url + "></audio>";
     };
-
+    video_render = function (data, meta, row) {
+      var id = ("00000000" + row['id']).substr(-8,8);
+      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";      
+      return "<video preload='metadata' src=" + url + " controls></video>"
+    };
+    font_render = function (data, meta, row) {
+      var id = ("00000000" + row['id']).substr(-8,8);
+      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";      
+      return "<div style='font-family: test_1234'>The quick brown fox</div>"
+    };   
 
 
     //column with render or mrender
@@ -100,19 +109,29 @@
       else if(columns[i]['render'] == 'sound_render'){
         columns[i]['render'] = sound_render;
       }
+      else if(columns[i]['render'] == 'video_render'){
+        columns[i]['render'] = video_render;
+      }      
+      else if(columns[i]['render'] == 'font_render'){
+        columns[i]['render'] = font_render;
+      }       
     };    
 
     table = $('#' + namespace).DataTable( {
         "dom": "<'row'<'col-sm-8 top-toolbar'><'col-sm-4'p>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-4'i><'col-sm-8'p>>",
-        "pageLength": 50,
+        "pageLength": 10,
         "processing": true,
         "serverSide": true,
         "deferRender": true,
         "ajax": function (data, callback, settings) {
                   socket.emit('ajax_socket', {'namespace': namespace, 'settings':data, 'columns': columns, 'fields': fields, 'columnDefs': columnDefs, 'category_filter': category_filter});
                   socket.on('init_response', function(response){
-                    output = JSON.parse(response);
-                    callback(output);  
+                    output = JSON.parse(response);    
+                    if(category_filter == 1){
+                      console.log(output['data'][0]['name']);
+
+                    }
+                    callback(output);                      
                   })
                 },
         "rowId": 'id',
@@ -125,7 +144,7 @@
         }
     });      
 
-/*    editor = new $.fn.dataTable.Editor( {
+    editor = new $.fn.dataTable.Editor( {
         data: output,
         ajax: function ( method, url, d, successCallback, errorCallback ) {
           var output = { data: [] };
@@ -163,7 +182,7 @@
 
       $("div.DTE_Field_InputControl select option:contains('" + category + "')").attr("selected", "selected");
       $("div.DTE_Field_InputControl select option:contains('" + category + "')").prop("selected", "selected");
-    } ); */
+    } ); 
 
     // upload using request AFTER db inserts data
     socket.on('add_response', function(msg) {
