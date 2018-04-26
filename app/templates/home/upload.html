@@ -16,10 +16,14 @@
 
 {% endblock %}
 
+{% block upload_dragdrop %}
+  {% include "./home/dragdrop.html" %}
+{% endblock %}
+
 {% block dz_js %}
   var thumbs =[];
   var myDropzone = new Dropzone("#media_drop", {
-    url: "{{ url_for('home.upload')}}",
+    url: "upload",
     maxFilesize: 10000, //10GB
     autoProcessQueue: false,
     thumbnailWidth: 120
@@ -35,7 +39,7 @@
   myDropzone.on("addedfile", function(file) {
     image_ext = ["jpg", "jpeg", "bmp", "tif", "tiff", "tga", "png", "psd", "gif", "svg", "ai", "eps"];
     video_ext = ["mp4", "avi", "wmv", "mov", "qt", "mkv", "ts", "webm", "flv", "rmvb"];
-    audio_ext = ["mp3", "wmv", "pcm", "aiff", "aac", "ogg", "wma", "flac", "alac"];
+    audio_ext = ["mp3", "wmv", "pcm", "aiff", "aac", "ogg", "wma", "flac", "alac", "wav"];
     font_ext = ["ttf", "otf", "eot", "woff", "svg", "woff2"];
     file_ext = ["exe", "zip", "rar"];
     code_ext = ["js", "jsx", "py", "cpp", "html", "css", "jsx", "xml", "json", "csv", "bat", "sh"]
@@ -63,43 +67,44 @@
     }
   });
 
+
   myDropzone.on("thumbnail", function(file, dataUri) {
     t = [file, dataUri];
     thumbs.push(t);
   });
 
-    $( ".dz_add" ).bind({
-      click: function() {
-        category = parseInt($('#select_category').val());
-        user_id = parseInt($('i.fa-user').attr('user-id'));
+  $( ".dz_add" ).bind({
+    click: function() {
+      category = parseInt($('#select_category').val());
+      user_id = parseInt($('i.fa-user').attr('user-id'));
 
-        tags = selectize.items.join(",");
-        acceptedFiles = myDropzone.getAcceptedFiles();
+      tags = selectize.items.join(",");
+      acceptedFiles = myDropzone.getAcceptedFiles();
+      console.log(acceptedFiles);
+      itemlist = [];
+      for(i=0;i<acceptedFiles.length;i++){
+        name = acceptedFiles[i]['name'];
+        ext = name.split('.').pop()
+        data = {"name": name, "category": category, "tags": tags, "assigned": user_id, "thumbnail": ""};
 
-        itemlist = [];
-        for(i=0;i<acceptedFiles.length;i++){
-          name = acceptedFiles[i]['name'];
-          ext = name.split('.').pop()
-
-          for(j=0;j<thumbs.length;j++){
-            if(thumbs[j][0].name == name){
-              thumb = thumbs[j][1];
-              data = {"name": name, "category": category, "tags": tags, "assigned": user_id, "thumbnail": thumb};
-              itemlist.push(data);
-            } else {
-            }
+        for(j=0;j<thumbs.length;j++){
+          if(thumbs[j][0].name == name){
+            thumb = thumbs[j][1];
+            data['thumbnail'] = thumb;
           }
         }
-        socket.emit('create', {'namespace': 'media', 'data': itemlist, 'multiple': 'true'} );
+        itemlist.push(data);
       }
-    });
+      socket.emit('create', {'namespace': 'media', 'data': itemlist, 'multiple': 'true'} );
+    }
+  });
 
-
-    $( ".dz_clear" ).bind({
-      click: function() {
-        dz_clear();
-      }
-    });  
+  $( ".dz_clear" ).bind({
+    click: function() {
+      dz_clear();
+      selectize.clear();
+    }
+  });  
 
   $select = $('#input-tags').selectize({
     persist: false,

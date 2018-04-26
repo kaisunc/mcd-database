@@ -104,7 +104,6 @@ def getFields(model):
     columns = []
     columnDefs = []
     idx = 0
-    ignore = ["id", "timestamp"]
 
     # customize dt columns here, either automate or static define 
     for column in model.__table__.columns.items():
@@ -113,11 +112,13 @@ def getFields(model):
         columnDef = {"orderable": True, "className": column[0], "title": column[0], "targets": idx}
         columnDefs.append(columnDef)
 
-        if column[0] == "thumbnail":
-            columns[-1]['render'] = "thumb_render"
+        # thumb_render is js function specified in template, move this outside to views
+        # if column[0] == "thumbnail":
+        #     columns[-1]['render'] = "thumb_render"
+
 
         col ={}
-        noedit_fields = ["id", "thumbnail", "timestampe", "name"]
+        noedit_fields = ["id", "thumbnail", "timestampe"] #name is no edit, but needs to be appended to fields
         if column[0] in noedit_fields: # no form input for id
             pass
         else:
@@ -141,7 +142,7 @@ def getFields(model):
                     fk_model = [m.target_fullname for m in column[1].foreign_keys][0].split(".")[0]
                     options = getOptions(fk_model)
                     col['options'] = options
-                    columns[-1]['render'] = "render" # keyword render will assign js render function
+                    columns[-1]['render'] = "category_render" # keyword render will assign js render function
                 else:
                     col["type"] = "text"
 

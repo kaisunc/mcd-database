@@ -29,7 +29,7 @@ def login():
         user = User.query.filter_by(name=form.name.data).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user)
-            return redirect(url_for('home.media'))
+            return redirect(url_for('home.media', category_filter='addons'))
         else:
             flash('Invalid name or password')
     return render_template('auth/login.html', form=form, title='Login')

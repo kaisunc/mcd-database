@@ -175,9 +175,9 @@ body, html {
     color: rgb(12, 97, 33);
 }
 
-.wrapper{
+/*#media_wrapper{
 	margin-top: 58px;
-}
+}*/
 
 .dataTables_length {
 	display: inline-block;
@@ -205,12 +205,6 @@ body, html {
     display: block;
 }
 
-.test {
-    display: inline-block;
-    vertical-align: middle;
-    min-width: 500px;
-}
-
 .selectize-control{
     overflow: inherit;
 }
@@ -221,13 +215,13 @@ body, html {
 } 
 .category_menu {
     display: inline-flex;
-    width: 200px;
+    width: 100%;
 }
 
-.test {
+.add-tags {
     display: inline-block;
     vertical-align: middle;
-    min-width: 500px;
+    width: 100%;
 }
 
 .selectize-control{
@@ -249,3 +243,11 @@ body, html {
 
 div.selectize-dropdown {
   z-index: 2001; }
+
+/*.container{
+    margin-top: 58px;
+}  */
+
+.nav-spacer {
+    margin-top: 62px;
+}

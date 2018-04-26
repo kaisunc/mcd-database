@@ -15,9 +15,9 @@
 
 {% block js %}
   <script>
-    var columns = JSON.parse("{{columns}}");    
-    var columnDefs = JSON.parse("{{columnDefs}}");
-    var fields = JSON.parse("{{fields}}");    
+    var columns = JSON.parse('{{columns | tojson | safe}}');  //column string uses double quotes, so wrap it with single quotes 
+    var columnDefs = JSON.parse('{{columnDefs | tojson | safe}}');
+    var fields = JSON.parse('{{fields | tojson | safe}}');    
     var category_filter = "{{category_filter}}";
 
     for(f=0;f<fields.length;f++){
@@ -46,14 +46,15 @@
 
 
 {% block body %}
+<div class="row nav-spacer">
+  </div>
+  {% block upload_dragdrop %}{% endblock %}
 
-{% if category_filter == 'upload' %}
-  {% include "./home/dragdrop.html" %}
-{% endif %}
-{% include "./home/toolbar.html" %}
-
-<table id={{namespace}} class="compact table-striped table-bordered table-hover" cellspacing="0" width="100%">
-</table>
+  {% if category_filter != 'upload' %}
+    {% include "./home/toolbar.html" %}
+  {% endif %}
+  <table id={{namespace}} class="compact table-striped table-bordered table-hover" cellspacing="0" width="100%">
+  </table>
 
 {% endblock %}
 
@@ -72,26 +73,38 @@
   $(document).ready(function() {
     namespace = "{{namespace}}";
     socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-    render =  function ( data, meta, row ) {return data.label;};
+    category_render =  function ( data, meta, row ) {
+      return data.label;
+    };
     thumb_render = function ( data, meta, row ) {
       var id = ("00000000" + row['id']).substr(-8,8);
       var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
-
       return '<a href="' + url +'" download><img class="thumbs" src="'+data+'"/></a>';
     };
+    sound_render = function (data, meta, row){
+      var id = ("00000000" + row['id']).substr(-8,8);
+      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];      
+      return "<audio controls><source src=" + url + "></audio>";
+    };
 
+
+
+    //column with render or mrender
     for(i=0;i<columns.length;i++){
-      if(columns[i]['render'] == 'render'){
-        columns[i]['render'] = render;
-      };
-      if(columns[i]['render'] == 'thumb_render'){
+      if(columns[i]['render'] == 'category_render'){
+        columns[i]['render'] = category_render;
+      }
+      else if(columns[i]['render'] == 'thumb_render'){
         columns[i]['render'] = thumb_render;
-      };
+      }
+      else if(columns[i]['render'] == 'sound_render'){
+        columns[i]['render'] = sound_render;
+      }
     };    
 
     table = $('#' + namespace).DataTable( {
         "dom": "<'row'<'col-sm-8 top-toolbar'><'col-sm-4'p>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-4'i><'col-sm-8'p>>",
-        "pageLength": 20,
+        "pageLength": 50,
         "processing": true,
         "serverSide": true,
         "deferRender": true,
@@ -112,7 +125,7 @@
         }
     });      
 
-    editor = new $.fn.dataTable.Editor( {
+/*    editor = new $.fn.dataTable.Editor( {
         data: output,
         ajax: function ( method, url, d, successCallback, errorCallback ) {
           var output = { data: [] };
@@ -150,7 +163,7 @@
 
       $("div.DTE_Field_InputControl select option:contains('" + category + "')").attr("selected", "selected");
       $("div.DTE_Field_InputControl select option:contains('" + category + "')").prop("selected", "selected");
-    } ); 
+    } ); */
 
     // upload using request AFTER db inserts data
     socket.on('add_response', function(msg) {
@@ -159,7 +172,8 @@
       file_id = data['id'];
       file_name = data['name'];
 
-      myDropzone.options.url = "upload?category=" + category + "&file_id=" + file_id;
+      myDropzone.options.url = "../upload?category=" + category + "&file_id=" + file_id;
+
       for(i=0;i<myDropzone.files.length;i++){
         if(myDropzone.files[i].name == file_name){
           myDropzone.processFile(myDropzone.files[i]);      

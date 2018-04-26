@@ -26,7 +26,7 @@
           <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='music') }}">Music</a></li>
           <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='sfx') }}">SFX</a></li>
           <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='software') }}">Software</a></li>
-          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='video') }}">Videos</a></li>
+          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='videos') }}">Videos</a></li>
 
           <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='upload') }}">Upload</a></li>
           <li class="nav-item dropdown">
@@ -36,23 +36,20 @@
             </div>
           </li>
 
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout',category_filter='addons') }}">Logout</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
           <li class="nav-item"><a class="nav-link"> <i class="fa fa-user" aria-hidden="true" style="color: #992222" user-id="{{current_user.id}}"></i>    {{ current_user.name }}!</a></li>
         {% else %}
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('home.homepage',category_filter='addons') }}">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register',category_filter='addons') }}">Register</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login',category_filter='addons') }}">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('home.homepage') }}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
         {% endif %}
       </ul>
     </div>
     <a href="{{ url_for('home.homepage') }}" class="navbar-toggler-icon"></a>        
   </nav>   
-  <div class="wrapper">
-    {% block body %}
+      {% block body %}
     {% endblock %}
-    <div class="push"></div>
-  </div>
-  <footer class="container">
+    <footer class="container">
 <!--     <p>© Julio 2017</p> -->
   </footer>    
   {% block run_scripts %}{% endblock %}

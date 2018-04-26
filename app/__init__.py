@@ -10,6 +10,8 @@ from flask_socketio import SocketIO, emit
 
 from config import app_config
 
+base_path = "C:/Users/julio/Dropbox/Projects/mcd_database/assets"
+
 db = SQLAlchemy()
 login_manager = LoginManager()
 socketio = SocketIO()

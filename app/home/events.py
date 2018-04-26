@@ -1,9 +1,11 @@
 from flask import session, json
 from flask_socketio import emit, join_room, leave_room
+from shutil import rmtree
 from .. import db, socketio
+from .. import base_path
 from ..models import *
 
-
+print base_path
 
 '''
 fields
@@ -199,12 +201,26 @@ def remove(*args):
     db.session.flush()
     model = getModel(namespace)
 
+    remove_list = []
     for i in ids:
         delete = model.query.filter_by(id=i).one()
+        remove_list.append({'id': i, 'category': delete.category})
         db.session.delete(delete)
     db.session.commit()
+
     try:
         ids = json.dumps(ids)
         emit('delete_response', {'ids': ids}, broadcast=True)
+        categories = Category.query.all()
+        for remove in remove_list:
+            file_id = remove['id']
+            category_id = remove['category']
+            category = [c.name for c in categories if c.id == category_id][0]
+            remove_path = "%s/%s/%08d" % (base_path, category, int(file_id))
+            rmtree(remove_path)        
     except:
         print 'something wrong'
+  
+    return 'ok'
+
+
