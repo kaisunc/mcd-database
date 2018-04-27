@@ -5,7 +5,6 @@
 
 {% block css %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/DataTables/datatables.min.css') }}"/>
-
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/Editor-1.7.2/css/editor.bootstrap4.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/DataTables/Select-1.2.5/css/select.bootstrap4.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.min.css') }}">
@@ -94,7 +93,7 @@
     font_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
       var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";      
-      return "<div style='font-family: test_1234'>The quick brown fox</div>"
+      return "<div style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥</div><div style='font-family: &quot;" + id + "&quot;'>The quick brown fox jumped over the lazy dog</div>"
     };   
 
 
@@ -128,8 +127,16 @@
                   socket.on('init_response', function(response){
                     output = JSON.parse(response);    
                     if(category_filter == 1){
-                      console.log(output['data'][0]['name']);
-
+                      //loop over all rows here, and add fonts to style
+                      var newStyle = document.createElement('style');
+                      for(i=0;i<output['data'].length;i++){
+                        var id = ("00000000" + output['data'][i]['id']).substr(-8,8);
+                        var font_url = "http://" + window.location.hostname + "/download/fonts/" + id + "/" + output['data'][i]['name'];      
+                        var font_face = "@font-face {font-family: '" + id + "'; src: url('" + font_url  + "') format('truetype');}"
+                        newStyle.appendChild(document.createTextNode(font_face));                      
+                      }
+                      var head = document.head || document.getElementsByTagName('head')[0]
+                      head.appendChild(newStyle);
                     }
                     callback(output);                      
                   })
