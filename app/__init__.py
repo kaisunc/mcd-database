@@ -21,7 +21,8 @@ def create_app(config_name):
     app.config.from_object(app_config['development'])
     app.config.from_pyfile(config_name)
     #app.config['WHOOSH_ANALYZER'] = IDTokenizer()
-
+    from models import Media
+    flask_whooshalchemy.whoosh_index(app, Media)
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_message = "You muse login!" 
@@ -29,7 +30,7 @@ def create_app(config_name):
 
     migrate = Migrate(app, db)
 
-    from models import Media
+
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
@@ -37,6 +38,5 @@ def create_app(config_name):
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)    
 
-    flask_whooshalchemy.whoosh_index(app, Media)
     socketio.init_app(app)
     return app

@@ -44,7 +44,7 @@ def media(category_filter):
     namespace = "media"
     model = getModel(namespace)
     fields, columns, columnDefs = getFields(model)
-    print columns
+    print columnDefs
     ff = fields # for dropzone dropdown menu selection
     for c in enumerate(columns):
         if c[1]['data'] == 'thumbnail':
@@ -58,6 +58,8 @@ def media(category_filter):
                 c[1]['render'] = "font_render"                    
             else:
                 c[1]['render'] = "thumb_render"
+        elif c[1]['data'] == 'timestamp':
+            c[1]['render'] = "datetime_render"
 
 
     if category_filter == 'upload':
@@ -118,6 +120,5 @@ def upload():
 @home.route('/download/<category>/<file_id>/<string:filename>', methods=['GET', 'POST'])
 @login_required
 def download(category, file_id, filename):
-    base  = "C:/Users/julio/Dropbox/Projects/mcd_database/assets"
-    directory = "%s/%s/%s" % (base, category, str(file_id))
+    directory = "%s/%s/%s" % (base_path, category, str(file_id))
     return send_from_directory(directory=directory, filename=filename)

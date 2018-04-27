@@ -40,6 +40,7 @@
   <script type="text/javascript" src="{{ url_for('static', filename='lib/Editor-1.7.2/js/dataTables.editor.min.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='lib/Editor-1.7.2/js/editor.bootstrap4.min.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/dt_selectize.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/moment.js') }}"></script>
   {% block upload_js %}{% endblock %}
 {% endblock %}
 
@@ -93,8 +94,12 @@
     font_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
       var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";      
-      return "<div style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥</div><div style='font-family: &quot;" + id + "&quot;'>The quick brown fox jumped over the lazy dog</div>"
+      return "<a href=" + url + " download>" + "<div style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥</div><div style='font-family: &quot;" + id + "&quot;'>The quick brown fox jumped over the lazy dog</div></a>"
     };   
+    datetime_render = function (data, meta, row) {
+      m = moment(data);
+      return "<div>" + m.format("MM/DD") + "</div>"
+    }
 
 
     //column with render or mrender
@@ -113,7 +118,10 @@
       }      
       else if(columns[i]['render'] == 'font_render'){
         columns[i]['render'] = font_render;
-      }       
+      }   
+      else if(columns[i]['render'] == 'datetime_render'){
+        columns[i]['render'] = datetime_render;
+      }   
     };    
 
     table = $('#' + namespace).DataTable( {
@@ -144,7 +152,7 @@
         "rowId": 'id',
         "columns": columns,        
         "columnDefs": columnDefs,      
-        "order": [[ 1, "desc" ]],        
+        "order": [[ 2, "desc" ]],        
         "select": {
             "style": 'os',
             "selector": 'td:first-child'

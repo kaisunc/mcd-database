@@ -24,9 +24,6 @@ class Datatable():
         cols["select-checkbox"] = ""
         return cols
 
-
-
-
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -55,6 +52,7 @@ class Media(db.Model, Datatable):
     __tablename__ = 'media'
     __searchable__ = ['name', 'tags']
 
+    thumbnail = db.Column(db.Text())
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text())
     category = db.Column(db.Integer, db.ForeignKey('category.id'))
@@ -63,7 +61,7 @@ class Media(db.Model, Datatable):
     #url = db.Column(db.Text())
     tags = db.Column(db.Text())
     description = db.Column(db.Text())
-    thumbnail = db.Column(db.Text())
+
 
 
 class Category(db.Model, Datatable):
