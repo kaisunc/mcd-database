@@ -102,6 +102,8 @@ def getFields(model):
     columns = []
     columnDefs = []
     idx = 0
+    text_types = ["TEXT", "VARCHAR"]
+    
 
     # customize dt columns here, either automate or static define 
     for column in model.__table__.columns.items():
@@ -123,7 +125,7 @@ def getFields(model):
             col['name'] = column[0]
             col['label'] = column[0].title()
 
-            if str(column[1].type) == "TEXT":
+            if re.sub(r'\([^)]*\)', '',  str(column[1].type)) in text_types:
                 if column[0] == "tags":
                     col["type"] = "text"
                     col["d_type"] = "text"    

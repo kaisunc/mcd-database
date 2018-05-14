@@ -251,3 +251,7 @@ div.selectize-dropdown {
 .nav-spacer {
     margin-top: 62px;
 }
+
+.nav-link {
+    color: #333;
+}

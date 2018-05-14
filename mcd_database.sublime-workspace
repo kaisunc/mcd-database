@@ -4,6 +4,62 @@
 		"selected_items":
 		[
 			[
+				"category",
+				"category_filter"
+			],
+			[
+				"categor",
+				"category_filter"
+			],
+			[
+				"flask_",
+				"flask_whooshalchemy"
+			],
+			[
+				"St",
+				"StandardAnalyzer"
+			],
+			[
+				"Chinese",
+				"ChineseAnalyzer"
+			],
+			[
+				"an",
+				"analyzer"
+			],
+			[
+				"sor",
+				"sort_column_name"
+			],
+			[
+				"sort",
+				"sort_direction"
+			],
+			[
+				"colu",
+				"columnDefs"
+			],
+			[
+				"col",
+				"columnDefs"
+			],
+			[
+				"in",
+				"inline-block"
+			],
+			[
+				"dt_",
+				"dt_data_row"
+			],
+			[
+				"selec",
+				"select-checkbox"
+			],
+			[
+				"btn",
+				"btn-group"
+			],
+			[
 				"jina",
 				"jinja2_escapejs_filter"
 			],
@@ -70,10 +126,6 @@
 			[
 				"add",
 				"add_project"
-			],
-			[
-				"colu",
-				"columns"
 			],
 			[
 				"se",
@@ -367,25 +419,37 @@
 			"file": "app/home/views.py",
 			"settings":
 			{
-				"buffer_size": 2616,
+				"buffer_size": 4403,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
+			"contents": "from flask import session, json\nfrom flask_socketio import emit, join_room, leave_room\nfrom shutil import rmtree\nfrom .. import db, socketio\nfrom .. import base_path\nfrom ..models import *\n\n'''\nfields\ntarget: editor\ninput: model name, no query\noutput: list of fields that can be edited in datatables\nnotes: ignore fields that does not need to be edited, select fields will sub query\n\ncolumns\ntarget: table\ninput: header\nouput: list of columns and its data type\n\ncolumn def\ntarget: table\ninput: header\noutput: list similar to columns, contains css properties\n\ndt_data\ntaget: table\ninput: model items\noutput: json data, {key: '', value: ''}\n\noptions\ntarget: editor, select menu(select, radio)\ninput: model name, query model\noutput: json list, {label: '', value: ''}\n\n'''\n\n\n@socketio.on('ajax_socket')\ndef ajax_socket(*args):\n    '''\n    main entry point for displaying datatables\n    settings = {u'search': {u'regex': False, u'value': u''}, u'draw': 1, u'start': 0, u'length': 20, u'order': [{u'column': 1, u'dir': u'desc'}], u'columns': [{u'orderable': False, u'search': {u'regex': False, u'value': u''}, u'data': u'select-checkbox', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'id', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'name', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'category', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'timestamp', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'assigned', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'url', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'tags', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'description', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'thumbnail', u'name': u'', u'searchable': True}]}\n    settings = {u'search': {u'regex': False, u'value': u''}, u'draw': 2, u'start': 0, u'length': 20, u'order': [{u'column': 2, u'dir': u'asc'}], u'columns': [{u'orderable': False, u'search': {u'regex': False, u'value': u''}, u'data': u'select-checkbox', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'id', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'name', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'category', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'timestamp', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'assigned', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'url', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'tags', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'description', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'thumbnail', u'name': u'', u'searchable': True}]}\n\n    columns = [{u'mData': u'select-checkbox', u'data': u'select-checkbox'}, {u'mData': u'id', u'data': u'id'}, {u'mData': u'name', u'data': u'name'}, {u'mData': u'category', u'data': u'category'}, {u'mData': u'timestamp', u'data': u'timestamp'}, {u'mData': u'assigned', u'data': u'assigned'}, {u'mData': u'url', u'data': u'url'}, {u'mData': u'tags', u'data': u'tags'}, {u'mData': u'description', u'data': u'description'}, {u'mData': u'thumbnail', u'data': u'thumbnail'}]\n\n    '''\n\n    namespace = args[0]['namespace']\n    settings = args[0]['settings']\n    columns = args[0]['columns']\n    columnDefs = args[0]['columnDefs']\n    category_filter = args[0]['category_filter']\n    fields = args[0]['fields']\n    search = settings['search']['value']\n    model = getModel(namespace)\n\n    if category_filter != 'upload':\n        if search == \"\":\n            items = model.query.filter_by(category=category_filter).order_by(model.id.desc()).limit(1000)\n        else:\n            items = model.query.filter_by(category=category_filter).whoosh_search(search).all()\n    else:\n        if search == \"\":\n            items = model.query.order_by(model.id.desc()).limit(1000)\n        else:\n            items = model.query.whoosh_search(search).all()        \n\n    start = int(settings['start'])\n    length = int(settings['length'])\n    sort_column = int(settings['order'][0]['column']) # column number\n    sort_column_name = columns[sort_column]['data'] # column name\n    sort_direction = settings['order'][0]['dir']\n\n    dt_data = []\n    for row in items:\n        dt_data.append(row.as_dict1(fields))\n    recordsTotal = len(dt_data)\n\n    dt_data = custom_sort(dt_data, fields, sort_column_name, sort_direction)\n    dt_data = custom_paging(dt_data, start, length)\n\n\n    t = json.dumps({\"draw\": settings['draw'], \"recordsTotal\": recordsTotal, \"recordsFiltered\": recordsTotal, \"data\": dt_data})\n    emit('init_response', t, broadcast=False)\n\nfields = []\n@socketio.on('init')\ndef init(*args):\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n\n    model = getModel(namespace)\n\n    items = model.query.limit(10000).all()\n    fields, columns, columnDefs = getFields(model)\n\n    dt_data = []\n    for row in items:\n        #dt_data.append(row.dt_data_row())\n        dt_data.append(row.as_dict1(fields))\n\n    columnDefs = json.dumps(columnDefs)\n    columns = json.dumps(columns) #\n    fields = json.dumps(fields) # input fields and type\n    dt_data = json.dumps(dt_data)\n    emit('init_response', {'data': dt_data, 'columns': columns, 'columnDefs': columnDefs, 'fields': fields}, broadcast=False)\n\n@socketio.on('create')\ndef create(*args):\n    namespace = \"\"\n    pids = []\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n        data = args[0][\"data\"]\n        try:\n            multiple = args[0][\"multiple\"]\n        except:\n            pass\n    # ---\n    # base_path = \"C:/Users/julio/source\"\n\n    # category  = request.args.get('category')\n    # file_id = request.args.get('file_id')\n    # folder_path = \"%s/%s/%s\" % (base_path, category, file_id)\n\n    # if os.path.isdir(folder_path) is False:\n    #     os.makedirs(folder_path)\n    # file_path = \"%s/%s\" % (folder_path, f.filename)\n\n    #----------\n    def addRow(d):\n        update = model()\n        for k,v in d.iteritems():\n            setattr(update, k, v)\n        db.session.add(update)\n        db.session.flush()\n        return update\n\n    model = getModel(namespace)\n    fields, columns, columnDefs = getFields(model)\n    if multiple == 'true':\n        for d in data:\n            update = addRow(d)\n            pids.append(update.id)\n\n        db.session.commit()\n\n        update = model.query.filter(model.id.in_(pids)).all()\n        output = []\n        for x in update:\n            dt_data = json.dumps(x.as_dict1(fields))\n            emit('add_response', {'data': dt_data}, broadcast=True)\n\n    else:\n        update = addRow(data)\n        pid = update.id\n\n        db.session.commit()\n\n        update = model.query.filter_by(id=pid).first()\n        dt_data = json.dumps(update.as_dict1(fields))\n        emit('add_response', {'data': dt_data}, broadcast=True)\n\n@socketio.on('update')\ndef update(*args):\n    namespace = \"\"\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n        pid = args[0][\"id\"]\n        data = args[0][\"data\"]\n\n    model = getModel(namespace)\n    fields, columns, columnDefs = getFields(model)\n    update = model.query.filter_by(id=pid).first()\n    cols = update.__table__.columns.keys()\n\n    db.session.flush()\n    now = db.func.now()\n    for k, v in data.iteritems():\n        setattr(update, k, v)\n        if 'timestamp' in cols:\n            update.timestamp = now\n    db.session.commit()\n    update = model.query.filter_by(id=pid).first()\n    #dt_data = json.dumps(update.dt_data_row())\n\n    dt_data = json.dumps(update.as_dict1(fields))\n    emit('update_response', {'data': dt_data}, broadcast=False)\n\n# if category is in use by any media, can't delete\n@socketio.on('remove')\ndef remove(*args):\n    namespace = \"\"\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n        ids = args[0][\"ids\"]\n\n    db.session.flush()\n    model = getModel(namespace)\n\n    remove_list = []\n    for i in ids:\n        delete = model.query.filter_by(id=i).one()\n        remove_list.append({'id': i, 'category': delete.category})\n        db.session.delete(delete)\n    db.session.commit()\n\n    try:\n        ids = json.dumps(ids)\n        emit('delete_response', {'ids': ids}, broadcast=True)\n        categories = Category.query.all()\n        for remove in remove_list:\n            file_id = remove['id']\n            category_id = remove['category']\n            category = [c.name for c in categories if c.id == category_id][0]\n            remove_path = \"%s/%s/%08d\" % (base_path, category, int(file_id))\n            rmtree(remove_path)        \n    except:\n        print 'something wrong'\n  \n    return 'ok'\n\n\n",
 			"file": "app/home/events.py",
+			"file_size": 9812,
+			"file_write_time": 131691181006114874,
 			"settings":
 			{
-				"buffer_size": 6935,
+				"buffer_size": 9569,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "config.py",
+			"settings":
+			{
+				"buffer_size": 640,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "app/home/forms.py",
+			"file": "run.py",
 			"settings":
 			{
-				"buffer_size": 982,
+				"buffer_size": 551,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
@@ -393,7 +457,8 @@
 			"file": "app/__init__.py",
 			"settings":
 			{
-				"buffer_size": 965,
+				"buffer_size": 1203,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
@@ -401,7 +466,7 @@
 			"file": "app/models.py",
 			"settings":
 			{
-				"buffer_size": 1924,
+				"buffer_size": 6618,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -410,54 +475,44 @@
 			"file": "app/static/css/style.css",
 			"settings":
 			{
-				"buffer_size": 3944,
+				"buffer_size": 4427,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "app/static/lib/selectize/selectize.js-master/examples/basic.html",
-			"settings":
-			{
-				"buffer_size": 21803,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "app/templates/test.html",
-			"settings":
-			{
-				"buffer_size": 1088,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
+			"contents": "<!-- current dt login equinoxin.dt1 -->\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <title>{{ title }} | MCD Database</title>\n    <link rel=\"stylesheet\" href=\"{{ url_for('static', filename='lib/bootstrap-4.0.0-beta.3/dist/css/bootstrap.min.css') }}\">\n    <link rel=\"stylesheet\" href=\"{{ url_for('static', filename='lib/font-awesome-4.7.0/css/font-awesome.min.css') }}\">\n    <link href=\"{{ url_for('static', filename='css/style.css') }}\" rel=\"stylesheet\">\n    <link href=\"{{ url_for('static', filename='img/favicon.ico') }}\" rel=\"shortcut icon\" >\n    {% block css %}{% endblock %}\n    <script src=\"https://code.jquery.com/jquery-1.12.4.js\" type=\"text/javascript\"></script>    \n    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js\" integrity=\"sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh\" crossorigin=\"anonymous\"></script>\n    <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js\" integrity=\"sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ\" crossorigin=\"anonymous\"></script>\n    {% block js %}{% endblock %}    \n</head>\n<body>\n  <nav class=\"navbar navbar-expand-md navbar-dark fixed-top bg-dark\">\n    <a href=\"{{ url_for('home.homepage') }}\" class=\"navbar-brand\">MCD DB</a>\n    <div class=\"collapse navbar-collapse\" id=\"navbarsExampleDefault\">\n        <ul class=\"navbar-nav mr-auto\">\n        {% if current_user.is_authenticated %}\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='addons') }}\">Addons</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='effects') }}\">Effects</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='fonts') }}\">Fonts</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='images') }}\">Images</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='music') }}\">Music</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='sfx') }}\">SFX</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='software') }}\">Software</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='videos') }}\">Videos</a></li>\n\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='upload') }}\">Upload</a></li>\n          <li class=\"nav-item dropdown\">\n            <a class=\"nav-link dropdown-toggle\" href=\"http://example.com\" id=\"dropdown01\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Other</a>\n            <div class=\"dropdown-menu\" aria-labelledby=\"dropdown01\">\n              <a class=\"dropdown-item\" href=\"{{ url_for('home.category') }}\">Category</a>\n            </div>\n          </li>\n\n          <li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ url_for('auth.logout') }}\">Logout</a></li>\n          <li class=\"nav-item\"><a class=\"nav-link\"> <i class=\"fa fa-user\" aria-hidden=\"true\" style=\"color: #992222\" user-id=\"{{current_user.id}}\"></i>    {{ current_user.name }}!</a></li>\n        {% else %}\n          <li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ url_for('home.homepage') }}\">Home</a></li>\n          <li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ url_for('auth.register') }}\">Register</a></li>\n          <li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ url_for('auth.login') }}\">Login</a></li>\n        {% endif %}\n      </ul>\n    </div>\n    <a href=\"{{ url_for('home.homepage') }}\" class=\"navbar-toggler-icon\"></a>        \n  </nav>   \n  {% block body %}\n  {% endblock %}\n  <footer class=\"container\">\n  </footer>    \n  {% block run_scripts %}{% endblock %}\n</body>\n\n</html>",
 			"file": "app/templates/base.html",
+			"file_size": 4236,
+			"file_write_time": 131691812694284842,
 			"settings":
 			{
-				"buffer_size": 2905,
+				"buffer_size": 4137,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/templates/home/media.html",
+			"settings":
+			{
+				"buffer_size": 11791,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "{% from \"./_formhelpers.html\" import render_field %}\n\n{% extends \"base.html\" %}\n{% block title %}Projects{% endblock %}\n\n{% block css %}\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"static/lib/DataTables/datatables.css\"/>\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"static/lib/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.css\"/>\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"static/lib/Editor-1.7.2/css/editor.dataTables.css\">\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"static/lib/dropzone/dropzone.css\">\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"static/lib/selectize/css/stylesheet.css\">\n{% endblock %}\n\n{% block js %}\n  <script src=\"../static/lib/socket.io.js\" type=\"text/javascript\"></script>\n  <script src=\"./static/lib/dropzone/dropzone.js\"></script>\n  <script src=\"./static/lib/selectize/js/standalone/selectize.js\"></script>\n  <script>\n    Dropzone.autoDiscover = false;\n  </script>\n  {% include \"./home/datatables_lib.html\" %}\n{% endblock %}\n\n{% block body %}\n{% include \"./home/toolbar.html\" %}\n{% include \"./home/dragdrop.html\" %}\n<table id={{namespace}} class=\"compact table-striped table-bordered table-hover\" cellspacing=\"0\" width=\"100%\">\n\n</table>\n\n{% endblock %}\n\n{% block run_scripts %}\n<script>\n  var myDropzone = new Dropzone(\"#media_drop\", {\n    url: \"{{ url_for('home.upload')}}\",\n    autoProcessQueue: false,\n  });\n\n  var editor;\n  var table;\n  var socket;\n  var temp;\n  var hide;\n  \n  $(document).ready(function() {\n    namespace = {{namespace}};\n    field_list = {{field_list}};\n\n\n    {% if hide is defined %}\n      hide = {{hide}};\n    {% endif %}\n    {% include \"./home/datatables_init.js\" %}\n\n    $( \".dt_add\" ).bind({\n      click: function() {\n        if(namespace == 'media'){\n          if($(\"#media_drop\").css(\"display\") == \"block\"){\n            $('#media_drop').css(\"display\", \"none\");  \n            $('#dz-toolbar').css(\"display\", \"none\");\n            $('#dt-toolbar').css(\"display\", \"block\");\n            $('#media_wrapper').css(\"display\", \"block\");\n\n          } else if($(\"#media_drop\").css(\"display\") == \"none\"){ //open dropzone and dz toolbar\n            $('#media_drop').css(\"display\", \"block\");  \n            $('#dz-toolbar').css(\"display\", \"block\");\n            $('#dt-toolbar').css(\"display\", \"none\");\n            $('#media_wrapper').css(\"display\", \"none\");\n          }\n        } else if(namespace == 'media_type'){\n          editor.create({\n            buttons: 'Create'\n          });          \n        }\n      },\n      mouseenter: function() {\n\n      }\n    });\n    $( \".dt_remove\" ).bind({\n      click: function() {\n        editor\n        .title( 'Delete row' )\n        .buttons( 'Confirm delete' )\n        .message( 'Are you sure you want to remove this row?' )\n        .remove(table.rows( { selected: true } ).indexes());\n      },\n      mouseenter: function() {\n\n      }\n    });\n\n    $( \".dt_edit\" ).bind({\n      click: function() {\n        editor\n        .title( 'Update Entry')\n        .buttons( 'Update' )\n        .edit(table.rows( { selected: true } ).indexes());\n      },\n      mouseenter: function() {\n\n      }\n    });\n\n    $( \".dz_close\" ).bind({\n      click: function() {\n        if($(\"#media_drop\").css(\"display\") == \"block\"){\n          $('#media_drop').css(\"display\", \"none\");  \n          $('#dz-toolbar').css(\"display\", \"none\");\n          $('#dt-toolbar').css(\"display\", \"flex\");\n          $('#media_wrapper').css(\"display\", \"block\");\n\n        } else if($(\"#media_drop\").css(\"display\") == \"none\"){ //open dropzone and dz toolbar\n          $('#media_drop').css(\"display\", \"block\");  \n          $('#dz-toolbar').css(\"display\", \"block\");\n          $('#dt-toolbar').css(\"display\", \"none\");\n          $('#media_wrapper').css(\"display\", \"none\");\n        }\n\n      },\n      mouseenter: function() {\n\n      }\n    });    \n\n    $( \".dz_add\" ).bind({\n      click: function() {\n        myDropzone.options.autoProcessQueue = true;\n        myDropzone.processQueue();\n      }\n    });  \n\n    $( \".dz_clear\" ).bind({\n      click: function() {\n        var acceptedFiles = myDropzone.getAcceptedFiles();\n        for(i=0; i < acceptedFiles.length; i++){\n          myDropzone.removeFile(acceptedFiles[i]);\n        };\n      }\n    });           \n\n/*    myDropzone.on(\"queuecomplete\", function() {\n        myDropzone.options.autoProcessQueue = false;\n    });*/\n\n    $(\".nav-item\").removeClass(\"active\");\n    $(\".nav-item[namespace='\" + namespace + \"']\").addClass(\"active\");\n    if(namespace == \"status\" || namespace == \"task\" || namespace == \"pipeline\" || namespace == \"process\"){\n      $(\".nav-item.dropdown\").addClass(\"active\");\n    }\n\n    $(function(){\n      $(\".dropdown-menu a\").click(function(){\n        tt = $(this).parent().parent().find('.dropdown-toggle');\n        console.log(tt);\n        $(tt).text($(this).text());\n        //$(\".btn:first-child\").text($(this).text());\n        //$(\".btn:first-child\").val($(this).text());\n     });\n    });    \n    $('#input-tags').selectize({\n    delimiter: ',',\n    persist: false,\n    create: function(input) {\n        return {\n          value: input,\n         text: input\n        }\n      }\n    });\n  });\n\n</script>\n{% endblock %}\n\n\n",
-			"file": "app/templates/home/table.html",
-			"file_size": 5322,
-			"file_write_time": 131653224785334591,
+			"contents": "[\n{'className': 'select-checkbox', 'width': '3%', 'title': 'select-checkbox', 'targets': 0, 'orderable': False},\n{'className': 'id', 'orderable': True, 'targets': 1, 'title': 'id'},\n{'className': 'name', 'orderable': True, 'targets': 2, 'title': 'name'},\n{'className': 'category', 'orderable': True, 'targets': 3, 'title': 'category'},\n{'className': 'timestamp', 'orderable': True, 'targets': 4, 'title': 'timestamp'},\n{'className': 'assigned', 'orderable': True, 'targets': 5, 'title': 'assigned'},\n{'className': 'tags', 'orderable': True, 'targets': 6, 'title': 'tags'},\n{'className': 'description', 'orderable': True, 'targets': 7, 'title': 'description'},\n{'className': 'thumbnail', 'orderable': True, 'targets': 8, 'title': 'thumbnail'}]\n\n\nvar d = new Date(),\n    minutes = d.getMinutes().toString().length == 1 ? '0'+d.getMinutes() : d.getMinutes(),\n    hours = d.getHours().toString().length == 1 ? '0'+d.getHours() : d.getHours(),\n    ampm = d.getHours() >= 12 ? 'pm' : 'am',\n    months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],\n    days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];\nreturn days[d.get\n\nd = \"Tue, 17 Apr 2018 15:32:04 GMT\";\nm = moment(d);\nm.format(\"MM/DD HH:mm\");\n\n(foxhug)",
 			"settings":
 			{
-				"buffer_size": 5146,
-				"encoding": "UTF-8",
+				"buffer_size": 1233,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "app/templates/home/toolbar.html",
+			"file": "app/templates/home/upload.html",
 			"settings":
 			{
-				"buffer_size": 1373,
+				"buffer_size": 3894,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -466,25 +521,7 @@
 			"file": "app/templates/home/dragdrop.html",
 			"settings":
 			{
-				"buffer_size": 901,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "app/static/lib/dropzone/dropzone.js",
-			"settings":
-			{
-				"buffer_size": 92953,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "app/static/lib/dropzone/dropzone.css",
-			"settings":
-			{
-				"buffer_size": 11547,
+				"buffer_size": 1218,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -493,35 +530,35 @@
 			"file": "app/templates/home/datatables_init.js",
 			"settings":
 			{
-				"buffer_size": 3285,
+				"buffer_size": 4183,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "Major Categories - Must choose\n{\"name\" : \"fonts\", \"name_chn\": \"字型\"},\n{\"name\" : \"softwares\", \"name_chn\": \"軟體\"},\n{\"name\" : \"images\", \"name_chn\": \"圖庫素材\"},\n{\"name\" : \"dealers\", \"name_chn\": \"荷官素材\"},\n{\"name\" : \"\", \"name_chn\": \"向量素材\"},\n{\"name\" : \"effects\", \"name_chn\": \"動態特效素材\"},\n{\"name\" : \"brushes\", \"name_chn\": \"擴充素材(筆刷}/外掛)\",\n{\"name\" : \"music\", \"name_chn\": \"音樂素材\"},\n{\"name\" : \"sfx\", \"name_chn\": \"音效素材\"},\n{\"name\" : \"\", \"name_chn\": \"教學\"}\n\nMajor Tags\n{\"name\" : \"quick\", \"name_chn\": \"快速開發素材\"},\n{\"name\" : \"bbin\", \"name_chn\": \"公司機率遊戲素材\"},\n{\"name\" : \"\", \"name_chn\": \"公司專案音樂音效素材\"},\n{\"name\" : \"\", \"name_chn\": \"外接機率專案素材\"},\n{\"name\" : \"\", \"name_chn\": \"他廠素材\"},\n\n\n\nchoose internal or external\n\nfile type categories\n\n1. fonts\n2. software\n3. images \n4. effects\n5. addons/plugins\n6. music\n7. sfx\n8. web templates\n9. tutorials\n\ntags can also have multiple parents, these should be hard coded into the application\nunspecified tags can be created and assigned to any item in the db\n\nspecified tags are recommended in the UI when uploaded to specific category\n\n1. drag and drop (files, directory)\n2. choose category\n3. choose tags and/or add tags\n4. confirm\n\nin the background\n1. generate thumbnails or use generic thumb for category\n2. \n\n\nTag Schema\nfulltext search on column tags\n",
+			"file": "app/templates/_formhelpers.html",
 			"settings":
 			{
-				"buffer_size": 1257,
+				"buffer_size": 813,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/templates/home/toolbar.html",
+			"settings":
+			{
+				"buffer_size": 1400,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "Major Categories - Must choose\n{\"name\" : \"fonts\", \"name_chn\": \"字型\"},\n{\"name\" : \"softwares\", \"name_chn\": \"軟體\"},\n{\"name\" : \"images\", \"name_chn\": \"圖庫素材\"},\n{\"name\" : \"dealers\", \"name_chn\": \"荷官素材\"},\n{\"name\" : \"\", \"name_chn\": \"向量素材\"},\n{\"name\" : \"effects\", \"name_chn\": \"動態特效素材\"},\n{\"name\" : \"addons\", \"name_chn\": \"擴充素材(筆刷}/外掛)\",\n{\"name\" : \"music\", \"name_chn\": \"音樂素材\"},\n{\"name\" : \"sfx\", \"name_chn\": \"音效素材\"},\n{\"name\" : \"\", \"name_chn\": \"教學\"}\n\nMajor Tags\n{\"name\" : \"quick\", \"name_chn\": \"快速開發素材\"},\n{\"name\" : \"bbin\", \"name_chn\": \"公司機率遊戲素材\"},\n{\"name\" : \"\", \"name_chn\": \"公司專案音樂音效素材\"},\n{\"name\" : \"\", \"name_chn\": \"外接機率專案素材\"},\n{\"name\" : \"\", \"name_chn\": \"他廠素材\"},\n\n\n\nchoose internal or external\n\nfile type categories\n\n1. fonts\n2. software\n\texe\n\tarchives\n\tmsi\n\n3. images \n\tpng\n\tjpg\n\n4. effects\n\tarchives\n\tvideos\n\n5. addons/plugins\n\texe\n\tarchives\n\tmsi\n6. music\n\tmp3\n\twma\n\n7. sfx\n\tvideo\n\tarchives\n\t\n8. web templates\n9. tutorials\n\ntags can also have multiple parents, these should be hard coded into the application\nunspecified tags can be created and assigned to any item in the db\n\nspecified tags are recommended in the UI when uploaded to specific category\n\n1. drag and drop (files, directory)\n2. choose category\n3. choose tags and/or add tags\n4. confirm\n\nin the background\n1. generate thumbnails or use generic thumb for category\n2. \n\n\nTag Schema\nfulltext search on column tags\n\n{name: \"test\", media_type: \"font\"}\neditor.create({name: \"test\", media_type: \"font\"})\n\ntagCSV =\ntag.forEach(function(tags, index){\n    var line = tags.join(\",\");\n    lineArray.push(index == 0 ? \"data:text/csv;charset=utf-8,\" + line : line);\n}); \n\nvar lineArray = [];\ndata.forEach(function (tags, index) {\n    var line = infoArray.join(\",\");\n    lineArray.push(index == 0 ? \"data:text/csv;charset=utf-8,\" + line : line);\n});\nvar csvContent = lineArray.join(\"\\n\");",
+			"settings":
+			{
+				"buffer_size": 1819,
 				"line_ending": "Windows",
 				"name": "Major Categories - Must choose"
-			}
-		},
-		{
-			"file": "/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/preferences/STSPlayer",
-			"settings":
-			{
-				"buffer_size": 152,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "app/templates/home/index.html",
-			"settings":
-			{
-				"buffer_size": 511,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
 			}
 		}
 	],
@@ -618,37 +655,83 @@
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/auth",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/css",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/dropzone",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/auth",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home"
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/initDB"
 	],
 	"file_history":
 	[
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/examples/basic.html",
+		"/C/Users/julio/Dropbox/skype.txt",
+		"/c/users/julio/appdata/local/temp/rsub-7zwc1g/run.py",
+		"/c/users/julio/appdata/local/temp/rsub-nrcxu1/requirements.txt",
+		"/c/users/julio/appdata/local/temp/rsub-mzcuz_/config.py",
+		"/c/users/julio/appdata/local/temp/rsub-hq54pb/anaconda-ks.cfg",
+		"/c/users/julio/appdata/local/temp/rsub-_v7voe/anaconda-ks.cfg",
+		"/C/Users/julio/Desktop/test.html",
+		"/C/Users/julio/Desktop/file-icon-vectors-master/dist/icons/vivid/3ga.svg",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/index.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/js/dt_selectize.js",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/flask_serverside.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/auth/login.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/upload.html",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/auth/views.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/upload1.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home/events.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home/views.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/table.html",
+		"/C/Users/julio/Dropbox/Apache22/mcd_project_folders/main.py",
+		"/C/Users/julio/Dropbox/Apache22/mcd_project_folders/templates/archive_template.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/README.md",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/config.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/js/init_selectize.js",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/js/standalone/selectize.js",
+		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/config.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/table1.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/test_ajax_socket.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/test.html",
+		"//mcd-one/database/assets/scripts/mcd_scripts/fb_notifier.py",
+		"/C/Users/julio/Dropbox/Projects/fb_notifier/README.md",
+		"/C/Users/julio/Dropbox/Projects/skype_notifications/sheets_skype.py",
+		"/C/Users/julio/Dropbox/Projects/wiki_skype/wiki_skype.py",
+		"/C/Users/julio/Dropbox/Projects/fb_notifier/fb_notifier.py",
+		"//mcd-one/database/assets/scripts/mcd_scripts/fb_notifier.bat",
+		"/C/Users/julio/Dropbox/Projects/mcd_bot/main.py",
+		"/C/Users/julio/Dropbox/scripts/tactic_scripts/FbNotifier.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/mongodb_serverside.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/test_ajax.html",
+		"/C/Users/julio/Documents/maya/2017/scripts/userSetup.mel",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/datatables_init.js",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/dragdrop.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/css/style.css",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/dropzone/dropzone.js",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/css/selectize-bootstrap4.css",
+		"/C/Users/julio/Downloads/Hu7yspj.txt",
+		"/C/Users/julio/Downloads/Hu7yspj_thumb.txt",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/dropzone/dropzone.css",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/toolbar.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/datatables_lib.html",
+		"/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/preferences/STSPlayer",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home/forms.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/auth/forms.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/auth/register.html",
+		"/C/Users/julio/Dropbox/Projects/flash_tools/README.md",
+		"/C/Users/julio/Dropbox/Projects/flash_tools/install_flash_tools.bat",
+		"/C/Users/julio/Dropbox/Projects/flash_tools/removeDecimal.jsfl",
+		"//mcd-one/database/assets/scripts/adobe_scripts/jsx/AN_exportCoordinates.jsfl",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/test.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/selectize.js-master/examples/basic.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/selectize/examples/basic.html",
 		"/C/Users/julio/Dropbox/Projects/test/Dropzone simple example.html",
 		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/table.html",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/table.html",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home/forms.py",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/dropzone/dropzone.js",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/dropzone/dropzone.scss",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/lib/dropzone/dropzone.css",
 		"/C/Users/julio/Dropbox/Projects/tactic_file_manager/tactic.py",
 		"//mcd-one/database/assets/scripts/maya_scripts/qt_tactic_main.py",
 		"/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/saves/IRONCLAD.autosave",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/run.py",
-		"/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/preferences/STSPlayer",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home/views.py",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/models.py",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/config.py",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/__init__.py",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/auth/forms.py",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/mcd_database.sublime-project",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/README.md",
 		"//mcd-one/database/assets/scripts/manga_scripts/templates/manga_image.template",
 		"//mcd-one/database/assets/scripts/dhtmlxGantt/index1.html",
 		"//mcd-one/database/assets/scripts/adobe_scripts/index.html",
@@ -672,7 +755,6 @@
 		"//salt/salt-master/salt/arnold.sls",
 		"//salt/salt-master/salt/miner.sls",
 		"/C/Users/julio/Desktop/Slay.the.Spire.Patch.9/runs/IRONCLAD/1517997388.run",
-		"/C/Users/julio/Dropbox/Projects/skype_notifications/sheets_skype.py",
 		"//mcd-one/database/assets/scripts/mcd_scripts/sheets_skype.py",
 		"/C/Users/julio/Dropbox/Projects/flash_tools/centerElements.jsfl",
 		"/C/Users/julio/Desktop/Slay.the.Spire.Patch.9/info.displayconfig",
@@ -680,11 +762,8 @@
 		"/C/Users/julio/Desktop/Slay.the.Spire.Patch.9/config.json",
 		"/C/Users/julio/Dropbox/Projects/flash_tools/converttoSymbol.jsfl",
 		"/C/Users/julio/AppData/Local/Adobe/Flash CC 2015/en_US/Configuration/Commands/fl_tool.jsfl",
-		"//mcd-one/database/assets/scripts/adobe_scripts/jsx/AN_exportCoordinates.jsfl",
 		"/E/xmr stuff/raytracer/bin/config.txt",
 		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/env.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/config.py",
-		"/C/Users/julio/Dropbox/Projects/flash_tools/install_flash_tools.bat",
 		"/C/software/illustrator_serial.txt",
 		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/home/views.py",
 		"/C/Users/julio/Dropbox/Projects/spaceteam/scenario.py",
@@ -694,8 +773,6 @@
 		"//mcd-one/mcd_backup/電子遊藝/5909_開心消消樂/01_doc____企劃文件/h5_phone消消樂老虎機_Prototype_20160714/resources/screens/1dec1497-2038-4234-aa8d-da508a7f03bf-1468468345606.js",
 		"/C/Apache22/mcd_project_folders/templates/archive_template.html",
 		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/toolbar.html",
-		"/C/Users/julio/Dropbox/Apache22/mcd_project_folders/templates/archive_template.html",
-		"/C/Users/julio/Dropbox/Apache22/mcd_project_folders/main.py",
 		"/C/Users/julio/Dropbox/Apache22/mcd_project_folders/templates/archive_template1.html",
 		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/lib/bootstrap-4.0.0-beta.3/scss/_buttons.scss",
 		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/lib/bootstrap-4.0.0-beta.2/scss/_buttons.scss",
@@ -712,54 +789,11 @@
 		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/project_form.html",
 		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/__init__.py",
 		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/home/__init__.py",
-		"/C/Apache22/spaceteam/spaceteam.py",
-		"/C/Apache22/spaceteam/game.py",
-		"/C/Apache22/mcd_project_folders/main.py",
-		"//salt/salt-master/salt/scripts/vray_license.bat",
-		"/C/Users/julio/Downloads/vray_license.bat",
-		"//salt/salt-master/salt/installers/config.xml",
-		"/C/Program Files/Chaos Group/V-Ray/3dsmax 2017 for x64/uninstall/install.log",
-		"/C/Program Files/Chaos Group/V-Ray/3dsmax 2017 for x64/utils/vrayinstall.ms",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/add_project_form.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/base.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/_formhelpers.html",
-		"/C/Users/julio/Dropbox/Projects/spaceteam/templates/lounge.html",
-		"/C/Users/julio/Desktop/deadline.ini",
-		"/C/Users/julio/Desktop/hosts",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/home/events.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/auth/views.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/home/forms.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/auth/login.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/auth/register.html",
-		"/C/Users/julio/Dropbox/Projects/spaceteam/templates/login.html",
-		"/C/Users/julio/Dropbox/Projects/spaceteam/templates/game.html",
-		"/C/Users/julio/Dropbox/Projects/spaceteam/jqui01.html",
-		"/C/Users/julio/Dropbox/Projects/mcd_bot/add_bot.html",
-		"/C/Users/julio/Dropbox/Projects/mcd_bot/main.py",
-		"//mcd-one/database/assets/scripts/image_scripts/jc_render_cleaner.py",
-		"//mcd-one/database/assets/scripts/image_scripts/sequence_crop.py",
-		"/C/Users/julio/Dropbox/Projects/salt_control_panel/data/saltcmd_presets_mcd.txt",
-		"//salt/salt-master/salt/deadline.sls",
-		"//salt/salt-master/salt/win/repo-ng/renderman.sls",
-		"//salt/salt-master/salt/deadline10.sls",
-		"//salt/salt-master/salt/win/repo-ng/deadline.sls",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/auth/forms.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/models.py",
-		"//mcd-one/database/assets/scripts/mcd_scripts/sheets_skype.bat",
-		"//mcd-one/database/assets/scripts/mcd_scripts/mcd_wiki_skype.bat",
-		"/C/Users/julio/Dropbox/Projects/mcd_bot/secret.txt",
-		"//mcd-one/database/assets/scripts/mcd_scripts/wiki_skype.py",
-		"//mcd-one/database/assets/scripts/tactic_scripts/skype_rest.py",
-		"/C/skype.txt",
-		"//mcd-one/database/assets/scripts/tactic_scripts/tt_notify_daily_duty.bat",
-		"//mcd-one/database/assets/scripts/tactic_scripts/tt_notify_daily_duty.py",
-		"/C/Users/julio/Dropbox/Projects/wiki_skype/wiki_skype.py",
-		"/C/Users/julio/Dropbox/Projects/mcd_bot/echo.py",
-		"/C/Users/julio/Dropbox/Projects/mcd_bot/tasks.py"
+		"/C/Apache22/spaceteam/spaceteam.py"
 	],
 	"find":
 	{
-		"height": 40.0
+		"height": 27.0
 	},
 	"find_in_files":
 	{
@@ -770,9 +804,110 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
+			"jinja2_escapejs_filter",
+			"},",
+			"base_path",
+			"category_filter",
+			"\"",
+			"category",
+			"x",
+			"file_path",
+			"\n{%",
+			"<!-- ",
+			"filter_by(category=category_filter)",
+			"category",
+			"),",
+			"category=addons",
+			"{{ url_for(",
+			"}}",
+			"project_name",
+			"\">",
+			"../static/",
+			"\">",
+			"../static/",
+			"static",
+			"ext",
+			"ChineseAnalyzer",
+			"selectize",
+			" || conf.ipOpts ",
+			"|| conf.ipOpts",
+			"selectize",
+			"text",
+			"hide",
+			"select",
+			"category",
+			"socket",
+			"hide",
+			"select",
+			"hide",
+			"temp",
+			"optx",
+			"\\",
+			"\\\\",
+			"  \n",
+			", ",
+			"query",
+			"...",
+			"parser",
+			"dt_data",
+			"key",
+			"d",
+			"self.request_values",
+			"menu",
+			"menus",
+			"temp",
+			"data",
+			"');\n",
+			"namespace",
+			"return",
+			"namespace",
+			"}}\n",
+			"')",
+			", None)[0]",
+			"kwargs",
+			"%5D=0",
+			"%5B0%5D%5B",
+			"test",
+			"myDropzone.options.url",
+			"upload",
+			"selectize-control.multi",
+			"current_user",
+			"dt_data",
+			"j",
+			"i",
+			"dt_data()",
+			"as_dict",
+			"asOptions",
+			"copy",
+			"as_dict",
+			"timestamp",
+			"category",
+			"id",
+			"null",
+			"media",
+			"media_type",
+			"data",
+			"x",
+			"data",
+			"\n",
+			" ",
+			"media_type",
+			"Username",
+			"username",
+			"Username",
+			"username",
+			"Username",
+			"username",
+			"Username",
+			"username",
+			"Media_Type",
+			"media_type",
+			"myDropzone",
+			"convertDB",
+			"console",
 			"widows",
 			"dropzone",
 			"btn",
@@ -799,104 +934,7 @@
 			"event",
 			"relics",
 			"window",
-			"self",
-			"window",
-			"boss_relics",
-			"window",
-			"with",
-			"fileOpen",
-			"tacticLoad",
-			"load",
-			";",
-			"`",
-			"`{",
-			"renderfarm2",
-			"renderfarm1",
-			"renderfarm2",
-			"192.168.160.90",
-			"-L \"renderfarm1-vm6.bb.com,renderfarm1-vm7.bb.com,renderfarm1-vm8.bb.com\"",
-			"Deadline8",
-			"8.0",
-			"values_expr",
-			"task_model",
-			"del",
-			"\\\\mcd-one\\database\\assets\\scripts\\adobe_scripts\\jsx\\",
-			"User",
-			"user",
-			"User",
-			"user",
-			"User",
-			"user",
-			"User",
-			"user",
-			"username",
-			"backref",
-			"project",
-			"len",
-			" data-original-title=",
-			"dropdown-item",
-			"#",
-			"process",
-			"shot",
-			"namespace",
-			"project",
-			"\n    ",
-			"status",
-			"option_list",
-			", 'option_list': option_list",
-			"newDB",
-			"status_choices",
-			"table",
-			"status_choices",
-			"pipeline",
-			"project",
-			"data",
-			"namespace",
-			"\"",
-			"project",
-			"/project",
-			"example",
-			"status_id",
-			"table",
-			"data",
-			"delete_project",
-			"add_project",
-			"vray_adv_36003_max2017_x64.exe",
-			"2018",
-			"/",
-			"\\",
-			"\"",
-			".btn",
-			"field_group",
-			"form_",
-			"</div>",
-			"ids",
-			"     ",
-			"\n    ",
-			"project",
-			"username",
-			"'':",
-			"}\n",
-			"data",
-			"100px",
-			"\n                  ",
-			"<a",
-			"active",
-			"<li",
-			"css",
-			"select",
-			"\"",
-			"\"entries\"",
-			"entries",
-			"th",
-			"database",
-			"option",
-			"status_options",
-			"\"./",
-			"username",
-			"dashboard",
-			"\n<",
-			"render_field"
+			"self"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -908,7 +946,7 @@
 		"reverse": false,
 		"show_context": true,
 		"use_buffer2": true,
-		"whole_word": false,
+		"whole_word": true,
 		"wrap": true
 	},
 	"groups":
@@ -923,15 +961,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2616,
+						"buffer_size": 4403,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								989,
-								989
+								2361,
+								2361
 							]
 						],
 						"settings":
@@ -940,11 +978,11 @@
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
-						"translation.x": 429.0,
-						"translation.y": 0.0,
+						"translation.x": 0.0,
+						"translation.y": 1168.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
@@ -953,15 +991,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6935,
+						"buffer_size": 9569,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1767,
-								1767
+								4469,
+								4469
 							]
 						],
 						"settings":
@@ -971,27 +1009,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 569.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "app/home/forms.py",
+					"file": "config.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 982,
+						"buffer_size": 640,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								452,
-								452
+								235,
+								235
 							]
 						],
 						"settings":
@@ -1000,58 +1038,56 @@
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
-						"translation.x": 0.0,
+						"translation.x": 6.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "app/__init__.py",
+					"file": "run.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 965,
+						"buffer_size": 551,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								950,
-								950
+								262,
+								262
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
 					"buffer": 4,
-					"file": "app/models.py",
+					"file": "app/__init__.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1924,
+						"buffer_size": 1203,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1924,
-								1924
+								796,
+								796
 							]
 						],
 						"settings":
@@ -1064,24 +1100,54 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 5,
-					"file": "app/static/css/style.css",
+					"file": "app/models.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3944,
+						"buffer_size": 6618,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3944,
-								3944
+								4425,
+								4425
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "app/static/css/style.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4427,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4301,
+								4301
 							]
 						],
 						"settings":
@@ -1091,33 +1157,40 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2832.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 12,
 					"type": "text"
-				},
+				}
+			]
+		},
+		{
+			"selected": 1,
+			"sheets":
+			[
 				{
-					"buffer": 6,
-					"file": "app/static/lib/selectize/selectize.js-master/examples/basic.html",
+					"buffer": 7,
+					"file": "app/templates/base.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 21803,
+						"buffer_size": 4137,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1744,
-								1744
+								1850,
+								1850
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1125,33 +1198,71 @@
 					},
 					"stack_index": 3,
 					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 4,
-			"sheets":
-			[
+				},
 				{
-					"buffer": 7,
-					"file": "app/templates/test.html",
+					"buffer": 8,
+					"file": "app/templates/home/media.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1088,
+						"buffer_size": 11791,
+						"regions":
+						{
+							"bookmarks":
+							{
+								"flags": 144,
+								"icon": "bookmark",
+								"regions":
+								[
+									[
+										11284,
+										11284
+									]
+								],
+								"scope": "bookmarks"
+							}
+						},
+						"selection":
+						[
+							[
+								5769,
+								5022
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"word_wrap": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1311.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1233,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								750,
-								651
+								874,
+								874
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"auto_name": "",
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
@@ -1163,85 +1274,25 @@
 					"type": "text"
 				},
 				{
-					"buffer": 8,
-					"file": "app/templates/base.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2905,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2871,
-								2848
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "app/templates/home/table.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5146,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5146,
-								5146
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1755.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
 					"buffer": 10,
-					"file": "app/templates/home/toolbar.html",
+					"file": "app/templates/home/upload.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1373,
+						"buffer_size": 3894,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								945,
-								945
+								969,
+								969
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"syntax": "Packages/Python/Python.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
@@ -1249,7 +1300,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
@@ -1258,43 +1309,46 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 901,
+						"buffer_size": 1218,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								901,
-								901
+								1082,
+								1082
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax"
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"word_wrap": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
 					"buffer": 12,
-					"file": "app/static/lib/dropzone/dropzone.js",
+					"file": "app/templates/home/datatables_init.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 92953,
+						"buffer_size": 4183,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								78406,
-								78406
+								1914,
+								1914
 							]
 						],
 						"settings":
@@ -1302,35 +1356,6 @@
 							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 42840.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 15,
-					"type": "text"
-				},
-				{
-					"buffer": 13,
-					"file": "app/static/lib/dropzone/dropzone.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 11547,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4319,
-								4319
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/CSS/CSS.sublime-syntax",
-							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1340,55 +1365,27 @@
 					"type": "text"
 				},
 				{
-					"buffer": 14,
-					"file": "app/templates/home/datatables_init.js",
-					"semi_transient": false,
+					"buffer": 13,
+					"file": "app/templates/_formhelpers.html",
+					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 3285,
+						"buffer_size": 813,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2641,
-								2641
+								813,
+								813
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 972.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 15,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1257,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1256,
-								1256
-							]
-						],
-						"settings":
-						{
-							"auto_name": "Major Categories - Must choose",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1398,61 +1395,61 @@
 					"type": "text"
 				},
 				{
-					"buffer": 16,
-					"file": "/C/Users/julio/Desktop/Slay.The.Spire.Patch.11/preferences/STSPlayer",
+					"buffer": 14,
+					"file": "app/templates/home/toolbar.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 152,
+						"buffer_size": 1400,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								152,
-								152
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 16,
-					"type": "text"
-				},
-				{
-					"buffer": 17,
-					"file": "app/templates/home/index.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 511,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								511,
-								511
+								467,
+								467
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 4,
+							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 17,
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1819,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1135,
+								1135
+							]
+						],
+						"settings":
+						{
+							"auto_name": "Major Categories - Must choose",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 19.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 15,
 					"type": "text"
 				}
 			]
@@ -1460,11 +1457,11 @@
 	],
 	"incremental_find":
 	{
-		"height": 26.0
+		"height": 27.0
 	},
 	"input":
 	{
-		"height": 38.0
+		"height": 40.0
 	},
 	"layout":
 	{
@@ -1486,7 +1483,7 @@
 		"cols":
 		[
 			0.0,
-			0.416956521739,
+			0.394065430123,
 			1.0
 		],
 		"rows":
@@ -1498,17 +1495,17 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 282.0
+		"height": 233.0
 	},
 	"output.find_results":
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "Packages/Python/Python.sublime-build",
+	"pinned_build_system": "",
 	"project": "mcd_database.sublime-project",
 	"replace":
 	{
-		"height": 48.0
+		"height": 50.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1546,7 +1543,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 260.0,
+	"side_bar_width": 269.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

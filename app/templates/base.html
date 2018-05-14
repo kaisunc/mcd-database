@@ -17,18 +17,18 @@
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a href="{{ url_for('home.homepage') }}" class="navbar-brand">MCD DB</a>
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
+        <ul class="nav nav-pills navbar-nav">
         {% if current_user.is_authenticated %}
-          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='addons') }}">Addons</a></li>
-          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='effects') }}">Effects</a></li>
-          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='fonts') }}">Fonts</a></li>
-          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='images') }}">Images</a></li>
-          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='music') }}">Music</a></li>
-          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='sfx') }}">SFX</a></li>
-          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='software') }}">Software</a></li>
-          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='videos') }}">Videos</a></li>
-
-          <li class="nav-item active" namespace="project"><a class="nav-link" href="{{ url_for('home.media',category_filter='upload') }}">Upload</a></li>
+          <li class="nav-item active" namespace="project"><a class="nav-link" data-toggle="pill" filter_value="5" href="{{ url_for('home.media',category_filter='addons') }}">Addons</a></li>
+          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="4" href="{{ url_for('home.media',category_filter='effects') }}">Effects</a></li>
+          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="1" href="{{ url_for('home.media',category_filter='fonts') }}">Fonts</a></li>
+          <li class="nav-item active"><a class="nav-link active" data-toggle="pill" filter_value="3" href="{{ url_for('home.media',category_filter='images') }}">Images</a></li>
+          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="6" href="{{ url_for('home.media',category_filter='music') }}">Music</a></li>
+          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="7" href="{{ url_for('home.media',category_filter='sfx') }}">SFX</a></li>
+          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="2" href="{{ url_for('home.media',category_filter='software') }}">Software</a></li>
+          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="15" href="{{ url_for('home.media',category_filter='videos') }}">Videos</a></li>
+          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="" href="{{ url_for('home.media',category_filter='test') }}">Test</a></li>
+          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="" href="{{ url_for('home.media',category_filter='upload') }}">Upload</a></li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
@@ -45,12 +45,11 @@
         {% endif %}
       </ul>
     </div>
-    <a href="{{ url_for('home.homepage') }}" class="navbar-toggler-icon"></a>        
-  </nav>   
-      {% block body %}
-    {% endblock %}
-    <footer class="container">
-<!--     <p>© Julio 2017</p> -->
+    <!-- <a href="{{ url_for('home.homepage') }}" class="navbar-toggler-icon"></a>         -->
+  </nav>    
+  {% block body %}
+  {% endblock %}
+  <footer class="container">
   </footer>    
   {% block run_scripts %}{% endblock %}
 </body>

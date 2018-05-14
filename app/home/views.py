@@ -78,7 +78,8 @@ def category():
     columns = jinja2_escapejs_filter(columns)
     columnDefs = jinja2_escapejs_filter(columnDefs)
     fields = jinja2_escapejs_filter(fields)
-    return render_template('home/upload.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, category_filter='upload')
+    # return render_template('home/upload.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, category_filter='upload')
+    return render_template('home/media.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff, category_filter=category_filter)
 
 @home.route('/user', methods=['GET'])
 @login_required
