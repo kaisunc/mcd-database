@@ -5,8 +5,6 @@ from .. import db, socketio
 from .. import base_path
 from ..models import *
 
-print base_path
-
 '''
 fields
 target: editor
@@ -36,7 +34,6 @@ output: json list, {label: '', value: ''}
 
 '''
 
-
 @socketio.on('ajax_socket')
 def ajax_socket(*args):
     '''
@@ -47,7 +44,6 @@ def ajax_socket(*args):
     columns = [{u'mData': u'select-checkbox', u'data': u'select-checkbox'}, {u'mData': u'id', u'data': u'id'}, {u'mData': u'name', u'data': u'name'}, {u'mData': u'category', u'data': u'category'}, {u'mData': u'timestamp', u'data': u'timestamp'}, {u'mData': u'assigned', u'data': u'assigned'}, {u'mData': u'url', u'data': u'url'}, {u'mData': u'tags', u'data': u'tags'}, {u'mData': u'description', u'data': u'description'}, {u'mData': u'thumbnail', u'data': u'thumbnail'}]
 
     '''
-
     namespace = args[0]['namespace']
     settings = args[0]['settings']
     columns = args[0]['columns']
