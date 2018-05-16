@@ -44,28 +44,28 @@ def media(category_filter):
     namespace = "media"
     model = getModel(namespace)
     fields, columns, columnDefs = getFields(model)
-    print columnDefs
+
     ff = fields # for dropzone dropdown menu selection
-    for c in enumerate(columns):
-        if c[1]['data'] == 'thumbnail':
-            if category_filter == 'images':
-                c[1]['render'] = "thumb_render"    
-            elif category_filter == 'sfx' or category_filter == 'music':
-                c[1]['render'] = "sound_render"    
-            elif category_filter == "videos" or category_filter == "tutorial":
-                c[1]['render'] = "video_render"    
-            elif category_filter == "fonts":
-                c[1]['render'] = "font_render"                    
-            else:
-                c[1]['render'] = "thumb_render"
-        elif c[1]['data'] == 'timestamp':
-            c[1]['render'] = "datetime_render"
+    # for c in enumerate(columns):
+    #     if c[1]['data'] == 'thumbnail':
+    #         if category_filter == 'images':
+    #             c[1]['render'] = "thumb_render"    
+    #         elif category_filter == 'sfx' or category_filter == 'music':
+    #             c[1]['render'] = "sound_render"    
+    #         elif category_filter == "videos" or category_filter == "tutorial":
+    #             c[1]['render'] = "video_render"    
+    #         elif category_filter == "fonts":
+    #             c[1]['render'] = "font_render"                    
+    #         else:
+    #             c[1]['render'] = "thumb_render"
+    #     elif c[1]['data'] == 'timestamp':
+    #         c[1]['render'] = "datetime_render"
 
-
-    if category_filter == 'upload':
-        return render_template('home/upload.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff, category_filter=category_filter)
-    else:
-        return render_template('home/media_test.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff, category_filter=category_filter)
+    return render_template('home/media_test.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter)    
+    # if category_filter == 'upload':
+    #     return render_template('home/upload.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff, category_filter=category_filter)
+    # else:
+    #     return render_template('home/media_test.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter)
 
 @home.route('/category', methods=['GET'])
 @login_required
