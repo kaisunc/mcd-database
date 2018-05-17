@@ -105,6 +105,45 @@
           columns[i]['render'] = datetime_render;
         }   
       };    
+      category_filter = 3;
+      for(i=0;i<columns.length;i++){
+        if(columns[i]['data'] == 'thumbnail'){
+          if(category_filter == 1){
+            columns[i]['render'] = font_render;
+          }
+          else if(category_filter == 2){
+            columns[i]['render'] = thumb_render; 
+          }
+          else if(category_filter == 3){
+            columns[i]['render'] = thumb_render; 
+          }
+          else if(category_filter == 4){
+            columns[i]['render'] = thumb_render; 
+          }
+          else if(category_filter == 5){
+            columns[i]['render'] = thumb_render; 
+          }
+          else if(category_filter == 6){
+            columns[i]['render'] = sound_render; 
+          }
+          else if(category_filter == 7){
+            columns[i]['render'] = sound_render; 
+          }
+          else if(category_filter == 8){
+            columns[i]['render'] = video_render; 
+          }
+          else if(category_filter == 15){
+            columns[i]['render'] = video_render; 
+          }          
+          //console.log(columns[i]['render'].toString());                    
+        }
+        if(columns[i]['data'] == 'category' || columns[i]['data'] == 'assigned'){        
+          columns[i]['render'] = category_render; 
+        }
+        if(columns[i]['data'] == 'timestamp'){        
+          columns[i]['render'] = datetime_render; 
+        }          
+      } 
 
       var socketon = false; //ajax init socket 1 time only
       table = $('#' + namespace).DataTable( {

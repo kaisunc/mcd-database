@@ -61,11 +61,10 @@ def media(category_filter):
     #     elif c[1]['data'] == 'timestamp':
     #         c[1]['render'] = "datetime_render"
 
-    return render_template('home/media_test.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter)    
     # if category_filter == 'upload':
     #     return render_template('home/upload.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff, category_filter=category_filter)
     # else:
-    #     return render_template('home/media_test.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter)
+    return render_template('home/media_test.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter)
 
 @home.route('/category', methods=['GET'])
 @login_required

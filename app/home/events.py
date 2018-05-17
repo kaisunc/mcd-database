@@ -1,6 +1,9 @@
 from flask import session, json
 from flask_socketio import emit, join_room, leave_room
 from shutil import rmtree
+import base64, os
+from PIL import Image
+from io import BytesIO
 from .. import db, socketio
 from .. import base_path
 from ..models import *
@@ -52,17 +55,17 @@ def ajax_socket(*args):
     fields = args[0]['fields']
     search = settings['search']['value']
     model = getModel(namespace)
-
-    if category_filter != 'upload':
+    print category_filter
+    if category_filter != 0:
         if search == "":
-            items = model.query.filter_by(category=category_filter).order_by(model.id.desc()).limit(1000)
+            items = model.query.filter_by(category=category_filter).order_by(model.id.desc()).limit(100000)
         else:
             items = model.query.filter_by(category=category_filter).whoosh_search(search).all()
     else:
         if search == "":
-            items = model.query.order_by(model.id.desc()).limit(1000)
+            items = model.query.order_by(model.id.desc()).limit(100000)
         else:
-            items = model.query.whoosh_search(search).all()        
+            items = model.query.whoosh_search(search).all()
 
     start = int(settings['start'])
     length = int(settings['length'])
@@ -106,27 +109,16 @@ def init(*args):
 
 @socketio.on('create')
 def create(*args):
-    namespace = ""
-    pids = []
-    if len(args) != 0:
-        namespace = args[0]["namespace"]
-        data = args[0]["data"]
-        try:
-            multiple = args[0]["multiple"]
-        except:
-            pass
-    # ---
-    # base_path = "C:/Users/julio/source"
+    '''
+    Single and Multiple Modes using boolean "multiple"
+    '''
+    def decode_base64(data):
+        data = data.split(",")[-1]
+        missing_padding = len(data) % 4
+        if missing_padding != 0:
+            data += b'='* (4 - missing_padding)
+        return base64.decodestring(data)
 
-    # category  = request.args.get('category')
-    # file_id = request.args.get('file_id')
-    # folder_path = "%s/%s/%s" % (base_path, category, file_id)
-
-    # if os.path.isdir(folder_path) is False:
-    #     os.makedirs(folder_path)
-    # file_path = "%s/%s" % (folder_path, f.filename)
-
-    #----------
     def addRow(d):
         update = model()
         for k,v in d.iteritems():
@@ -134,6 +126,17 @@ def create(*args):
         db.session.add(update)
         db.session.flush()
         return update
+
+    namespace = ""
+    pids = []
+    if len(args) != 0:
+        namespace = args[0]["namespace"]
+        data = args[0]["data"]
+        thumbs = args[0]["thumbs"]
+        try:
+            multiple = args[0]["multiple"]
+        except:
+            pass
 
     model = getModel(namespace)
     fields, columns, columnDefs = getFields(model)
@@ -146,19 +149,35 @@ def create(*args):
 
         update = model.query.filter(model.id.in_(pids)).all()
         output = []
-        for x in update:
-            dt_data = json.dumps(x.as_dict1(fields))
+        for item in update:
+            item = item.as_dict1(fields)
+            item_id = item['id']
+            item_name = item['name']
+            item_category = item['category']
+            dt_data = json.dumps(item)
+
+            for thumb in thumbs:
+                if thumb['name'] == item_name:
+                    # t = decode_base64(thumb['thumb'])
+                    t = thumb['thumb'].split(",")[-1]
+                    thumb_path = "%s/%s/%08d" % (base_path, item_category['label'], item_id)
+                    if os.path.isdir(thumb_path) is False:
+                        os.makedirs(thumb_path)
+
+                    im = Image.open(BytesIO(base64.b64decode(t)))
+                    im.save(thumb_path + "/thumb.jpg", "JPEG", quality=80, optimize=True)
+
             emit('add_response', {'data': dt_data}, broadcast=True)
 
-    else:
-        update = addRow(data)
-        pid = update.id
+    # else:
+    #     update = addRow(data)
+    #     pid = update.id
 
-        db.session.commit()
+    #     db.session.commit()
 
-        update = model.query.filter_by(id=pid).first()
-        dt_data = json.dumps(update.as_dict1(fields))
-        emit('add_response', {'data': dt_data}, broadcast=True)
+    #     update = model.query.filter_by(id=pid).first()
+    #     dt_data = json.dumps(update.as_dict1(fields))
+    #     emit('add_response', {'data': dt_data}, broadcast=True)
 
 @socketio.on('update')
 def update(*args):
@@ -186,6 +205,7 @@ def update(*args):
     dt_data = json.dumps(update.as_dict1(fields))
     emit('update_response', {'data': dt_data}, broadcast=False)
 
+import time
 # if category is in use by any media, can't delete
 @socketio.on('remove')
 def remove(*args):
@@ -204,6 +224,9 @@ def remove(*args):
         db.session.delete(delete)
     db.session.commit()
 
+    start = time.time()
+
+
     try:
         ids = json.dumps(ids)
         emit('delete_response', {'ids': ids}, broadcast=True)
@@ -213,10 +236,11 @@ def remove(*args):
             category_id = remove['category']
             category = [c.name for c in categories if c.id == category_id][0]
             remove_path = "%s/%s/%08d" % (base_path, category, int(file_id))
-            rmtree(remove_path)        
+            rmtree(remove_path)
     except:
         print 'something wrong'
-  
+    end = time.time()
+    print(end - start)
     return 'ok'
 
 

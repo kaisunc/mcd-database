@@ -11,16 +11,17 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/DataTables/Select-1.2.5/css/select.bootstrap4.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.min.css') }}">
 
-    <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>    
+    <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/dropzone/dropzone.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/selectize/css/selectize-bootstrap4.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/selectize/css/selectize.css') }}">    
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/selectize/css/selectize.css') }}">
     <script>
-      var columns = JSON.parse('{{columns | tojson | safe}}');  //column string uses double quotes, so wrap it with single quotes 
+      var columns = JSON.parse('{{columns | tojson | safe}}');  //column string uses double quotes, so wrap it with single quotes
+      var columnBak = columns;
       var columnDefs = JSON.parse('{{columnDefs | tojson | safe}}');
-      var fields = JSON.parse('{{fields | tojson | safe}}');    
+      var fields = JSON.parse('{{fields | tojson | safe}}');
       var category_filter = "{{category_filter}}";
 
       //convert category_filter from name to id number
@@ -31,11 +32,15 @@
               category_filter = fields[f]['options'][s]['value'];
             }
           }
+          if(category_filter == 'upload'){
+            category_filter = 0;
+          }
         }
       }
+      console.log(category_filter);
     </script>
-    
-    <script src="{{ url_for('static', filename='lib/socket.io.js') }}"></script>  
+
+    <script src="{{ url_for('static', filename='lib/socket.io.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/datatables.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/Select-1.2.5/js/dataTables.select.min.js') }}"></script>
@@ -47,9 +52,9 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/moment.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='lib/socket.io.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='lib/dropzone/dropzone.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='lib/selectize/js/standalone/selectize.js') }}"></script>   
+    <script type="text/javascript" src="{{ url_for('static', filename='lib/selectize/js/standalone/selectize.js') }}"></script>
   <script>
-      Dropzone.autoDiscover = false;  
+      Dropzone.autoDiscover = false;
     </script>
 </head>
 
@@ -59,7 +64,7 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="nav nav-pills navbar-nav">
         {% if current_user.is_authenticated %}
-          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="" href="{{ url_for('home.media',category_filter='upload') }}"><i class="fa fa-upload"></i> Upload</a></li>
+          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="0" href="{{ url_for('home.media',category_filter='upload') }}"><i class="fa fa-upload"></i> Upload</a></li>
           <li class="nav-item active" namespace="project"><a class="nav-link" data-toggle="pill" filter_value="5" href="{{ url_for('home.media',category_filter='addons') }}">Addons</a></li>
           <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="4" href="{{ url_for('home.media',category_filter='effects') }}">Effects</a></li>
           <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="1" href="{{ url_for('home.media',category_filter='fonts') }}">Fonts</a></li>
@@ -86,7 +91,7 @@
       </ul>
     </div>
     <!-- <a href="{{ url_for('home.homepage') }}" class="navbar-toggler-icon"></a>         -->
-  </nav>    
+  </nav>
 
   <div class="row nav-spacer"></div>
   <div class="container">
@@ -104,7 +109,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-2">      
+  <div class="col-sm-2">
     <div class="category_menu dropdown">
       <button id="select_category" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="1">Fonts</button>
       <div class="dropdown-menu" aria-labelledby="select_category" id="select_category_dropdown">
@@ -119,7 +124,7 @@
   <div class="col-lg-9">
     <div class="add-tags">
       <input type="text" id="input-tags" class="" value="" placeholder="input tag here!">
-    </div>    
+    </div>
   </div>
 </div>
 </div>
@@ -134,7 +139,7 @@
   </table>
 
   <footer class="container">
-  </footer>    
+  </footer>
   <script>
     var thumbs =[];
     var myDropzone = new Dropzone("#media_drop", {
@@ -149,7 +154,7 @@
       var acceptedFiles = myDropzone.getAcceptedFiles();
       for(i=0; i < acceptedFiles.length; i++){
         myDropzone.removeFile(acceptedFiles[i]);
-      };      
+      };
     }
 
     myDropzone.on("addedfile", function(file) {
@@ -178,13 +183,12 @@
         $("#select_category").attr("value", 1);
       } else {
         $("#select_category").text("software");
-        $("#select_category").attr("value", 2);      
+        $("#select_category").attr("value", 2);
       }
     });
 
-
     myDropzone.on("thumbnail", function(file, dataUri) {
-      t = [file, dataUri];
+      t = {'name': file.name, 'thumb': dataUri}
       thumbs.push(t);
     });
 
@@ -201,16 +205,10 @@
           name = acceptedFiles[i]['name'];
           ext = name.split('.').pop()
           data = {"name": name, "category": category, "tags": tags, "assigned": user_id, "thumbnail": ""};
-
-          for(j=0;j<thumbs.length;j++){
-            if(thumbs[j][0].name == name){
-              thumb = thumbs[j][1];
-              data['thumbnail'] = thumb;
-            }
-          }
           itemlist.push(data);
         }
-        socket.emit('create', {'namespace': 'media', 'data': itemlist, 'multiple': 'true'} );
+        dz_data = {'namespace': 'media', 'data': itemlist, 'thumbs': thumbs, 'multiple': 'true'};
+        socket.emit('create', dz_data);
       }
     });
 
@@ -219,7 +217,7 @@
         dz_clear();
         selectize.clear();
       }
-    });  
+    });
 
     $select = $('#input-tags').selectize({
       persist: false,
@@ -227,8 +225,8 @@
       create: true
     });
 
-    selectize = $select[0].selectize;  
-    //________________________________________________    
+    selectize = $select[0].selectize;
+    //________________________________________________
 
     category_render =  function ( data, meta, row ) {
       return data.label;
@@ -237,24 +235,25 @@
       console.log('thumb_render');
       var id = ("00000000" + row['id']).substr(-8,8);
       var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
-      return '<a href="' + url +'" download><img class="thumbs" src="'+data+'"/></a>';
+      var thumb_url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/thumb.jpg";
+      return '<a href="' + url +'" download><img class="thumbs" src="'+thumb_url+'"/></a>';
     };
     sound_render = function (data, meta, row){
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];      
+      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
       return "<audio controls><source src=" + url + "></audio>";
     };
     video_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";      
+      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";
       return "<video preload='metadata' src=" + url + " controls></video>"
     };
     var font_render = function (data, meta, row) {
       console.log('working');
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";      
+      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";
       return "<a href=" + url + " download>" + "<div style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥</div><div style='font-family: &quot;" + id + "&quot;'>The quick brown fox jumped over the lazy dog</div></a>"
-    };   
+    };
     datetime_render = function (data, meta, row) {
       m = moment(data);
       return "<div>" + m.format("MM/DD") + "</div>"
@@ -271,19 +270,31 @@
           "ajax": function (data, callback, settings) {
                     socket.emit('ajax_socket', {'namespace': namespace, 'settings':data, 'columns': columns, 'fields': fields, 'columnDefs': columnDefs, 'category_filter': category_filter});
                       socket.on('init_response', function(response){
-                        output = JSON.parse(response);    
-                        callback(output);                      
-                      })                    
+                        output = JSON.parse(response);
+                        if(category_filter == 1){
+                          console.log('fonty');
+                          var newStyle = document.createElement('style');
+                          for(i=0;i<output['data'].length;i++){
+                            var id = ("00000000" + output['data'][i]['id']).substr(-8,8);
+                            var font_url = "http://" + window.location.hostname + "/download/fonts/" + id + "/" + output['data'][i]['name'];
+                            var font_face = "@font-face {font-family: '" + id + "'; src: url('" + font_url  + "') format('truetype');}"
+                            newStyle.appendChild(document.createTextNode(font_face));
+                          }
+                          var head = document.head || document.getElementsByTagName('head')[0]
+                          head.appendChild(newStyle);
+                        }
+                        callback(output);
+                      })
                   },
           "rowId": 'id',
-          "columns": columns,        
-          "columnDefs": columnDefs,      
-          "order": [[ 2, "desc" ]],        
+          "columns": columns,
+          "columnDefs": columnDefs,
+          "order": [[ 2, "desc" ]],
           "select": {
               "style": 'os',
               "selector": 'td:first-child'
           }
-      });     
+      });
       editor = new $.fn.dataTable.Editor( {
           data: output,
           ajax: function ( method, url, d, successCallback, errorCallback ) {
@@ -308,7 +319,7 @@
           table: '#' + namespace,
           idSrc:  'id',
           fields: fields
-      } );         
+      } );
       $('#' + namespace).on( 'click', 'tbody td:not(:first-child)', function (e) {
         var category = $(this).text();
 
@@ -321,8 +332,8 @@
 
         $("div.DTE_Field_InputControl select option:contains('" + category + "')").attr("selected", "selected");
         $("div.DTE_Field_InputControl select option:contains('" + category + "')").prop("selected", "selected");
-      } ); 
-    } 
+      } );
+    }
 
     function socketConnect(){
       socket.on('add_response', function(msg) {
@@ -335,7 +346,7 @@
 
         for(i=0;i<myDropzone.files.length;i++){
           if(myDropzone.files[i].name == file_name){
-            myDropzone.processFile(myDropzone.files[i]);      
+            myDropzone.processFile(myDropzone.files[i]);
             table.row.add(data).draw();
           }
         }
@@ -347,78 +358,86 @@
       })
 
       socket.on('delete_response', function(msg) {
+        console.log('delete');
         data = JSON.parse(msg['ids']);
         for(i=0;i<data.length;i++){
           id = data[i];
           table.row('#' + parseInt(id)).remove().draw();
         }
-      })      
+      })
     }
+
     function columnRender(columns, category_filter){
       for(i=0;i<columns.length;i++){
+        delete columns[i]['render'];
+        delete columns[i]['mRender'];
+        delete columns[i]['mData'];
         if(columns[i]['data'] == 'thumbnail'){
           if(category_filter == 1){
             columns[i]['render'] = font_render;
           }
           else if(category_filter == 2){
-            columns[i]['render'] = thumb_render; 
+            columns[i]['render'] = thumb_render;
           }
           else if(category_filter == 3){
-            columns[i]['render'] = thumb_render; 
+            columns[i]['render'] = thumb_render;
           }
           else if(category_filter == 4){
-            columns[i]['render'] = thumb_render; 
+            columns[i]['render'] = thumb_render;
           }
           else if(category_filter == 5){
-            columns[i]['render'] = thumb_render; 
+            columns[i]['render'] = thumb_render;
           }
           else if(category_filter == 6){
-            columns[i]['render'] = sound_render; 
+            columns[i]['render'] = sound_render;
           }
           else if(category_filter == 7){
-            columns[i]['render'] = sound_render; 
+            columns[i]['render'] = sound_render;
           }
           else if(category_filter == 8){
-            columns[i]['render'] = video_render; 
+            columns[i]['render'] = video_render;
           }
           else if(category_filter == 15){
-            columns[i]['render'] = video_render; 
-          }          
-          //console.log(columns[i]['render'].toString());                    
+            columns[i]['render'] = video_render;
+          }
+          else if(category_filter == 0){
+            columns[i]['render'] = thumb_render;
+          }
+          //console.log(columns[i]['render'].toString());
         }
-        if(columns[i]['data'] == 'category' || columns[i]['data'] == 'assigned'){        
-          columns[i]['render'] = category_render; 
+        if(columns[i]['data'] == 'category' || columns[i]['data'] == 'assigned'){
+          columns[i]['render'] = category_render;
         }
-        if(columns[i]['data'] == 'timestamp'){        
-          columns[i]['render'] = datetime_render; 
-        }          
-      }  
-      return columns     
+        if(columns[i]['data'] == 'timestamp'){
+          columns[i]['render'] = datetime_render;
+        }
+      }
+      return columns
     }
-     
+
+    function initPage(){
+      a = location.pathname;
+      t = $('a.nav-link[href="' + a + '"]')[0];
+      $(t).addClass('active');
+    }
 
     $('a.nav-link').click(function(e) {
-      if(location.href.split("/")[3] == ""){
-        location.href = location.origin + $(this).attr('href');
-      } else {
-        category_filter = parseInt($(this).attr("filter_value"));
-        var url = $(this).attr("href");
-        window.history.pushState("", "", url);
-        $("#dt-toolbar").appendTo("body");       
-        table.destroy();
-        $('#media').empty();
-        socket.destroy();
-        namespace = "{{namespace}}";
-        socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);        
-        socketConnect()
-        columns = [{'data': 'select-checkbox'}, {'data': 'thumbnail'}, {'data': 'id'}, {'data': 'name'}, {'data': 'category', 'render': 'category_render'}, {'data': 'timestamp'}, {'data': 'assigned', 'render': 'category_render'}, {'data': 'tags'}, {'data': 'description'}];
-        columns = columnRender(columns, category_filter)        
+      category_filter = parseInt($(this).attr("filter_value"));
+      var url = $(this).attr("href");
+      window.history.pushState("", "", url);
+      $("#dt-toolbar").appendTo("body");
+      table.destroy();
+      socket.destroy();
 
-        initDT(namespace, columns, columnDefs, fields, category_filter);
-        $("#dt-toolbar").appendTo(".top-toolbar");       
-      }
+      namespace = "{{namespace}}";
+      socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+      socketConnect()
+
+      columns = columnRender(columns, category_filter) //reset the object, functions seems to stick.
+
+      initDT(namespace, columns, columnDefs, fields, category_filter);
+      $("#dt-toolbar").appendTo(".top-toolbar");
     });
-       
 
   var editor;
   var table;
@@ -436,7 +455,7 @@
     columns = columnRender(columns, category_filter)
     socketConnect();
     initDT(namespace, columns, columnDefs, fields, category_filter);
-
+    initPage();
     $('.table-len').on("click", function(event){
       length = $(this).attr('value')
       table.page.len(length).draw();
@@ -445,9 +464,9 @@
 
     $('.table-search').on( 'keyup', function () {
       table.search( this.value ).draw();
-    } );  
+    } );
 
-    $( ".dt_add" ).bind({
+/*    $( ".dt_add" ).bind({
       click: function() {
         if(namespace == 'media'){
           if($("#media_drop").css("display") == "block"){
@@ -468,7 +487,7 @@
           });
         }
       }
-    });
+    });*/
     $( ".dt_remove" ).bind({
       click: function() {
         editor
@@ -479,14 +498,14 @@
       }
     });
 
-    $( ".dt_edit" ).bind({
+/*    $( ".dt_edit" ).bind({
       click: function() {
         editor
         .title( 'Update Entry')
         .buttons( 'Update' )
         .edit(table.rows( { selected: true } ).indexes());
       }
-    });
+    });*/
 
     $( ".dt_refresh" ).bind({
       click: function() {
@@ -500,10 +519,10 @@
       $(tt).attr("value", $(this).attr("value"));
     });
 
-    $("#dt-toolbar").appendTo(".top-toolbar");       
-  });    
+    $("#dt-toolbar").appendTo(".top-toolbar");
+  });
 
-  </script>    
+  </script>
 </body>
 
 </html>
