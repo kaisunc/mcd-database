@@ -63,7 +63,7 @@ def ajax_socket(*args):
             items = model.query.filter_by(category=category_filter).whoosh_search(search).all()
     else:
         if search == "":
-            items = model.query.order_by(model.id.desc()).limit(100000)
+            items = model.query.order_by(model.id.desc()).limit(1000)
         else:
             items = model.query.whoosh_search(search).all()
 

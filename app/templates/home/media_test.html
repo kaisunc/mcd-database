@@ -94,41 +94,42 @@
   </nav>
 
   <div class="row nav-spacer"></div>
-  <div class="container">
-<div class="row">
-  <div class="col-sm-12">
-    <div class="dropzone" id="media_drop"></div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-sm-1">
-    <div class="btn-toolbar" id="dz-toolbar">
-      <div class="btn-group">
-        <button class="btn dz_add" ><i class="fa fa-share-square-o"></i></button>
-        <button class="btn dz_clear" ><i class="fa fa-trash-o"></i></button>
+
+  <div class="container dz_container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="dropzone" id="media_drop"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-1">
+        <div class="btn-toolbar" id="dz-toolbar">
+          <div class="btn-group">
+            <button class="btn dz_add" ><i class="fa fa-share-square-o"></i></button>
+            <button class="btn dz_clear" ><i class="fa fa-trash-o"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="category_menu dropdown">
+          <button id="select_category" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="1">Fonts</button>
+          <div class="dropdown-menu" aria-labelledby="select_category" id="select_category_dropdown">
+            {% if ff %}
+              {% for d in ff[1].options %}
+                <a class="dropdown-item" href="javascript:void(0);" value="{{d.value}}">{{d.label}}</a>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-9">
+        <div class="add-tags">
+          <input type="text" id="input-tags" class="" value="" placeholder="input tag here!">
+        </div>
       </div>
     </div>
   </div>
-  <div class="col-sm-2">
-    <div class="category_menu dropdown">
-      <button id="select_category" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="1">Fonts</button>
-      <div class="dropdown-menu" aria-labelledby="select_category" id="select_category_dropdown">
-        {% if ff %}
-          {% for d in ff[1].options %}
-            <a class="dropdown-item" href="javascript:void(0);" value="{{d.value}}">{{d.label}}</a>
-          {% endfor %}
-        {% endif %}
-      </div>
-    </div>
   </div>
-  <div class="col-lg-9">
-    <div class="add-tags">
-      <input type="text" id="input-tags" class="" value="" placeholder="input tag here!">
-    </div>
-  </div>
-</div>
-</div>
-</div>
 
 
   {% if category_filter != 'upload' %}
@@ -415,6 +416,7 @@
       return columns
     }
 
+    //set nav bar pill to current location
     function initPage(){
       a = location.pathname;
       t = $('a.nav-link[href="' + a + '"]')[0];
@@ -434,9 +436,13 @@
       socketConnect()
 
       columns = columnRender(columns, category_filter) //reset the object, functions seems to stick.
-
       initDT(namespace, columns, columnDefs, fields, category_filter);
       $("#dt-toolbar").appendTo(".top-toolbar");
+      if(category_filter == 0){
+        $('.dz_container').css('display','block');
+      } else {
+        $('.dz_container').css('display','none');
+      }      
     });
 
   var editor;

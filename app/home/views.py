@@ -1,4 +1,4 @@
-import os
+import os, operator
 from flask import flash, request, redirect, render_template, url_for, json, send_from_directory
 from flask_login import login_required
 from werkzeug import secure_filename
@@ -34,6 +34,16 @@ def jinja2_escapejs_filter(value):
 
         return jinja2.Markup("".join(retval))
 
+def nameValue(fields, category_filter):
+    for f in fields:
+        if f['name'] == 'category':
+            for o in f['options']:
+                if o['label'] == category_filter:
+                    category_filter = o['value']    
+        if category_filter == 'upload':
+            category_filter = 0
+    return category_filter
+
 @home.route('/')
 def homepage():
     return render_template('home/index.html', title="Welcome")
@@ -46,25 +56,19 @@ def media(category_filter):
     fields, columns, columnDefs = getFields(model)
 
     ff = fields # for dropzone dropdown menu selection
-    # for c in enumerate(columns):
-    #     if c[1]['data'] == 'thumbnail':
-    #         if category_filter == 'images':
-    #             c[1]['render'] = "thumb_render"    
-    #         elif category_filter == 'sfx' or category_filter == 'music':
-    #             c[1]['render'] = "sound_render"    
-    #         elif category_filter == "videos" or category_filter == "tutorial":
-    #             c[1]['render'] = "video_render"    
-    #         elif category_filter == "fonts":
-    #             c[1]['render'] = "font_render"                    
-    #         else:
-    #             c[1]['render'] = "thumb_render"
-    #     elif c[1]['data'] == 'timestamp':
-    #         c[1]['render'] = "datetime_render"
+    category_filter = nameValue(fields, category_filter)
 
-    # if category_filter == 'upload':
-    #     return render_template('home/upload.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff, category_filter=category_filter)
-    # else:
-    return render_template('home/media_test.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter)
+    items = model.query.filter_by(category=category_filter).all()
+    tags = {}
+    for item in items:
+        for tag in item.tags.split(","):
+            if tag in tags:
+                tags[tag] = tags[tag] + 1
+            else:
+                tags[tag] = 1
+    
+    tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)            
+    return render_template('home/media.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter, tags=tags)
 
 @home.route('/category', methods=['GET'])
 @login_required
