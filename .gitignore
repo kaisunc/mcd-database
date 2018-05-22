@@ -1,8 +1,6 @@
 
 migrations/
 
-whoosh_index/
-
 assets/
 
 app/static/lib/selectize/selectize\.js-master/
