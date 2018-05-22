@@ -207,7 +207,7 @@
         }
         dz_data = {'namespace': 'media', 'data': itemlist, 'thumbs': thumbs, 'multiple': 'true'};
         socket.emit('create', dz_data);
-      
+
       }
     });
 
@@ -360,6 +360,22 @@
           table.row('#' + parseInt(id)).remove().draw();
         }
       })
+
+      socket.on('tag_response', function(msg){
+        tags = msg;
+        var container = $('<div />');
+
+        for(i=0;i<tags.length;i++){
+          container.append('<span class="badge badge-primary search-tag">' + tags[i]['tag'] + '</span>');
+        }
+        container.addClass('custom-popover');
+        $('#popover-content').html(container);
+      })
+
+      socket.on('zipped', function(){
+        $("#download_zip").submit();
+
+      })
     }
 
     function columnRender(columns, category_filter){
@@ -415,6 +431,25 @@
       a = location.pathname;
       t = $('a.nav-link[href="' + a + '"]')[0];
       $(t).addClass('active');
+
+    }
+
+    function initPopover(){
+      console.log('popover');
+      $('[data-toggle="popover"]').popover({
+        html: true,
+        content: function() {
+          return $('#popover-content').html();
+        }
+      });
+
+      $('[data-toggle="popover"]').on('shown.bs.popover', function () {
+        $('.search-tag').click(function(){
+          var search = $('.table-search').val() + " " + $(this).text();
+          $('.table-search').val(search);
+          table.search(search).draw();
+        });           
+      })
     }
 
     $('a.nav-link').click(function(e) {
@@ -425,8 +460,9 @@
       table.destroy();
       socket.destroy();
 
-      namespace = "{{namespace}}";
+      //namespace = "{{namespace}}";
       socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+      socket.emit('get_tags', {'category_filter':category_filter, 'namespace': namespace});
       socketConnect()
 
       columns = columnRender(columns, category_filter) //reset the object, functions seems to stick.
@@ -436,7 +472,9 @@
         $('.dz_container').css('display','block');
       } else {
         $('.dz_container').css('display','none');
-      }      
+      }
+      //initPopover()
+          
     });
 
   var editor;
@@ -447,22 +485,22 @@
   var output;
   var columns;
   var fields;
+  var tags;
   var category_filter;
 
   $(document).ready(function() {
-    console.log(category_filter);
     namespace = "{{namespace}}";
     socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     columns = columnRender(columns, category_filter)
     socketConnect();
     initDT(namespace, columns, columnDefs, fields, category_filter);
 
-    $("#dt-toolbar").appendTo(".top-toolbar");    
+    $("#dt-toolbar").appendTo(".top-toolbar");
     if(category_filter == 0){
       $('.dz_container').css('display','block');
     } else {
       $('.dz_container').css('display','none');
-    }     
+    }
 
     $('.table-len').on("click", function(event){
       length = $(this).attr('value')
@@ -521,19 +559,69 @@
       }
     });
 
+    $(".dt_download_selected").bind({
+      click: function() {
+        data = [];
+        rows = table.rows('.selected').data();
+        for(i=0;i<rows.length;i++){
+          data.push({'id': rows[i]['id'], 'name': rows[i]['name']});
+          category_filter = rows[i]['category']['label']
+        }
+        console.log(data);
+        console.log(category_filter);
+        socket.emit('download_selected', {'data': data, 'category_filter': category_filter})
+      }
+    });
+
     $(".dropdown-menu a").click(function(){
       tt = $(this).parent().parent().find('.dropdown-toggle');
       $(tt).text($(this).text());
       $(tt).attr("value", $(this).attr("value"));
     });
-  });
-  initPage();
-  $('[data-toggle="popover"]').popover({
-    html: true,
-    content: function() {
-      return $('#popover-content').html();
+
+    $("#clear-search").click(function(){
+      $('input.table-search').val("");
+      table.search("").draw();
+    });
+
+    function debounceSearch() {
+        var $searchBox = $('.table-search');
+        $searchBox.off();
+     
+        var searchDebouncedFn = debounce(function() {
+            table.search($searchBox.val()).draw();
+        }, 300);
+     
+        $searchBox.on("keyup", searchDebouncedFn);
     }
-  }); 
+     
+    /* from https://davidwalsh.name/javascript-debounce-function */
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+    debounceSearch();
+  });
+
+  initPage();
+  initPopover()
+  $(document).on('click', function (e) {
+    $('[data-toggle="popover"],[data-original-title]').each(function () {
+      if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+        (($(this).popover('hide').data('bs.popover')||{}).inState||{}).click = false  // fix for BS 3.3.6
+      }
+    });
+  });
 
   </script>
 </body>

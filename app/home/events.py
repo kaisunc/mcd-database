@@ -1,7 +1,7 @@
-from flask import session, json
+from flask import session, json, send_from_directory
 from flask_socketio import emit, join_room, leave_room
 from shutil import rmtree
-import base64, os
+import base64, os, operator, zipfile
 from PIL import Image
 from io import BytesIO
 from .. import db, socketio
@@ -55,7 +55,7 @@ def ajax_socket(*args):
     fields = args[0]['fields']
     search = settings['search']['value']
     model = getModel(namespace)
-    print category_filter
+
     if category_filter != 0:
         if search == "":
             items = model.query.filter_by(category=category_filter).order_by(model.id.desc()).limit(100000)
@@ -106,6 +106,31 @@ def init(*args):
     fields = json.dumps(fields) # input fields and type
     dt_data = json.dumps(dt_data)
     emit('init_response', {'data': dt_data, 'columns': columns, 'columnDefs': columnDefs, 'fields': fields}, broadcast=False)
+
+@socketio.on('get_tags')
+def get_tags(*args):
+    namespace = args[0]["namespace"]
+    category_filter = args[0]['category_filter']
+
+    model = getModel(namespace)    
+    items = model.query.filter_by(category=category_filter).all()
+    tags = {}
+    for item in items:
+        for tag in item.tags.split(","):
+            if tag in tags:
+                tags[tag] = tags[tag] + 1
+            else:
+                tags[tag] = 1
+    
+    tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)[0:25]
+    tags_list = []
+    for t in tags:
+        tags_list.append({'tag':t[0], 'count':t[1]})    
+    emit('tag_response', tags_list)
+   
+    #tags = [(u'fitness', 185), (u'poetry', 178), (u'dating', 175), (u'writing', 174), (u'business', 172), (u'inspiration', 172), (u'tips', 171), (u'uk', 170), (u'bible', 170), (u'love', 169), (u'homes', 169), (u'women', 167), (u'comedy', 167), (u'marketing', 166), (u'culture', 165), (u'landscape', 165), (u'music', 165), (u'blogging', 164), (u'life', 164), (u'photo', 163), (u'environment', 163), (u'philosophy', 162), (u'science', 161), (u'indie', 161), (u'film', 161), (u'dogs', 160), (u'comics', 160), (u'politics', 160), (u'religion', 159), (u'fashion', 159)]
+
+
 
 @socketio.on('create')
 def create(*args):
@@ -243,4 +268,19 @@ def remove(*args):
     print(end - start)
     return 'ok'
 
+
+@socketio.on('download_selected')
+def download_selected(*args):
+    print 'download selected'
+    oldwd = os.getcwd()
+
+    data = args[0]['data']
+    category_filter = args[0]['category_filter']
+    zf = zipfile.ZipFile(base_path + '/files.zip', mode='w')
+    for d in data:
+        file_path = "%s/%s/%08d" % (base_path, category_filter, int(d['id']))
+        os.chdir(file_path)
+        zf.write(d['name'])
+    zf.close()
+    emit('zipped')
 

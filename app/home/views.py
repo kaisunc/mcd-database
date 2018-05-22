@@ -1,5 +1,5 @@
 import os, operator
-from flask import flash, request, redirect, render_template, url_for, json, send_from_directory
+from flask import flash, request, redirect, render_template, url_for, json, send_from_directory, send_file
 from flask_login import login_required
 from werkzeug import secure_filename
 import jinja2
@@ -42,7 +42,7 @@ def nameValue(fields, category_filter):
                     category_filter = o['value']    
         if category_filter == 'upload':
             category_filter = 0
-    return category_filter
+    return category_filter  
 
 @home.route('/')
 def homepage():
@@ -67,8 +67,9 @@ def media(category_filter):
             else:
                 tags[tag] = 1
     
-    tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)            
-    return render_template('home/media.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter, tags=tags)
+    tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)          
+    print tags[0:30]  
+    return render_template('home/media.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter, tags=tags[0:30])
 
 @home.route('/category', methods=['GET'])
 @login_required
@@ -126,3 +127,9 @@ def upload():
 def download(category, file_id, filename):
     directory = "%s/%s/%s" % (base_path, category, str(file_id))
     return send_from_directory(directory=directory, filename=filename)
+
+@home.route('/download_zip', methods=['GET', 'POST'])
+@login_required
+def download_zip():
+    filename = base_path + "/files.zip"
+    return send_file(filename, attachment_filename="files.zip", as_attachment=True)
