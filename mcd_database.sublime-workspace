@@ -4,6 +4,38 @@
 		"selected_items":
 		[
 			[
+				"config",
+				"config_path"
+			],
+			[
+				"deb",
+				"debounceSearch"
+			],
+			[
+				"inline",
+				"inline-block"
+			],
+			[
+				"ini",
+				"initPage"
+			],
+			[
+				"column",
+				"columnBak"
+			],
+			[
+				"thumb",
+				"thumb_path"
+			],
+			[
+				"base",
+				"base_path"
+			],
+			[
+				"socke",
+				"socketConnect"
+			],
+			[
 				"category",
 				"category_filter"
 			],
@@ -130,10 +162,6 @@
 			[
 				"se",
 				"select-checkbox"
-			],
-			[
-				"column",
-				"columnDefs"
 			],
 			[
 				"cols",
@@ -316,10 +344,6 @@
 				"renderLayerData"
 			],
 			[
-				"base",
-				"baseFilename"
-			],
-			[
 				"whole",
 				"wholeWidth"
 			],
@@ -419,19 +443,28 @@
 			"file": "app/home/views.py",
 			"settings":
 			{
-				"buffer_size": 4403,
+				"buffer_size": 4656,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "from flask import session, json\nfrom flask_socketio import emit, join_room, leave_room\nfrom shutil import rmtree\nfrom .. import db, socketio\nfrom .. import base_path\nfrom ..models import *\n\n'''\nfields\ntarget: editor\ninput: model name, no query\noutput: list of fields that can be edited in datatables\nnotes: ignore fields that does not need to be edited, select fields will sub query\n\ncolumns\ntarget: table\ninput: header\nouput: list of columns and its data type\n\ncolumn def\ntarget: table\ninput: header\noutput: list similar to columns, contains css properties\n\ndt_data\ntaget: table\ninput: model items\noutput: json data, {key: '', value: ''}\n\noptions\ntarget: editor, select menu(select, radio)\ninput: model name, query model\noutput: json list, {label: '', value: ''}\n\n'''\n\n\n@socketio.on('ajax_socket')\ndef ajax_socket(*args):\n    '''\n    main entry point for displaying datatables\n    settings = {u'search': {u'regex': False, u'value': u''}, u'draw': 1, u'start': 0, u'length': 20, u'order': [{u'column': 1, u'dir': u'desc'}], u'columns': [{u'orderable': False, u'search': {u'regex': False, u'value': u''}, u'data': u'select-checkbox', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'id', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'name', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'category', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'timestamp', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'assigned', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'url', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'tags', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'description', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'thumbnail', u'name': u'', u'searchable': True}]}\n    settings = {u'search': {u'regex': False, u'value': u''}, u'draw': 2, u'start': 0, u'length': 20, u'order': [{u'column': 2, u'dir': u'asc'}], u'columns': [{u'orderable': False, u'search': {u'regex': False, u'value': u''}, u'data': u'select-checkbox', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'id', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'name', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'category', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'timestamp', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'assigned', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'url', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'tags', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'description', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'thumbnail', u'name': u'', u'searchable': True}]}\n\n    columns = [{u'mData': u'select-checkbox', u'data': u'select-checkbox'}, {u'mData': u'id', u'data': u'id'}, {u'mData': u'name', u'data': u'name'}, {u'mData': u'category', u'data': u'category'}, {u'mData': u'timestamp', u'data': u'timestamp'}, {u'mData': u'assigned', u'data': u'assigned'}, {u'mData': u'url', u'data': u'url'}, {u'mData': u'tags', u'data': u'tags'}, {u'mData': u'description', u'data': u'description'}, {u'mData': u'thumbnail', u'data': u'thumbnail'}]\n\n    '''\n\n    namespace = args[0]['namespace']\n    settings = args[0]['settings']\n    columns = args[0]['columns']\n    columnDefs = args[0]['columnDefs']\n    category_filter = args[0]['category_filter']\n    fields = args[0]['fields']\n    search = settings['search']['value']\n    model = getModel(namespace)\n\n    if category_filter != 'upload':\n        if search == \"\":\n            items = model.query.filter_by(category=category_filter).order_by(model.id.desc()).limit(1000)\n        else:\n            items = model.query.filter_by(category=category_filter).whoosh_search(search).all()\n    else:\n        if search == \"\":\n            items = model.query.order_by(model.id.desc()).limit(1000)\n        else:\n            items = model.query.whoosh_search(search).all()        \n\n    start = int(settings['start'])\n    length = int(settings['length'])\n    sort_column = int(settings['order'][0]['column']) # column number\n    sort_column_name = columns[sort_column]['data'] # column name\n    sort_direction = settings['order'][0]['dir']\n\n    dt_data = []\n    for row in items:\n        dt_data.append(row.as_dict1(fields))\n    recordsTotal = len(dt_data)\n\n    dt_data = custom_sort(dt_data, fields, sort_column_name, sort_direction)\n    dt_data = custom_paging(dt_data, start, length)\n\n\n    t = json.dumps({\"draw\": settings['draw'], \"recordsTotal\": recordsTotal, \"recordsFiltered\": recordsTotal, \"data\": dt_data})\n    emit('init_response', t, broadcast=False)\n\nfields = []\n@socketio.on('init')\ndef init(*args):\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n\n    model = getModel(namespace)\n\n    items = model.query.limit(10000).all()\n    fields, columns, columnDefs = getFields(model)\n\n    dt_data = []\n    for row in items:\n        #dt_data.append(row.dt_data_row())\n        dt_data.append(row.as_dict1(fields))\n\n    columnDefs = json.dumps(columnDefs)\n    columns = json.dumps(columns) #\n    fields = json.dumps(fields) # input fields and type\n    dt_data = json.dumps(dt_data)\n    emit('init_response', {'data': dt_data, 'columns': columns, 'columnDefs': columnDefs, 'fields': fields}, broadcast=False)\n\n@socketio.on('create')\ndef create(*args):\n    namespace = \"\"\n    pids = []\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n        data = args[0][\"data\"]\n        try:\n            multiple = args[0][\"multiple\"]\n        except:\n            pass\n    # ---\n    # base_path = \"C:/Users/julio/source\"\n\n    # category  = request.args.get('category')\n    # file_id = request.args.get('file_id')\n    # folder_path = \"%s/%s/%s\" % (base_path, category, file_id)\n\n    # if os.path.isdir(folder_path) is False:\n    #     os.makedirs(folder_path)\n    # file_path = \"%s/%s\" % (folder_path, f.filename)\n\n    #----------\n    def addRow(d):\n        update = model()\n        for k,v in d.iteritems():\n            setattr(update, k, v)\n        db.session.add(update)\n        db.session.flush()\n        return update\n\n    model = getModel(namespace)\n    fields, columns, columnDefs = getFields(model)\n    if multiple == 'true':\n        for d in data:\n            update = addRow(d)\n            pids.append(update.id)\n\n        db.session.commit()\n\n        update = model.query.filter(model.id.in_(pids)).all()\n        output = []\n        for x in update:\n            dt_data = json.dumps(x.as_dict1(fields))\n            emit('add_response', {'data': dt_data}, broadcast=True)\n\n    else:\n        update = addRow(data)\n        pid = update.id\n\n        db.session.commit()\n\n        update = model.query.filter_by(id=pid).first()\n        dt_data = json.dumps(update.as_dict1(fields))\n        emit('add_response', {'data': dt_data}, broadcast=True)\n\n@socketio.on('update')\ndef update(*args):\n    namespace = \"\"\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n        pid = args[0][\"id\"]\n        data = args[0][\"data\"]\n\n    model = getModel(namespace)\n    fields, columns, columnDefs = getFields(model)\n    update = model.query.filter_by(id=pid).first()\n    cols = update.__table__.columns.keys()\n\n    db.session.flush()\n    now = db.func.now()\n    for k, v in data.iteritems():\n        setattr(update, k, v)\n        if 'timestamp' in cols:\n            update.timestamp = now\n    db.session.commit()\n    update = model.query.filter_by(id=pid).first()\n    #dt_data = json.dumps(update.dt_data_row())\n\n    dt_data = json.dumps(update.as_dict1(fields))\n    emit('update_response', {'data': dt_data}, broadcast=False)\n\n# if category is in use by any media, can't delete\n@socketio.on('remove')\ndef remove(*args):\n    namespace = \"\"\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n        ids = args[0][\"ids\"]\n\n    db.session.flush()\n    model = getModel(namespace)\n\n    remove_list = []\n    for i in ids:\n        delete = model.query.filter_by(id=i).one()\n        remove_list.append({'id': i, 'category': delete.category})\n        db.session.delete(delete)\n    db.session.commit()\n\n    try:\n        ids = json.dumps(ids)\n        emit('delete_response', {'ids': ids}, broadcast=True)\n        categories = Category.query.all()\n        for remove in remove_list:\n            file_id = remove['id']\n            category_id = remove['category']\n            category = [c.name for c in categories if c.id == category_id][0]\n            remove_path = \"%s/%s/%08d\" % (base_path, category, int(file_id))\n            rmtree(remove_path)        \n    except:\n        print 'something wrong'\n  \n    return 'ok'\n\n\n",
-			"file": "app/home/events.py",
-			"file_size": 9812,
-			"file_write_time": 131691181006114874,
+			"file": "app/templates/auth/register.html",
 			"settings":
 			{
-				"buffer_size": 9569,
+				"buffer_size": 712,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "from flask import session, json, send_from_directory\nfrom flask_socketio import emit, join_room, leave_room\nfrom shutil import rmtree\nimport base64, os, operator, zipfile\nfrom PIL import Image\nfrom io import BytesIO\nfrom .. import db, socketio\nfrom .. import base_path\nfrom ..models import *\n\n'''\nfields\ntarget: editor\ninput: model name, no query\noutput: list of fields that can be edited in datatables\nnotes: ignore fields that does not need to be edited, select fields will sub query\n\ncolumns\ntarget: table\ninput: header\nouput: list of columns and its data type\n\ncolumn def\ntarget: table\ninput: header\noutput: list similar to columns, contains css properties\n\ndt_data\ntaget: table\ninput: model items\noutput: json data, {key: '', value: ''}\n\noptions\ntarget: editor, select menu(select, radio)\ninput: model name, query model\noutput: json list, {label: '', value: ''}\n\n'''\n\n@socketio.on('ajax_socket')\ndef ajax_socket(*args):\n    '''\n    main entry point for displaying datatables\n    settings = {u'search': {u'regex': False, u'value': u''}, u'draw': 1, u'start': 0, u'length': 20, u'order': [{u'column': 1, u'dir': u'desc'}], u'columns': [{u'orderable': False, u'search': {u'regex': False, u'value': u''}, u'data': u'select-checkbox', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'id', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'name', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'category', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'timestamp', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'assigned', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'url', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'tags', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'description', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'thumbnail', u'name': u'', u'searchable': True}]}\n    settings = {u'search': {u'regex': False, u'value': u''}, u'draw': 2, u'start': 0, u'length': 20, u'order': [{u'column': 2, u'dir': u'asc'}], u'columns': [{u'orderable': False, u'search': {u'regex': False, u'value': u''}, u'data': u'select-checkbox', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'id', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'name', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'category', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'timestamp', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'assigned', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'url', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'tags', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'description', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'thumbnail', u'name': u'', u'searchable': True}]}\n\n    columns = [{u'mData': u'select-checkbox', u'data': u'select-checkbox'}, {u'mData': u'id', u'data': u'id'}, {u'mData': u'name', u'data': u'name'}, {u'mData': u'category', u'data': u'category'}, {u'mData': u'timestamp', u'data': u'timestamp'}, {u'mData': u'assigned', u'data': u'assigned'}, {u'mData': u'url', u'data': u'url'}, {u'mData': u'tags', u'data': u'tags'}, {u'mData': u'description', u'data': u'description'}, {u'mData': u'thumbnail', u'data': u'thumbnail'}]\n\n    '''\n    namespace = args[0]['namespace']\n    settings = args[0]['settings']\n    columns = args[0]['columns']\n    columnDefs = args[0]['columnDefs']\n    category_filter = args[0]['category_filter']\n    fields = args[0]['fields']\n    search = settings['search']['value']\n    model = getModel(namespace)\n\n    if category_filter != 0:\n        if search == \"\":\n            items = model.query.filter_by(category=category_filter).order_by(model.id.desc()).limit(100000)\n        else:\n            items = model.query.filter_by(category=category_filter).whoosh_search(search).all()\n    else:\n        if search == \"\":\n            items = model.query.order_by(model.id.desc()).limit(1000)\n        else:\n            items = model.query.whoosh_search(search).all()\n\n    start = int(settings['start'])\n    length = int(settings['length'])\n    sort_column = int(settings['order'][0]['column']) # column number\n    sort_column_name = columns[sort_column]['data'] # column name\n    sort_direction = settings['order'][0]['dir']\n\n    dt_data = []\n    for row in items:\n        dt_data.append(row.as_dict1(fields))\n    recordsTotal = len(dt_data)\n\n    dt_data = custom_sort(dt_data, fields, sort_column_name, sort_direction)\n    dt_data = custom_paging(dt_data, start, length)\n\n\n    t = json.dumps({\"draw\": settings['draw'], \"recordsTotal\": recordsTotal, \"recordsFiltered\": recordsTotal, \"data\": dt_data})\n    emit('init_response', t, broadcast=False)\n\nfields = []\n@socketio.on('init')\ndef init(*args):\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n\n    model = getModel(namespace)\n\n    items = model.query.limit(10000).all()\n    fields, columns, columnDefs = getFields(model)\n\n    dt_data = []\n    for row in items:\n        #dt_data.append(row.dt_data_row())\n        dt_data.append(row.as_dict1(fields))\n\n    columnDefs = json.dumps(columnDefs)\n    columns = json.dumps(columns) #\n    fields = json.dumps(fields) # input fields and type\n    dt_data = json.dumps(dt_data)\n    emit('init_response', {'data': dt_data, 'columns': columns, 'columnDefs': columnDefs, 'fields': fields}, broadcast=False)\n\n@socketio.on('get_tags')\ndef get_tags(*args):\n    namespace = args[0][\"namespace\"]\n    category_filter = args[0]['category_filter']\n\n    model = getModel(namespace)    \n    items = model.query.filter_by(category=category_filter).all()\n    tags = {}\n    for item in items:\n        for tag in item.tags.split(\",\"):\n            if tag in tags:\n                tags[tag] = tags[tag] + 1\n            else:\n                tags[tag] = 1\n    \n    tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)[0:25]\n    tags_list = []\n    for t in tags:\n        tags_list.append({'tag':t[0], 'count':t[1]})    \n    emit('tag_response', tags_list)\n   \n    #tags = [(u'fitness', 185), (u'poetry', 178), (u'dating', 175), (u'writing', 174), (u'business', 172), (u'inspiration', 172), (u'tips', 171), (u'uk', 170), (u'bible', 170), (u'love', 169), (u'homes', 169), (u'women', 167), (u'comedy', 167), (u'marketing', 166), (u'culture', 165), (u'landscape', 165), (u'music', 165), (u'blogging', 164), (u'life', 164), (u'photo', 163), (u'environment', 163), (u'philosophy', 162), (u'science', 161), (u'indie', 161), (u'film', 161), (u'dogs', 160), (u'comics', 160), (u'politics', 160), (u'religion', 159), (u'fashion', 159)]\n\n\n\n@socketio.on('create')\ndef create(*args):\n    '''\n    Single and Multiple Modes using boolean \"multiple\"\n    '''\n    def decode_base64(data):\n        data = data.split(\",\")[-1]\n        missing_padding = len(data) % 4\n        if missing_padding != 0:\n            data += b'='* (4 - missing_padding)\n        return base64.decodestring(data)\n\n    def addRow(d):\n        update = model()\n        for k,v in d.iteritems():\n            setattr(update, k, v)\n        db.session.add(update)\n        db.session.flush()\n        return update\n\n    namespace = \"\"\n    pids = []\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n        data = args[0][\"data\"]\n        thumbs = args[0][\"thumbs\"]\n        try:\n            multiple = args[0][\"multiple\"]\n        except:\n            pass\n\n    model = getModel(namespace)\n    fields, columns, columnDefs = getFields(model)\n    if multiple == 'true':\n        for d in data:\n            update = addRow(d)\n            pids.append(update.id)\n\n        db.session.commit()\n\n        update = model.query.filter(model.id.in_(pids)).all()\n        output = []\n        for item in update:\n            item = item.as_dict1(fields)\n            item_id = item['id']\n            item_name = item['name']\n            item_category = item['category']\n            dt_data = json.dumps(item)\n\n            for thumb in thumbs:\n                if thumb['name'] == item_name:\n                    # t = decode_base64(thumb['thumb'])\n                    t = thumb['thumb'].split(\",\")[-1]\n                    thumb_path = \"%s/%s/%08d\" % (base_path, item_category['label'], item_id)\n                    if os.path.isdir(thumb_path) is False:\n                        os.makedirs(thumb_path)\n\n                    im = Image.open(BytesIO(base64.b64decode(t)))\n                    im = im.convert(\"RGB\")\n                    im.save(thumb_path + \"/thumb.jpg\", \"JPEG\", quality=80, optimize=True)\n\n            emit('add_response', {'data': dt_data}, broadcast=True)\n\n    # else:\n    #     update = addRow(data)\n    #     pid = update.id\n\n    #     db.session.commit()\n\n    #     update = model.query.filter_by(id=pid).first()\n    #     dt_data = json.dumps(update.as_dict1(fields))\n    #     emit('add_response', {'data': dt_data}, broadcast=True)\n\n@socketio.on('update')\ndef update(*args):\n    namespace = \"\"\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n        pid = args[0][\"id\"]\n        data = args[0][\"data\"]\n\n    model = getModel(namespace)\n    fields, columns, columnDefs = getFields(model)\n    update = model.query.filter_by(id=pid).first()\n    cols = update.__table__.columns.keys()\n\n    db.session.flush()\n    now = db.func.now()\n    for k, v in data.iteritems():\n        setattr(update, k, v)\n        if 'timestamp' in cols:\n            update.timestamp = now\n    db.session.commit()\n    update = model.query.filter_by(id=pid).first()\n    #dt_data = json.dumps(update.dt_data_row())\n\n    dt_data = json.dumps(update.as_dict1(fields))\n    emit('update_response', {'data': dt_data}, broadcast=False)\n\nimport time\n# if category is in use by any media, can't delete\n@socketio.on('remove')\ndef remove(*args):\n    namespace = \"\"\n    if len(args) != 0:\n        namespace = args[0][\"namespace\"]\n        ids = args[0][\"ids\"]\n\n    db.session.flush()\n    model = getModel(namespace)\n\n    remove_list = []\n    for i in ids:\n        delete = model.query.filter_by(id=i).one()\n        remove_list.append({'id': i, 'category': delete.category})\n        db.session.delete(delete)\n    db.session.commit()\n\n    start = time.time()\n\n\n    try:\n        ids = json.dumps(ids)\n        emit('delete_response', {'ids': ids}, broadcast=True)\n        categories = Category.query.all()\n        for remove in remove_list:\n            file_id = remove['id']\n            category_id = remove['category']\n            category = [c.name for c in categories if c.id == category_id][0]\n            remove_path = \"%s/%s/%08d\" % (base_path, category, int(file_id))\n            rmtree(remove_path)\n    except:\n        print 'something wrong'\n    end = time.time()\n    print(end - start)\n    return 'ok'\n\n\n@socketio.on('download_selected')\ndef download_selected(*args):\n    print 'download selected'\n    oldwd = os.getcwd()\n\n    data = args[0]['data']\n    category_filter = args[0]['category_filter']\n    zf = zipfile.ZipFile(base_path + '/files.zip', mode='w')\n    for d in data:\n        file_path = \"%s/%s/%08d\" % (base_path, category_filter, int(d['id']))\n        os.chdir(file_path)\n        zf.write(d['name'])\n    zf.close()\n    emit('zipped')\n\n",
+			"file": "app/home/events.py",
+			"file_size": 12399,
+			"file_write_time": 131714514214031509,
+			"settings":
+			{
+				"buffer_size": 12117,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
@@ -457,16 +490,19 @@
 			"file": "app/__init__.py",
 			"settings":
 			{
-				"buffer_size": 1203,
+				"buffer_size": 1245,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
+			"contents": "# https://flask-login.readthedocs.io/en/latest/\nfrom flask_login import UserMixin # provides default flask login implementations\nfrom werkzeug.security import generate_password_hash, check_password_hash\nimport re\nfrom app import db, login_manager\n\nclass Datatable():\n    # format row as datatable readable json\n    def as_dict1(self, fields):\n        selections = []\n        for f in fields:\n            if f['type'] == 'select':\n                selections.append(f)        \n\n        cols = {}\n        for col in self.__table__.columns:\n            cols[col.name] = getattr(self, col.name)\n            for select in selections:\n                if col.name == select['name']:\n                    for opt in select['options']:\n                        if getattr(self, col.name) == opt['value']:\n                            cols[col.name] = opt\n\n        cols[\"select-checkbox\"] = \"\"\n        return cols\n\nclass User(UserMixin, db.Model):\n    __tablename__ = 'user'\n    id = db.Column(db.Integer, primary_key=True)\n    name = db.Column(db.String(60), index=True, unique=True)\n    password_hash = db.Column(db.String(128))\n    #role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))\n    is_admin = db.Column(db.Boolean, default=False)\n    # projects = db.relationship('Project', backref='work_on', lazy='dynamic')\n    # tasks = db.relationship('Task', backref='work_on', lazy='dynamic')\n\n    @property\n    def password(self):\n        raise AttributeError('password is not a readable attribute.')\n\n    @password.setter\n    def password(self, password):\n        self.password_hash = generate_password_hash(password)\n\n    def verify_password(self, password):\n        return check_password_hash(self.password_hash, password)\n\n    # def __repr__(self):\n    #     return '<User: {}>'.format(self.username)\n\nclass Media(db.Model, Datatable):\n    __tablename__ = 'media'\n    __searchable__ = ['name', 'tags']\n\n    thumbnail = db.Column(db.Text())\n    id = db.Column(db.Integer, primary_key=True)\n    name = db.Column(db.Text())\n    category = db.Column(db.Integer, db.ForeignKey('category.id'))\n    timestamp = db.Column(db.DateTime(), server_default=db.func.now(), server_onupdate=db.func.now())\n    assigned = db.Column(db.Integer, db.ForeignKey('user.id'))\n    #url = db.Column(db.Text())\n    tags = db.Column(db.Text())\n    description = db.Column(db.Text())\n\n\n\nclass Category(db.Model, Datatable):\n    __tablename__ = 'category'\n    id = db.Column(db.Integer, primary_key=True)\n    name = db.Column(db.Text())    \n    name_chn = db.Column(db.Text())\n\n@login_manager.user_loader\ndef load_user(user_id):\n    #return User.query.get(int(user_id))\n    return User.query.get(int(user_id))\n\ndef getModel(selector):\n    if selector == \"media\":\n        model = Media\n    elif selector == \"category\":\n        model = Category\n    elif selector == \"user\":\n        model = User          \n    else:\n        return False\n    return model\n\ndef getOptions(namespace):\n    model = getModel(namespace)\n    items = model.query.all()\n    options = []\n    for option in items:\n        data = {\"label\": option.name, \"value\": option.id}\n        options.append(data)\n    return options    \n\n# this MAY need to be customized for each model, it might not be possible to adapt all models.\n# write a js script to modify each model and jinja insert to appropriate page\ndef getFields(model):\n    fields = []\n    columns = []\n    columnDefs = []\n    idx = 0\n    text_types = [\"TEXT\", \"VARCHAR\"]\n    \n\n    # customize dt columns here, either automate or static define \n    for column in model.__table__.columns.items():\n        idx = idx + 1\n        columns.append({\"data\": column[0]})\n        columnDef = {\"orderable\": True, \"className\": column[0], \"title\": column[0], \"targets\": idx}\n        columnDefs.append(columnDef)\n\n        # thumb_render is js function specified in template, move this outside to views\n        # if column[0] == \"thumbnail\":\n        #     columns[-1]['render'] = \"thumb_render\"\n\n\n        col ={}\n        noedit_fields = [\"id\", \"thumbnail\", \"timestampe\"] #name is no edit, but needs to be appended to fields\n        if column[0] in noedit_fields: # no form input for id\n            pass\n        else:\n            col['name'] = column[0]\n            col['label'] = column[0].title()\n\n            if re.sub(r'\\([^)]*\\)', '',  str(column[1].type)) in text_types:\n                if column[0] == \"tags\":\n                    col[\"type\"] = \"text\"\n                    col[\"d_type\"] = \"text\"    \n                else:\n                    col[\"type\"] = \"text\"\n                    col[\"d_type\"] = \"text\"\n            elif str(column[1].type) == \"DATETIME\":\n                col[\"type\"] = \"datetime\"\n                col[\"d_type\"] = \"datetime\"\n            elif str(column[1].type) == \"INTEGER\":\n                col[\"d_type\"] = \"integer\"\n                if len(column[1].foreign_keys) == 1:\n                    col['type'] = \"select\"\n                    fk_model = [m.target_fullname for m in column[1].foreign_keys][0].split(\".\")[0]\n                    options = getOptions(fk_model)\n                    col['options'] = options\n                    columns[-1]['render'] = \"category_render\" # keyword render will assign js render function\n                else:\n                    col[\"type\"] = \"text\"\n\n            fields.append(col)\n\n    columns.insert(0, {\"data\": \"select-checkbox\"})\n    columnDefs.insert(0, {\"width\": \"3%\", \"orderable\": False, \"className\": \"select-checkbox\", \"title\": \"select-checkbox\", \"targets\": 0})\n    return fields, columns, columnDefs\n\ndef is_reverse(str_direction):\n    ''' Maps the 'desc' and 'asc' words to True or False. '''\n    return True if str_direction == 'desc' else False\n\ndef custom_sort(data, fields, sort_column_name, sort_direction):\n    lower = False\n    for f in fields:\n        if f['name'] == sort_column_name:\n            if f['d_type'] == 'integer':\n                lower = False\n            elif f['d_type'] == 'text':\n                lower = True\n\n    if lower == True:\n        data = sorted(data, key=lambda x: x[sort_column_name].lower(), reverse=is_reverse(sort_direction))\n    else:\n        data = sorted(data, key=lambda x: x[sort_column_name], reverse=is_reverse(sort_direction))\n\n    return data    \n\ndef custom_paging(data, start, length):\n    # if search returns only one page\n    if len(data) <= length:\n        # display only one page\n        data = data[start:]\n    else:\n        limit = -len(data) + start + length\n        if limit < 0:\n            # display pagination\n            data = data[start:limit]\n        else:\n            # display last page of pagination\n            data = data[start:]\n    return data    \n\n  ",
 			"file": "app/models.py",
+			"file_size": 7190,
+			"file_write_time": 131714319986616062,
 			"settings":
 			{
-				"buffer_size": 6618,
+				"buffer_size": 6658,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -475,19 +511,34 @@
 			"file": "app/static/css/style.css",
 			"settings":
 			{
-				"buffer_size": 4427,
+				"buffer_size": 5680,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "<!-- current dt login equinoxin.dt1 -->\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <title>{{ title }} | MCD Database</title>\n    <link rel=\"stylesheet\" href=\"{{ url_for('static', filename='lib/bootstrap-4.0.0-beta.3/dist/css/bootstrap.min.css') }}\">\n    <link rel=\"stylesheet\" href=\"{{ url_for('static', filename='lib/font-awesome-4.7.0/css/font-awesome.min.css') }}\">\n    <link href=\"{{ url_for('static', filename='css/style.css') }}\" rel=\"stylesheet\">\n    <link href=\"{{ url_for('static', filename='img/favicon.ico') }}\" rel=\"shortcut icon\" >\n    {% block css %}{% endblock %}\n    <script src=\"https://code.jquery.com/jquery-1.12.4.js\" type=\"text/javascript\"></script>    \n    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js\" integrity=\"sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh\" crossorigin=\"anonymous\"></script>\n    <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js\" integrity=\"sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ\" crossorigin=\"anonymous\"></script>\n    {% block js %}{% endblock %}    \n</head>\n<body>\n  <nav class=\"navbar navbar-expand-md navbar-dark fixed-top bg-dark\">\n    <a href=\"{{ url_for('home.homepage') }}\" class=\"navbar-brand\">MCD DB</a>\n    <div class=\"collapse navbar-collapse\" id=\"navbarsExampleDefault\">\n        <ul class=\"navbar-nav mr-auto\">\n        {% if current_user.is_authenticated %}\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='addons') }}\">Addons</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='effects') }}\">Effects</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='fonts') }}\">Fonts</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='images') }}\">Images</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='music') }}\">Music</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='sfx') }}\">SFX</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='software') }}\">Software</a></li>\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='videos') }}\">Videos</a></li>\n\n          <li class=\"nav-item active\" namespace=\"project\"><a class=\"nav-link\" href=\"{{ url_for('home.media',category_filter='upload') }}\">Upload</a></li>\n          <li class=\"nav-item dropdown\">\n            <a class=\"nav-link dropdown-toggle\" href=\"http://example.com\" id=\"dropdown01\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Other</a>\n            <div class=\"dropdown-menu\" aria-labelledby=\"dropdown01\">\n              <a class=\"dropdown-item\" href=\"{{ url_for('home.category') }}\">Category</a>\n            </div>\n          </li>\n\n          <li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ url_for('auth.logout') }}\">Logout</a></li>\n          <li class=\"nav-item\"><a class=\"nav-link\"> <i class=\"fa fa-user\" aria-hidden=\"true\" style=\"color: #992222\" user-id=\"{{current_user.id}}\"></i>    {{ current_user.name }}!</a></li>\n        {% else %}\n          <li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ url_for('home.homepage') }}\">Home</a></li>\n          <li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ url_for('auth.register') }}\">Register</a></li>\n          <li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ url_for('auth.login') }}\">Login</a></li>\n        {% endif %}\n      </ul>\n    </div>\n    <a href=\"{{ url_for('home.homepage') }}\" class=\"navbar-toggler-icon\"></a>        \n  </nav>   \n  {% block body %}\n  {% endblock %}\n  <footer class=\"container\">\n  </footer>    \n  {% block run_scripts %}{% endblock %}\n</body>\n\n</html>",
-			"file": "app/templates/base.html",
-			"file_size": 4236,
-			"file_write_time": 131691812694284842,
+			"file": "/c/users/julio/appdata/local/temp/rsub-mdr8_o/style.css",
 			"settings":
 			{
-				"buffer_size": 4137,
+				"buffer_size": 5708,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/templates/base.html",
+			"settings":
+			{
+				"buffer_size": 15442,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/templates/auth/login.html",
+			"settings":
+			{
+				"buffer_size": 1036,
 				"line_ending": "Windows"
 			}
 		},
@@ -495,16 +546,33 @@
 			"file": "app/templates/home/media.html",
 			"settings":
 			{
-				"buffer_size": 11791,
+				"buffer_size": 26493,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "[\n{'className': 'select-checkbox', 'width': '3%', 'title': 'select-checkbox', 'targets': 0, 'orderable': False},\n{'className': 'id', 'orderable': True, 'targets': 1, 'title': 'id'},\n{'className': 'name', 'orderable': True, 'targets': 2, 'title': 'name'},\n{'className': 'category', 'orderable': True, 'targets': 3, 'title': 'category'},\n{'className': 'timestamp', 'orderable': True, 'targets': 4, 'title': 'timestamp'},\n{'className': 'assigned', 'orderable': True, 'targets': 5, 'title': 'assigned'},\n{'className': 'tags', 'orderable': True, 'targets': 6, 'title': 'tags'},\n{'className': 'description', 'orderable': True, 'targets': 7, 'title': 'description'},\n{'className': 'thumbnail', 'orderable': True, 'targets': 8, 'title': 'thumbnail'}]\n\n\nvar d = new Date(),\n    minutes = d.getMinutes().toString().length == 1 ? '0'+d.getMinutes() : d.getMinutes(),\n    hours = d.getHours().toString().length == 1 ? '0'+d.getHours() : d.getHours(),\n    ampm = d.getHours() >= 12 ? 'pm' : 'am',\n    months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],\n    days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];\nreturn days[d.get\n\nd = \"Tue, 17 Apr 2018 15:32:04 GMT\";\nm = moment(d);\nm.format(\"MM/DD HH:mm\");\n\n(foxhug)",
+			"file": "/c/users/julio/appdata/local/temp/rsub-8vjoai/httpd.conf",
 			"settings":
 			{
-				"buffer_size": 1233,
+				"buffer_size": 11753,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "function debounceSearch() {\n    var $searchBox = $('.table-search');\n    $searchBox.off();\n \n    var searchDebouncedFn = debounce(function() {\n        table.search($searchBox.val()).draw();\n    }, 300);\n \n    $searchBox.on(\"keyup\", searchDebouncedFn);\n}\n \n/* from https://davidwalsh.name/javascript-debounce-function */\nfunction debounce(func, wait, immediate) {\n    var timeout;\n    return function() {\n        var context = this, args = arguments;\n        var later = function() {\n            timeout = null;\n            if (!immediate) func.apply(context, args);\n        };\n        var callNow = immediate && !timeout;\n        clearTimeout(timeout);\n        timeout = setTimeout(later, wait);\n        if (callNow) func.apply(context, args);\n    };\n};\n\ndebounceSearch();\n\n",
+			"settings":
+			{
+				"buffer_size": 774,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/templates/home/toolbar.html",
+			"settings":
+			{
+				"buffer_size": 1650,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
@@ -512,7 +580,7 @@
 			"file": "app/templates/home/upload.html",
 			"settings":
 			{
-				"buffer_size": 3894,
+				"buffer_size": 3899,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -527,27 +595,18 @@
 			}
 		},
 		{
+			"file": "app/templates/home/index.html",
+			"settings":
+			{
+				"buffer_size": 511,
+				"line_ending": "Windows"
+			}
+		},
+		{
 			"file": "app/templates/home/datatables_init.js",
 			"settings":
 			{
 				"buffer_size": 4183,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "app/templates/_formhelpers.html",
-			"settings":
-			{
-				"buffer_size": 813,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "app/templates/home/toolbar.html",
-			"settings":
-			{
-				"buffer_size": 1400,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -655,6 +714,8 @@
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/auth",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/static/css",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/auth",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home",
@@ -662,6 +723,29 @@
 	],
 	"file_history":
 	[
+		"/c/users/julio/appdata/local/temp/rsub-yhuqt7/__init__.py",
+		"/c/users/julio/appdata/local/temp/rsub-2cne9y/run.py",
+		"/c/users/julio/appdata/local/temp/rsub-zeuy54/config.py",
+		"/c/users/julio/appdata/local/temp/rsub-z87ql5/events.py",
+		"/c/users/julio/appdata/local/temp/rsub-h0vpj1/events.py",
+		"/c/users/julio/appdata/local/temp/rsub-rivywy/toolbar.html",
+		"/C/Python27/Lib/site-packages/flask_whooshalchemy.py",
+		"/c/users/julio/appdata/local/temp/rsub-n2fvpz/flask_whooshalchemy.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/.gitignore",
+		"/c/users/julio/appdata/local/temp/rsub-lu1tuv/flask_whooshalchemy.py",
+		"/c/users/julio/appdata/local/temp/rsub-zf6zlf/__init__.py",
+		"/c/users/julio/appdata/local/temp/rsub-abs36s/flask_whooshalchemy.py",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home/events.py",
+		"/c/users/julio/appdata/local/temp/rsub-4h_hfj/run.py",
+		"/c/users/julio/appdata/local/temp/rsub-sru010/run.py",
+		"/c/users/julio/appdata/local/temp/rsub-5jmacw/config.py",
+		"/c/users/julio/appdata/local/temp/rsub-sxu7z2/httpd.conf",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/media_test.html",
+		"/C/Users/julio/Desktop/size.txt",
+		"//mcd-one/public/Scott/bbin.txt",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/base_test.html",
+		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/media.html",
+		"//salt/salt-master/salt/misc/deadline.ini",
 		"/C/Users/julio/Dropbox/skype.txt",
 		"/c/users/julio/appdata/local/temp/rsub-7zwc1g/run.py",
 		"/c/users/julio/appdata/local/temp/rsub-nrcxu1/requirements.txt",
@@ -677,7 +761,6 @@
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/upload.html",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/auth/views.py",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/upload1.html",
-		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home/events.py",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/home/views.py",
 		"/C/Users/julio/Dropbox/Projects/mcd_database/app/templates/home/table.html",
 		"/C/Users/julio/Dropbox/Apache22/mcd_project_folders/main.py",
@@ -767,33 +850,11 @@
 		"/C/software/illustrator_serial.txt",
 		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/home/views.py",
 		"/C/Users/julio/Dropbox/Projects/spaceteam/scenario.py",
-		"/C/Users/julio/Dropbox/Projects/spaceteam/game.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/lib/bootstrap-4.0.0-beta.2/dist/css/bootstrap.css",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/lib/DataTables/datatables.js",
-		"//mcd-one/mcd_backup/電子遊藝/5909_開心消消樂/01_doc____企劃文件/h5_phone消消樂老虎機_Prototype_20160714/resources/screens/1dec1497-2038-4234-aa8d-da508a7f03bf-1468468345606.js",
-		"/C/Apache22/mcd_project_folders/templates/archive_template.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/toolbar.html",
-		"/C/Users/julio/Dropbox/Apache22/mcd_project_folders/templates/archive_template1.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/lib/bootstrap-4.0.0-beta.3/scss/_buttons.scss",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/static/lib/bootstrap-4.0.0-beta.2/scss/_buttons.scss",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/datatables_lib.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/README.md",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/process.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/migrations/versions/bf39b0c60635_.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/assets.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/task.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/shots.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/status.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/projects.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/asset.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/templates/home/project_form.html",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/__init__.py",
-		"/C/Users/julio/Dropbox/Projects/renderfarm_manager/app/home/__init__.py",
-		"/C/Apache22/spaceteam/spaceteam.py"
+		"/C/Users/julio/Dropbox/Projects/spaceteam/game.py"
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 40.0
 	},
 	"find_in_files":
 	{
@@ -807,6 +868,65 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"sqlalchemy",
+			"flask_sqlalchemy",
+			"schema",
+			"download",
+			"ajax",
+			"file_path",
+			"ids",
+			"category_filter",
+			"socket.emit",
+			"upload",
+			"btnGroupDrop1",
+			"btn-toolbar",
+			"print",
+			"ul",
+			"b",
+			"btnGroupAddon",
+			"table-search",
+			"thumbnail",
+			"table-search",
+			"toolbar",
+			"{%",
+			"thumbs",
+			"//",
+			"console.",
+			"\"\"",
+			"，",
+			"”",
+			"“",
+			"socketConnect",
+			"columns",
+			"columnRender",
+			"                    ",
+			"folder_path",
+			"base_path",
+			"item",
+			"x",
+			"console.log",
+			"1",
+			"category_filter",
+			"initDT",
+			"table",
+			"jinja2_escapejs_filter",
+			"media_test",
+			"base_path",
+			"\n        ",
+			"nav-item",
+			" namespace=\"project\"",
+			"active",
+			"\" ",
+			"class=\"nav-link\"",
+			"class=\"nav-link",
+			"class=\"nav-link active\"",
+			"class=\"nav-link\"",
+			"lass=\"nav-link\"",
+			"home.media",
+			"}}\"",
+			"\">",
+			"data-toggle=\"pill\"",
+			"class=\"nav-link\"",
 			"jinja2_escapejs_filter",
 			"},",
 			"base_path",
@@ -875,66 +995,7 @@
 			"upload",
 			"selectize-control.multi",
 			"current_user",
-			"dt_data",
-			"j",
-			"i",
-			"dt_data()",
-			"as_dict",
-			"asOptions",
-			"copy",
-			"as_dict",
-			"timestamp",
-			"category",
-			"id",
-			"null",
-			"media",
-			"media_type",
-			"data",
-			"x",
-			"data",
-			"\n",
-			" ",
-			"media_type",
-			"Username",
-			"username",
-			"Username",
-			"username",
-			"Username",
-			"username",
-			"Username",
-			"username",
-			"Media_Type",
-			"media_type",
-			"myDropzone",
-			"convertDB",
-			"console",
-			"widows",
-			"dropzone",
-			"btn",
-			"select_category",
-			"btnGroupDrop2",
-			"th",
-			"console",
-			"{{",
-			"from",
-			"myDropzone",
-			"adPhotosDropzone",
-			"dropzone",
-			";",
-			"self.base_filename",
-			"photo",
-			"photos",
-			"\t",
-			"renderfarm_manager",
-			"bottled ",
-			"cy",
-			"codex",
-			"color_codes",
-			"relics",
-			"event",
-			"relics",
-			"window",
-			"self"
+			"dt_data"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -942,6 +1003,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"\""
 		],
 		"reverse": false,
 		"show_context": true,
@@ -952,7 +1014,7 @@
 	"groups":
 	[
 		{
-			"selected": 5,
+			"selected": 7,
 			"sheets":
 			[
 				{
@@ -961,15 +1023,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4403,
+						"buffer_size": 4656,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2361,
-								2361
+								300,
+								300
 							]
 						],
 						"settings":
@@ -979,27 +1041,57 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1168.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "app/home/events.py",
-					"semi_transient": false,
+					"file": "app/templates/auth/register.html",
+					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 9569,
+						"buffer_size": 712,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4469,
-								4469
+								712,
+								712
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "app/home/events.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12117,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5824,
+								5824
 							]
 						],
 						"settings":
@@ -1009,14 +1101,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 569.0,
+						"translation.y": 4238.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 3,
 					"file": "config.py",
 					"semi_transient": false,
 					"settings":
@@ -1028,8 +1120,8 @@
 						"selection":
 						[
 							[
-								235,
-								235
+								420,
+								420
 							]
 						],
 						"settings":
@@ -1038,15 +1130,15 @@
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
-						"translation.x": 6.0,
+						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 12,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 4,
 					"file": "run.py",
 					"semi_transient": false,
 					"settings":
@@ -1058,8 +1150,8 @@
 						"selection":
 						[
 							[
-								262,
-								262
+								551,
+								551
 							]
 						],
 						"settings":
@@ -1070,54 +1162,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "app/__init__.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1203,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								796,
-								796
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
+					"stack_index": 14,
 					"type": "text"
 				},
 				{
 					"buffer": 5,
-					"file": "app/models.py",
+					"file": "app/__init__.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6618,
+						"buffer_size": 1245,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4425,
-								4425
+								272,
+								272
 							]
 						],
 						"settings":
@@ -1130,24 +1192,54 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
 					"buffer": 6,
-					"file": "app/static/css/style.css",
+					"file": "app/models.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4427,
+						"buffer_size": 6658,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4301,
-								4301
+								6656,
+								6656
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "app/static/css/style.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5680,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								525,
+								525
 							]
 						],
 						"settings":
@@ -1160,109 +1252,73 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 0,
 					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 1,
-			"sheets":
-			[
+				},
 				{
-					"buffer": 7,
-					"file": "app/templates/base.html",
+					"buffer": 8,
+					"file": "/c/users/julio/appdata/local/temp/rsub-mdr8_o/style.css",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4137,
+						"buffer_size": 5708,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1850,
-								1850
+								653,
+								653
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
+							"rsub":
+							{
+								"data-on-save": "yes",
+								"display-name": "mcd-db:style.css",
+								"re-activate": "yes",
+								"real-path": "/home/mcd_database/app/static/css/style.css",
+								"token": "style.css"
+							},
+							"syntax": "Packages/CSS/CSS.sublime-syntax",
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 1,
 					"type": "text"
-				},
+				}
+			]
+		},
+		{
+			"selected": 8,
+			"sheets":
+			[
 				{
-					"buffer": 8,
-					"file": "app/templates/home/media.html",
+					"buffer": 9,
+					"file": "app/templates/base.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 11791,
+						"buffer_size": 15442,
 						"regions":
 						{
-							"bookmarks":
-							{
-								"flags": 144,
-								"icon": "bookmark",
-								"regions":
-								[
-									[
-										11284,
-										11284
-									]
-								],
-								"scope": "bookmarks"
-							}
 						},
 						"selection":
 						[
 							[
-								5769,
-								5022
+								3056,
+								3056
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true,
-							"word_wrap": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1311.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1233,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								874,
-								874
-							]
-						],
-						"settings":
-						{
-							"auto_name": "",
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
@@ -1275,110 +1331,167 @@
 				},
 				{
 					"buffer": 10,
-					"file": "app/templates/home/upload.html",
-					"semi_transient": false,
+					"file": "app/templates/auth/login.html",
+					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 3894,
+						"buffer_size": 1036,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								969,
-								969
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 2,
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
 					"buffer": 11,
-					"file": "app/templates/home/dragdrop.html",
+					"file": "app/templates/home/media.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1218,
+						"buffer_size": 26493,
 						"regions":
 						{
+							"bookmarks":
+							{
+								"flags": 144,
+								"icon": "bookmark",
+								"regions":
+								[
+									[
+										14037,
+										14037
+									],
+									[
+										21132,
+										21132
+									],
+									[
+										24409,
+										24409
+									]
+								],
+								"scope": "bookmarks"
+							}
 						},
 						"selection":
 						[
 							[
-								1082,
-								1082
+								18484,
+								18484
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/HTML/HTML.sublime-syntax",
 							"tab_size": 2,
-							"translate_tabs_to_spaces": true,
-							"word_wrap": false
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 8840.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 15,
 					"type": "text"
 				},
 				{
 					"buffer": 12,
-					"file": "app/templates/home/datatables_init.js",
+					"file": "/c/users/julio/appdata/local/temp/rsub-8vjoai/httpd.conf",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4183,
+						"buffer_size": 11753,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1914,
-								1914
+								3035,
+								3035
+							]
+						],
+						"settings":
+						{
+							"rsub":
+							{
+								"data-on-save": "yes",
+								"display-name": "mcd-db:httpd.conf",
+								"re-activate": "yes",
+								"real-path": "/etc/httpd/conf/httpd.conf",
+								"token": "httpd.conf"
+							},
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1140.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 16,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 774,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								773,
+								0
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"tab_size": 2,
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 14,
+					"stack_index": 17,
 					"type": "text"
 				},
 				{
-					"buffer": 13,
-					"file": "app/templates/_formhelpers.html",
-					"semi_transient": true,
+					"buffer": 14,
+					"file": "app/templates/home/toolbar.html",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 813,
+						"buffer_size": 1650,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								813,
-								813
+								1506,
+								1506
 							]
 						],
 						"settings":
@@ -1395,25 +1508,116 @@
 					"type": "text"
 				},
 				{
-					"buffer": 14,
-					"file": "app/templates/home/toolbar.html",
+					"buffer": 15,
+					"file": "app/templates/home/upload.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1400,
+						"buffer_size": 3899,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								467,
-								467
+								834,
+								834
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 769.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 18,
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "app/templates/home/dragdrop.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1218,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								372,
+								372
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"word_wrap": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 17,
+					"file": "app/templates/home/index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 511,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								511,
+								511
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 18,
+					"file": "app/templates/home/datatables_init.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4183,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								531,
+								531
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
@@ -1421,11 +1625,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 15,
+					"buffer": 19,
 					"semi_transient": false,
 					"settings":
 					{
@@ -1436,8 +1640,8 @@
 						"selection":
 						[
 							[
-								1135,
-								1135
+								673,
+								673
 							]
 						],
 						"settings":
@@ -1446,10 +1650,10 @@
 							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 19.0,
+						"translation.y": 817.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 15,
+					"stack_index": 19,
 					"type": "text"
 				}
 			]
@@ -1483,7 +1687,7 @@
 		"cols":
 		[
 			0.0,
-			0.394065430123,
+			0.457788402625,
 			1.0
 		],
 		"rows":
@@ -1505,7 +1709,7 @@
 	"project": "mcd_database.sublime-project",
 	"replace":
 	{
-		"height": 50.0
+		"height": 72.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1543,7 +1747,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 269.0,
+	"side_bar_width": 397.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

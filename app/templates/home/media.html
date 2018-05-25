@@ -1,95 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{{ title }} | MCD Database</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap-4.0.0-beta.3/dist/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='lib/font-awesome-4.7.0/css/font-awesome.min.css') }}">
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="shortcut icon" >
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/DataTables/datatables.min.css') }}"/>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/Editor-1.7.2/css/editor.bootstrap4.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/DataTables/Select-1.2.5/css/select.bootstrap4.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.min.css') }}">
+  <title>{{ title }} | MCD Database</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap-4.0.0-beta.3/dist/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='lib/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="shortcut icon" >
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/DataTables/datatables.min.css') }}"/>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/Editor-1.7.2/css/editor.bootstrap4.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/DataTables/Select-1.2.5/css/select.bootstrap4.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/DataTables/Buttons-1.5.1/css/buttons.bootstrap4.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/dropzone/dropzone.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/selectize/css/selectize-bootstrap4.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/selectize/css/selectize.css') }}">
 
-    <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/dropzone/dropzone.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/selectize/css/selectize-bootstrap4.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/selectize/css/selectize.css') }}">
-    <script>
-      var columns = JSON.parse('{{columns | tojson | safe}}');  //column string uses double quotes, so wrap it with single quotes
-      var columnBak = columns;
-      var columnDefs = JSON.parse('{{columnDefs | tojson | safe}}');
-      var fields = JSON.parse('{{fields | tojson | safe}}');
-      var category_filter = "{{category_filter}}";
-
-      //convert category_filter from name to id number
-/*      for(f=0;f<fields.length;f++){
-        if(fields[f]['name'] == 'category'){
-          for(s=0;s<fields[f]['options'].length;s++){
-            if(fields[f]['options'][s]['label'] == category_filter){
-              category_filter = fields[f]['options'][s]['value'];
-            }
-          }
-          if(category_filter == 'upload'){
-            category_filter = 0;
-          }
-        }
-      }*/
-    </script>
-
-    <script src="{{ url_for('static', filename='lib/socket.io.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/datatables.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/Select-1.2.5/js/dataTables.select.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/Buttons-1.5.1/js/buttons.bootstrap4.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='lib/Editor-1.7.2/js/dataTables.editor.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='lib/Editor-1.7.2/js/editor.bootstrap4.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/dt_selectize.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/moment.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='lib/socket.io.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='lib/dropzone/dropzone.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='lib/selectize/js/standalone/selectize.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
   <script>
-      Dropzone.autoDiscover = false;
-    </script>
+    var columns = JSON.parse('{{columns | tojson | safe}}');  //column string uses double quotes, so wrap it with single quotes
+    var columnDefs = JSON.parse('{{columnDefs | tojson | safe}}');
+    var fields = JSON.parse('{{fields | tojson | safe}}');
+    var category_filter = "{{category_filter}}";
+    var page = "{{page}}";
+
+  </script>
+  <script src="{{ url_for('static', filename='lib/socket.io.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/datatables.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/Select-1.2.5/js/dataTables.select.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/Buttons-1.5.1/js/dataTables.buttons.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/Buttons-1.5.1/js/buttons.bootstrap4.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/Editor-1.7.2/js/dataTables.editor.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/Editor-1.7.2/js/editor.bootstrap4.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/dt_selectize.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/moment.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/socket.io.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/dropzone/dropzone.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/selectize/js/standalone/selectize.js') }}"></script>
+  <script>
+    Dropzone.autoDiscover = false;
+  </script>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
     <a href="{{ url_for('home.media',category_filter='addons') }}" class="navbar-brand">MCD DB</a>
-    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="nav nav-pills navbar-nav">
+    <div class="collapse navbar-collapse row" id="navbarsExampleDefault">
+      <ul class="nav nav-pills navbar-nav">
         {% if current_user.is_authenticated %}
-          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="0" href="{{ url_for('home.media',category_filter='upload') }}"><i class="fa fa-upload"></i> Upload</a></li>
-          <li class="nav-item active" namespace="project"><a class="nav-link" data-toggle="pill" filter_value="5" href="{{ url_for('home.media',category_filter='addons') }}">Addons</a></li>
-          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="4" href="{{ url_for('home.media',category_filter='effects') }}">Effects</a></li>
-          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="1" href="{{ url_for('home.media',category_filter='fonts') }}">Fonts</a></li>
-          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="3" href="{{ url_for('home.media',category_filter='images') }}">Images</a></li>
-          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="6" href="{{ url_for('home.media',category_filter='music') }}">Music</a></li>
-          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="7" href="{{ url_for('home.media',category_filter='sfx') }}">SFX</a></li>
-          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="2" href="{{ url_for('home.media',category_filter='software') }}">Software</a></li>
-          <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="15" href="{{ url_for('home.media',category_filter='videos') }}">Videos</a></li>
-
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
-            <div class="dropdown-menu" aria-labelledby="dropdown01">
-              <a class="dropdown-item" href="{{ url_for('home.category') }}">Category</a>
-            </div>
-          </li>
-
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
-          <li class="nav-item"><a class="nav-link"> <i class="fa fa-user" aria-hidden="true" style="color: #992222" user-id="{{current_user.id}}"></i>    {{ current_user.name }}!</a></li>
+        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="0" href="{{ url_for('home.media',category_filter='upload') }}"><i class="fa fa-upload"></i> Upload</a></li>
+        <li class="nav-item active" namespace="project"><a class="nav-link" data-toggle="pill" filter_value="5" href="{{ url_for('home.media',category_filter='addons') }}">Addons</a></li>
+        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="4" href="{{ url_for('home.media',category_filter='effects') }}">Effects</a></li>
+        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="1" href="{{ url_for('home.media',category_filter='fonts') }}">Fonts</a></li>
+        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="3" href="{{ url_for('home.media',category_filter='images') }}">Images</a></li>
+        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="6" href="{{ url_for('home.media',category_filter='music') }}">Music</a></li>
+        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="7" href="{{ url_for('home.media',category_filter='sfx') }}">SFX</a></li>
+        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="2" href="{{ url_for('home.media',category_filter='software') }}">Software</a></li>
+        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="15" href="{{ url_for('home.media',category_filter='videos') }}">Videos</a></li>
+      </ul>
+      <ul class="nav nav-pills navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
+          <div class="dropdown-menu" aria-labelledby="dropdown01">
+            <a class="dropdown-item" href="{{ url_for('home.category') }}">Category</a>
+          </div>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
+        <li class="nav-item"><a class="nav-link"> <i class="fa fa-user" aria-hidden="true" style="color: #992222" user-id="{{current_user.id}}"></i>    {{ current_user.name }}!</a></li>
         {% else %}
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('home.homepage') }}">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('home.homepage') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
         {% endif %}
       </ul>
     </div>
-    <!-- <a href="{{ url_for('home.homepage') }}" class="navbar-toggler-icon"></a>         -->
   </nav>
 
   <div class="row nav-spacer"></div>
@@ -137,6 +122,7 @@
   </table>
 
   <footer class="container">
+    <!-- <input type='text' class='input-page' placeholder='頁' aria-label='Page'> </input> -->
   </footer>
   <script>
     var thumbs =[];
@@ -230,30 +216,38 @@
     category_render =  function ( data, meta, row ) {
       return data.label;
     };
+    generic_render = function (data, meta, row) {
+      var id = ("00000000" + row['id']).substr(-8,8);
+      var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
+      return '<a href="' + url +'" download><i class="fa fa-file fa-2xx" aria-hidden="true"></i></a>';
+    }
+
     thumb_render = function ( data, meta, row ) {
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
-      var thumb_url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/thumb.jpg";
+      var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
+      var thumb_url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/thumb.jpg";
       return '<a href="' + url +'" download><img class="thumbnail" src="'+thumb_url+'"/><span><img src="' + url + '"/><br /></span></a>';
     };
     sound_render = function (data, meta, row){
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
+      var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
       return "<audio controls><source src=" + url + "></audio>";
     };
     video_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";
+      var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";
       return "<video preload='metadata' src=" + url + " controls></video>"
     };
     var font_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.hostname + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";
-      return "<a href=" + url + " download>" + "<div style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥</div><div style='font-family: &quot;" + id + "&quot;'>The quick brown fox jumped over the lazy dog</div></a>"
+      var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
+      /*return "<a href=" + url + " download>" + "<div style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥</div><div style='font-family: &quot;" + id + "&quot;'>The quick brown fox jumped over the lazy dog</div></a>"*/
+      return "<a href=" + url + " download><div class='font-preview-sm' style='font-family: &quot;" + id + "&quot;'>Aa<span><div class='font-preview' style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥<br/>The quick brown fox jumped over the lazy dog</div><br /></span></div></a>"
+
     };
     datetime_render = function (data, meta, row) {
       m = moment(data);
-      return "<div>" + m.format("MM/DD") + "</div>"
+      return "<div>" + m.format("MM/DD/YY") + "</div>"
     }
 
     function initDT(namespace, columns, columnDefs, fields, category_filter){
@@ -272,7 +266,7 @@
                           var newStyle = document.createElement('style');
                           for(i=0;i<output['data'].length;i++){
                             var id = ("00000000" + output['data'][i]['id']).substr(-8,8);
-                            var font_url = "http://" + window.location.hostname + "/download/fonts/" + id + "/" + output['data'][i]['name'];
+                            var font_url = "http://" + window.location.host + "/download/fonts/" + id + "/" + output['data'][i]['name'];
                             var font_face = "@font-face {font-family: '" + id + "'; src: url('" + font_url  + "') format('truetype');}"
                             newStyle.appendChild(document.createTextNode(font_face));
                           }
@@ -388,16 +382,16 @@
             columns[i]['render'] = font_render;
           }
           else if(category_filter == 2){
-            columns[i]['render'] = thumb_render;
+            columns[i]['render'] = generic_render;
           }
           else if(category_filter == 3){
             columns[i]['render'] = thumb_render;
           }
           else if(category_filter == 4){
-            columns[i]['render'] = thumb_render;
+            columns[i]['render'] = generic_render;
           }
           else if(category_filter == 5){
-            columns[i]['render'] = thumb_render;
+            columns[i]['render'] = generic_render;
           }
           else if(category_filter == 6){
             columns[i]['render'] = sound_render;
@@ -448,7 +442,7 @@
           var search = $('.table-search').val() + " " + $(this).text();
           $('.table-search').val(search);
           table.search(search).draw();
-        });           
+        });
       })
     }
 
@@ -457,10 +451,10 @@
       var url = $(this).attr("href");
       window.history.pushState("", "", url);
       $("#dt-toolbar").appendTo("body");
+      $('input-page').appendTo("body");
       table.destroy();
       socket.destroy();
 
-      //namespace = "{{namespace}}";
       socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
       socket.emit('get_tags', {'category_filter':category_filter, 'namespace': namespace});
       socketConnect()
@@ -468,13 +462,13 @@
       columns = columnRender(columns, category_filter) //reset the object, functions seems to stick.
       initDT(namespace, columns, columnDefs, fields, category_filter);
       $("#dt-toolbar").appendTo(".top-toolbar");
+      bpage = $('ul.pagination')[1];
+      $('input-page').appendTo(bpage);
       if(category_filter == 0){
         $('.dz_container').css('display','block');
       } else {
         $('.dz_container').css('display','none');
       }
-      //initPopover()
-          
     });
 
   var editor;
@@ -496,6 +490,8 @@
     initDT(namespace, columns, columnDefs, fields, category_filter);
 
     $("#dt-toolbar").appendTo(".top-toolbar");
+    /*$('.input-page').prependTo($('ul.pagination')[1]);*/
+
     if(category_filter == 0){
       $('.dz_container').css('display','block');
     } else {
@@ -559,6 +555,19 @@
       }
     });
 
+    $( ".input-page" ).bind("enterKey", function(e){
+      page = parseInt($(".input-page").val()) - 1;
+      table.page(page).draw('page');
+    });  
+
+    $('.input-page').keyup(function(e){
+        if(e.keyCode == 13)
+        {
+            $(this).trigger("enterKey");
+        }
+    });
+
+
     $(".dt_download_selected").bind({
       click: function() {
         data = [];
@@ -584,17 +593,19 @@
       table.search("").draw();
     });
 
+
+
     function debounceSearch() {
         var $searchBox = $('.table-search');
         $searchBox.off();
-     
+
         var searchDebouncedFn = debounce(function() {
             table.search($searchBox.val()).draw();
         }, 300);
-     
+
         $searchBox.on("keyup", searchDebouncedFn);
     }
-     
+
     /* from https://davidwalsh.name/javascript-debounce-function */
     function debounce(func, wait, immediate) {
         var timeout;

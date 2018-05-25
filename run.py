@@ -7,10 +7,11 @@ from app import create_app, socketio
 # windows set YOURAPPLICATION_SETTINGS=\path\to\settings.cfg
 # set FLASK_CONFIG=C:\Users\julio\Dropbox\Projects\mcd_database\config.py
 # set FLASK_APP=C:\Users\julio\Dropbox\Projects\mcd_database\run.py
-config_path = r"C:\Users\julio\Dropbox\Projects\mcd_database\config.py"
+#config_path = r"C:\Users\julio\Dropbox\Projects\mcd_database\config.py"
+config_path = os.getcwd() + r"\config.py"
 
 app = create_app(config_path)
 
 if __name__ == '__main__':
-	socketio.run(app, host='0.0.0.0', port=80)
+	socketio.run(app, host='0.0.0.0', port=5000)
     #app.run(host="0.0.0.0", port=80)

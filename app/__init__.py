@@ -10,8 +10,8 @@ from flask_socketio import SocketIO, emit
 
 from config import app_config
 
-base_path = "C:/Users/julio/Dropbox/Projects/mcd_database/assets"
-#base_path = r"\\mcd-one\database\mcd_db"
+#base_path = "C:/Users/julio/Dropbox/Projects/mcd_database/assets"
+base_path = r"\\mcd-one\database\mcd_db"
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -26,12 +26,10 @@ def create_app(config_name):
     flask_whooshalchemy.whoosh_index(app, Media)
     db.init_app(app)
     login_manager.init_app(app)
-    login_manager.login_message = "You muse login!" 
+    login_manager.login_message = "You must login!" 
     login_manager.login_view = "auth.login" # redirect to here
 
     migrate = Migrate(app, db)
-
-
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)

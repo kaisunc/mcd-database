@@ -109,7 +109,7 @@ def getFields(model):
     for column in model.__table__.columns.items():
         idx = idx + 1
         columns.append({"data": column[0]})
-        columnDef = {"orderable": True, "className": column[0], "title": column[0], "targets": idx}
+        columnDef = {"orderable": True, "className": column[0] + " text-center", "title": column[0], "targets": idx}
         columnDefs.append(columnDef)
 
         # thumb_render is js function specified in template, move this outside to views
@@ -187,12 +187,4 @@ def custom_paging(data, start, length):
             data = data[start:]
     return data    
 
-def nameValue(fields, category_filter):
-    for f in fields:
-        if f['name'] == 'category':
-            for o in f['options']:
-                if o['label'] == category_filter:
-                    category_filter = o['value']    
-        if category_filter == 'upload':
-            category_filter = 0
-    return category_filter    
+  

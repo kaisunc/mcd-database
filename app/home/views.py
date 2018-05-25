@@ -1,8 +1,7 @@
-import os, operator
+import os, operator, jinja2
 from flask import flash, request, redirect, render_template, url_for, json, send_from_directory, send_file
 from flask_login import login_required
 from werkzeug import secure_filename
-import jinja2
 from .. import base_path
 from ..models import *
 from . import home
@@ -48,6 +47,9 @@ def nameValue(fields, category_filter):
 def homepage():
     return render_template('home/index.html', title="Welcome")
 
+
+# @home.route('/media/<category_filter>', defaults={'page': 1})
+# @home.route('/media/<category_filter>/<page>', methods=['GET'])    
 @home.route('/media/<category_filter>', methods=['GET'])    
 @login_required
 def media(category_filter):
@@ -68,7 +70,7 @@ def media(category_filter):
                 tags[tag] = 1
     
     tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)          
-    print tags[0:30]  
+
     return render_template('home/media.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter, tags=tags[0:30])
 
 @home.route('/category', methods=['GET'])
@@ -76,20 +78,19 @@ def media(category_filter):
 def category():
     namespace = "category"
     model = getModel(namespace)
-    items = model.query.all()
     fields, columns, columnDefs = getFields(model)
 
-    columns = jinja2_escapejs_filter(columns)
-    columnDefs = jinja2_escapejs_filter(columnDefs)
-    fields = jinja2_escapejs_filter(fields)
-    # return render_template('home/upload.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, category_filter='upload')
-    return render_template('home/media.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff, category_filter=category_filter)
+    return render_template('home/category.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
 
 @home.route('/user', methods=['GET'])
 @login_required
 def user():
-    namespace = jinja2_escapejs_filter("user")
-    return render_template('home/table.html', title='Users', namespace=namespace)
+    namespace = "user"
+    model = getModel(namespace)
+    fields, columns, columnDefs = getFields(model)
+    print fields
+    return render_template('home/category.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
+
 
 @home.route('/ajax', methods=['GET'])
 @login_required

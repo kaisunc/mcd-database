@@ -47,6 +47,7 @@ def ajax_socket(*args):
     columns = [{u'mData': u'select-checkbox', u'data': u'select-checkbox'}, {u'mData': u'id', u'data': u'id'}, {u'mData': u'name', u'data': u'name'}, {u'mData': u'category', u'data': u'category'}, {u'mData': u'timestamp', u'data': u'timestamp'}, {u'mData': u'assigned', u'data': u'assigned'}, {u'mData': u'url', u'data': u'url'}, {u'mData': u'tags', u'data': u'tags'}, {u'mData': u'description', u'data': u'description'}, {u'mData': u'thumbnail', u'data': u'thumbnail'}]
 
     '''
+
     namespace = args[0]['namespace']
     settings = args[0]['settings']
     columns = args[0]['columns']
@@ -54,7 +55,7 @@ def ajax_socket(*args):
     category_filter = args[0]['category_filter']
     fields = args[0]['fields']
     search = settings['search']['value']
-    model = getModel(namespace)
+    model = getModel(namespace)        
 
     if category_filter != 0:
         if search == "":
@@ -69,6 +70,7 @@ def ajax_socket(*args):
 
     start = int(settings['start'])
     length = int(settings['length'])
+
     sort_column = int(settings['order'][0]['column']) # column number
     sort_column_name = columns[sort_column]['data'] # column name
     sort_direction = settings['order'][0]['dir']
@@ -157,11 +159,14 @@ def create(*args):
     if len(args) != 0:
         namespace = args[0]["namespace"]
         data = args[0]["data"]
-        thumbs = args[0]["thumbs"]
         try:
             multiple = args[0]["multiple"]
         except:
             pass
+        try:
+            thumbs = args[0]["thumbs"]                        
+        except:
+            pass            
 
     model = getModel(namespace)
     fields, columns, columnDefs = getFields(model)
@@ -190,19 +195,20 @@ def create(*args):
                         os.makedirs(thumb_path)
 
                     im = Image.open(BytesIO(base64.b64decode(t)))
+                    im = im.convert("RGB")
                     im.save(thumb_path + "/thumb.jpg", "JPEG", quality=80, optimize=True)
 
             emit('add_response', {'data': dt_data}, broadcast=True)
 
-    # else:
-    #     update = addRow(data)
-    #     pid = update.id
+    else:
+        update = addRow(data)
+        pid = update.id
 
-    #     db.session.commit()
+        db.session.commit()
 
-    #     update = model.query.filter_by(id=pid).first()
-    #     dt_data = json.dumps(update.as_dict1(fields))
-    #     emit('add_response', {'data': dt_data}, broadcast=True)
+        update = model.query.filter_by(id=pid).first()
+        dt_data = json.dumps(update.as_dict1(fields))
+        emit('add_response', {'data': dt_data}, broadcast=True)
 
 @socketio.on('update')
 def update(*args):
@@ -245,13 +251,14 @@ def remove(*args):
     remove_list = []
     for i in ids:
         delete = model.query.filter_by(id=i).one()
-        remove_list.append({'id': i, 'category': delete.category})
+        try:
+            remove_list.append({'id': i, 'category': delete.category})
+        except:
+            pass
         db.session.delete(delete)
     db.session.commit()
 
     start = time.time()
-
-
     try:
         ids = json.dumps(ids)
         emit('delete_response', {'ids': ids}, broadcast=True)
