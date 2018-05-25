@@ -11,7 +11,7 @@ from flask_socketio import SocketIO, emit
 from config import app_config
 
 #base_path = "C:/Users/julio/Dropbox/Projects/mcd_database/assets"
-base_path = r"\\mcd-one\database\mcd_db"
+base_path = r"/mnt/assets"
 
 db = SQLAlchemy()
 login_manager = LoginManager()

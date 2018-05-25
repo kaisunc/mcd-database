@@ -8,7 +8,7 @@ from app import create_app, socketio
 # set FLASK_CONFIG=C:\Users\julio\Dropbox\Projects\mcd_database\config.py
 # set FLASK_APP=C:\Users\julio\Dropbox\Projects\mcd_database\run.py
 #config_path = r"C:\Users\julio\Dropbox\Projects\mcd_database\config.py"
-config_path = os.getcwd() + r"\config.py"
+config_path = os.getcwd() + r"/config.py"
 
 app = create_app(config_path)
 
