@@ -11,7 +11,6 @@ from app import create_app, socketio
 config_path = os.getcwd() + r"/config.py"
 
 app = create_app(config_path)
-print config_path
 
 if __name__ == '__main__':
 	socketio.run(app, host='0.0.0.0', port=80)

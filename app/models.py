@@ -29,10 +29,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    #role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     is_admin = db.Column(db.Boolean, default=False)
-    # projects = db.relationship('Project', backref='work_on', lazy='dynamic')
-    # tasks = db.relationship('Task', backref='work_on', lazy='dynamic')
+
 
     @property
     def password(self):
@@ -45,9 +43,6 @@ class User(UserMixin, db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    # def __repr__(self):
-    #     return '<User: {}>'.format(self.username)
-
 class Media(db.Model, Datatable):
     __tablename__ = 'media'
     __searchable__ = ['name', 'tags']
@@ -58,7 +53,6 @@ class Media(db.Model, Datatable):
     category = db.Column(db.Integer, db.ForeignKey('category.id'))
     timestamp = db.Column(db.DateTime(), server_default=db.func.now(), server_onupdate=db.func.now())
     assigned = db.Column(db.Integer, db.ForeignKey('user.id'))
-    #url = db.Column(db.Text())
     tags = db.Column(db.Text())
     description = db.Column(db.Text())
 
@@ -72,7 +66,6 @@ class Category(db.Model, Datatable):
 
 @login_manager.user_loader
 def load_user(user_id):
-    #return User.query.get(int(user_id))
     return User.query.get(int(user_id))
 
 def getModel(selector):
@@ -111,11 +104,6 @@ def getFields(model):
         columns.append({"data": column[0]})
         columnDef = {"orderable": True, "className": column[0] + " text-center", "title": column[0], "targets": idx}
         columnDefs.append(columnDef)
-
-        # thumb_render is js function specified in template, move this outside to views
-        # if column[0] == "thumbnail":
-        #     columns[-1]['render'] = "thumb_render"
-
 
         col ={}
         noedit_fields = ["id", "thumbnail", "timestampe"] #name is no edit, but needs to be appended to fields
