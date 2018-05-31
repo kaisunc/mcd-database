@@ -269,7 +269,8 @@
                     socket.emit('ajax_socket', {'namespace': namespace, 'settings':data, 'columns': columns, 'fields': fields, 'columnDefs': columnDefs, 'category_filter': category_filter});
                       socket.on('init_response', function(response){
                         output = JSON.parse(response);
-                        if(category_filter == 1){
+                        console.log(category_filter);
+                        if(category_filter == 3){
                           var newStyle = document.createElement('style');
                           for(i=0;i<output['data'].length;i++){
                             var id = ("00000000" + output['data'][i]['id']).substr(-8,8);
@@ -485,8 +486,8 @@
             }
             $('.table-search').val(input.join(" "));
           }
-          //search = $('.table-search').val();
-          //table.search(search).draw();
+          search = $('.table-search').val();
+          table.search(search).draw();
         });
       })
     }
