@@ -102,7 +102,10 @@ def getFields(model):
     for column in model.__table__.columns.items():
         idx = idx + 1
         columns.append({"data": column[0]})
-        columnDef = {"orderable": True, "className": column[0] + " text-center", "title": column[0], "targets": idx}
+        if column[0] == "tags":
+            columnDef = {"orderable": False, "className": column[0], "title": column[0], "targets": idx, "width": "40%"}
+        else:
+            columnDef = {"orderable": True, "className": column[0] + " text-center", "title": column[0], "targets": idx}
         columnDefs.append(columnDef)
 
         col ={}

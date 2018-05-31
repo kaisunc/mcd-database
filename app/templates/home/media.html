@@ -243,11 +243,18 @@
       var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
       /*return "<a href=" + url + " download>" + "<div style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥</div><div style='font-family: &quot;" + id + "&quot;'>The quick brown fox jumped over the lazy dog</div></a>"*/
       return "<a href=" + url + " download><div class='font-preview-sm' style='font-family: &quot;" + id + "&quot;'>Aa<span><div class='font-preview' style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥<br/>The quick brown fox jumped over the lazy dog</div><br /></span></div></a>"
-
     };
     datetime_render = function (data, meta, row) {
       m = moment(data);
-      return "<div>" + m.format("MM/DD/YY") + "</div>"
+      return "<div>" + m.format("MM/DD/YY HH:mm:ss") + "</div>"
+    }
+    tags_render = function (data, meta, row) {
+      var container = $('<div />');
+      tags = data.split(",")
+      for(i=0;i<tags.length;i++){
+        container.append('<span class="badge badge-secondary search-tag sm-badge">' + tags[i] + '</span>');
+      }      
+      return "<div class=>" + container.html() + "</div>"
     }
 
     function initDT(namespace, columns, columnDefs, fields, category_filter){
@@ -358,9 +365,14 @@
       socket.on('tag_response', function(msg){
         tags = msg;
         var container = $('<div />');
-
+        default_tags = ["視訊", "電子", "彩票", "體育", "人物", "行動裝置","城市","錢","背景","其他"];
+        for(j=0;j<default_tags.length;j++){
+          tag_container = '<span class="badge badge-warning search-tag">' + default_tags[j] + '<div class="tag-close"><i class="fa fa-times" aria-hidden="true"></i></div></span>';
+          container.append(tag_container);
+        }
         for(i=0;i<tags.length;i++){
-          container.append('<span class="badge badge-primary search-tag">' + tags[i]['tag'] + '</span>');
+          tag_container ='<span class="badge badge-secondary search-tag">' + tags[i]['tag'] + '<div class="tag-close"><i class="fa fa-times" aria-hidden="true"></i></div></span>';
+          container.append(tag_container);
         }
         container.addClass('custom-popover');
         $('#popover-content').html(container);
@@ -412,6 +424,9 @@
         if(columns[i]['data'] == 'timestamp'){
           columns[i]['render'] = datetime_render;
         }
+        if(columns[i]['data'] == 'tags'){
+          columns[i]['render'] = tags_render;
+        }        
       }
       return columns
     }
@@ -425,7 +440,6 @@
     }
 
     function initPopover(){
-      console.log('popover');
       $('[data-toggle="popover"]').popover({
         html: true,
         content: function() {
@@ -434,10 +448,45 @@
       });
 
       $('[data-toggle="popover"]').on('shown.bs.popover', function () {
+        if($('.table-search').val() == ""){
+          var input = [];
+        } else {
+          var input = $('.table-search').val().split(" ");
+        }
+
+        all_tags =$('.popover-body').children('.custom-popover').children('.search-tag');
+        for(i=0;i<input.length;i++){
+            for(k=0;k<all_tags.length;k++){
+              if(input[i] == $(all_tags[k]).text()){
+                $(all_tags[k]).attr("show", true);
+                $(all_tags[k]).children("div").css("display", "inline-block");                
+              }
+            }            
+          }
+
         $('.search-tag').click(function(){
-          var search = $('.table-search').val() + " " + $(this).text();
-          $('.table-search').val(search);
-          table.search(search).draw();
+          var tags = $(this).text();
+          if(input.length == 0){ //nothing in input
+            $('.table-search').val(tags);
+            input = tags;
+            $(this).attr("show", true);
+            $(this).children("div").css("display", "inline-block");
+          } else {
+            input = $('.table-search').val().split(" "); 
+            if($(this).attr("show") == "true"){
+              $(this).attr("show", false);
+              $(this).children("div").css("display", "");
+              i = input.indexOf(tags);
+              input.splice(i, 1);              
+            } else {
+              $(this).attr("show", true);
+              $(this).children("div").css("display", "inline-block");
+              input.push(tags);
+            }
+            $('.table-search').val(input.join(" "));
+          }
+          //search = $('.table-search').val();
+          //table.search(search).draw();
         });
       })
     }
@@ -483,6 +532,7 @@
     socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     columns = columnRender(columns, category_filter)
     socketConnect();
+    socket.emit('get_tags', {'category_filter':category_filter, 'namespace': namespace});
     initDT(namespace, columns, columnDefs, fields, category_filter);
 
     $("#dt-toolbar").appendTo(".top-toolbar");
@@ -572,8 +622,6 @@
           data.push({'id': rows[i]['id'], 'name': rows[i]['name']});
           category_filter = rows[i]['category']['label']
         }
-        console.log(data);
-        console.log(category_filter);
         socket.emit('download_selected', {'data': data, 'category_filter': category_filter})
       }
     });
@@ -622,8 +670,9 @@
 
   initPage();
   initPopover()
+  //dismiss popover by clicking outside
   $(document).on('click', function (e) {
-    $('[data-toggle="popover"],[data-original-title]').each(function () {
+    $('[data-toggle="popover"],[data-original-title],.i-close').each(function () {
       if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
         (($(this).popover('hide').data('bs.popover')||{}).inState||{}).click = false  // fix for BS 3.3.6
       }
