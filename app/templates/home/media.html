@@ -142,6 +142,21 @@
       };
     }
 
+    function getCookie(cname) {
+      var name = cname + "=";
+      var ca = document.cookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }    
+
     myDropzone.on("addedfile", function(file) {
       image_ext = ["jpg", "jpeg", "bmp", "tif", "tiff", "tga", "png", "psd", "gif", "svg", "ai", "eps"];
       video_ext = ["mp4", "avi", "wmv", "mov", "qt", "mkv", "ts", "webm", "flv", "rmvb"];
@@ -226,27 +241,27 @@
       var id = ("00000000" + row['id']).substr(-8,8);
       var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
       var thumb_url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/thumb.jpg";
-      return '<a href="' + url +'" download><img class="thumbnail" src="'+thumb_url+'"/><span><img src="' + url + '"/><br /></span></a>';
+      return '<a href="' + url +'" download><img class="thumbnail" src="'+thumb_url+'"/><span><img data-src="' + url + '"/><br /></span></a>'
+      /*return '<a href="' + url +'" download><img class="thumbnail" src="'+thumb_url+'"/><span><br /></span></a>';*/
     };
     sound_render = function (data, meta, row){
       var id = ("00000000" + row['id']).substr(-8,8);
       var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
-      return "<audio controls><source src='" + url + "'></audio>";
+      return "<audio controls loop><source src='" + url + "'></audio>";
     };
     video_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
       var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";
-      return "<video preload='metadata' src=" + url + " controls></video>"
+      return "<video preload='metadata' src=" + url + " controls loop></video>"
     };
-    var font_render = function (data, meta, row) {
+    font_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
       var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
-      /*return "<a href=" + url + " download>" + "<div style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥</div><div style='font-family: &quot;" + id + "&quot;'>The quick brown fox jumped over the lazy dog</div></a>"*/
       return "<a href=" + url + " download><div class='font-preview-sm' style='font-family: &quot;" + id + "&quot;'>Aa<span><div class='font-preview' style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥<br/>The quick brown fox jumped over the lazy dog</div><br /></span></div></a>"
     };
     datetime_render = function (data, meta, row) {
-      m = moment(data);
-      return "<div>" + m.format("MM/DD/YY HH:mm:ss") + "</div>"
+      m = moment.utc(data);
+      return "<div>" + m.utc().format("MM/DD/YY HH:mm:ss") + "</div>"
     }
     tags_render = function (data, meta, row) {
       var container = $('<div />');
@@ -258,10 +273,14 @@
     }
 
     function initDT(namespace, columns, columnDefs, fields, category_filter){
-      length = parseInt($(".page-len").attr('value'));
+      //length = parseInt($(".page-len").attr('value'));
+      length = parseInt(getCookie('length'));
+      if(!Number.isInteger(length)){
+        length = 10;
+      }
       table = $('#' + namespace).DataTable( {
           "dom": "<'row'<'col-sm-8 top-toolbar'><'col-sm-4'p>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-4'i><'col-sm-8'p>>",
-          "pageLength": 10,
+          "pageLength": length,
           "processing": true,
           "serverSide": true,
           "deferRender": true,
@@ -269,7 +288,6 @@
                     socket.emit('ajax_socket', {'namespace': namespace, 'settings':data, 'columns': columns, 'fields': fields, 'columnDefs': columnDefs, 'category_filter': category_filter});
                       socket.on('init_response', function(response){
                         output = JSON.parse(response);
-                        console.log(category_filter);
                         if(category_filter == 3){
                           var newStyle = document.createElement('style');
                           for(i=0;i<output['data'].length;i++){
@@ -331,6 +349,7 @@
         $("div.DTE_Field_InputControl select option:contains('" + category + "')").attr("selected", "selected");
         $("div.DTE_Field_InputControl select option:contains('" + category + "')").prop("selected", "selected");
       } );
+
     }
 
     function socketConnect(){
@@ -437,7 +456,8 @@
       a = location.pathname;
       t = $('a.nav-link[href="' + a + '"]')[0];
       $(t).addClass('active');
-
+      length = getCookie("length");
+      $("#btnGroupDrop1").text(length);
     }
 
     function initPopover(){
@@ -447,6 +467,7 @@
           return $('#popover-content').html();
         }
       });
+
 
       $('[data-toggle="popover"]').on('shown.bs.popover', function () {
         if($('.table-search').val() == ""){
@@ -535,9 +556,15 @@
     socketConnect();
     socket.emit('get_tags', {'category_filter':category_filter, 'namespace': namespace});
     initDT(namespace, columns, columnDefs, fields, category_filter);
+    table.on( 'draw', function () {
+      $('img.thumbnail').hover(function(){
+        preview = $(this).next().children().first();
+        data = $(preview).attr('data-src');
+        $(preview).attr('src', data);
+      });
+    });    
 
     $("#dt-toolbar").appendTo(".top-toolbar");
-    /*$('.input-page').prependTo($('ul.pagination')[1]);*/
 
     if(category_filter == 0){
       $('.dz_container').css('display','block');
@@ -548,6 +575,7 @@
     $('.table-len').on("click", function(event){
       length = $(this).attr('value')
       table.page.len(length).draw();
+      document.cookie = "length=" + length + ";";
       table.ajax.reload();
     });
 
@@ -671,6 +699,7 @@
 
   initPage();
   initPopover()
+
   //dismiss popover by clicking outside
   $(document).on('click', function (e) {
     $('[data-toggle="popover"],[data-original-title],.i-close').each(function () {
@@ -678,6 +707,9 @@
         (($(this).popover('hide').data('bs.popover')||{}).inState||{}).click = false  // fix for BS 3.3.6
       }
     });
+
+
+
   });
 
   </script>
