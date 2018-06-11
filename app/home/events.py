@@ -1,4 +1,5 @@
 from flask import session, json, send_from_directory
+from flask_login import current_user
 from flask_socketio import emit, join_room, leave_room
 from shutil import rmtree
 import base64, os, operator, zipfile
@@ -47,7 +48,6 @@ def ajax_socket(*args):
     columns = [{u'mData': u'select-checkbox', u'data': u'select-checkbox'}, {u'mData': u'id', u'data': u'id'}, {u'mData': u'name', u'data': u'name'}, {u'mData': u'category', u'data': u'category'}, {u'mData': u'timestamp', u'data': u'timestamp'}, {u'mData': u'assigned', u'data': u'assigned'}, {u'mData': u'url', u'data': u'url'}, {u'mData': u'tags', u'data': u'tags'}, {u'mData': u'description', u'data': u'description'}, {u'mData': u'thumbnail', u'data': u'thumbnail'}]
 
     '''
-
     namespace = args[0]['namespace']
     settings = args[0]['settings']
     columns = args[0]['columns']
@@ -169,6 +169,8 @@ def create(*args):
             pass            
 
     model = getModel(namespace)
+    l = Logs(action="create", assigned=current_user.id, data=json.dumps(data))
+    db.session.add(l)
     fields, columns, columnDefs = getFields(model)
     if multiple == 'true':
         for d in data:
@@ -218,6 +220,9 @@ def update(*args):
         pid = args[0]["id"]
         data = args[0]["data"]
 
+    l = Logs(action="update", assigned=current_user.id, data=json.dumps(data))
+    db.session.add(l)
+
     model = getModel(namespace)
     fields, columns, columnDefs = getFields(model)
     update = model.query.filter_by(id=pid).first()
@@ -240,10 +245,15 @@ import time
 # if category is in use by any media, can't delete
 @socketio.on('remove')
 def remove(*args):
+    print 'remove'
     namespace = ""
     if len(args) != 0:
+        ids = args[0]['ids']
         namespace = args[0]["namespace"]
-        ids = args[0]["ids"]
+
+    l = Logs(action="remove", assigned=current_user.id, data=json.dumps(ids))
+    db.session.add(l)
+
 
     db.session.flush()
     model = getModel(namespace)

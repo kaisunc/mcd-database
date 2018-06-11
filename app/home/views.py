@@ -1,6 +1,6 @@
 import os, operator, jinja2
 from flask import flash, request, redirect, render_template, url_for, json, send_from_directory, send_file
-from flask_login import login_required
+from flask_login import login_required, current_user
 from werkzeug import secure_filename
 from .. import base_path
 from ..models import *
@@ -79,8 +79,7 @@ def category():
     namespace = "category"
     model = getModel(namespace)
     fields, columns, columnDefs = getFields(model)
-
-    return render_template('home/category.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
+    return render_template('home/tables.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
 
 @home.route('/user', methods=['GET'])
 @login_required
@@ -88,25 +87,49 @@ def user():
     namespace = "user"
     model = getModel(namespace)
     fields, columns, columnDefs = getFields(model)
-    print fields
-    return render_template('home/category.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
+    return render_template('home/tables.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
+
+@home.route('/logs', methods=['GET'])
+@login_required
+def logs():
+    namespace = "logs"
+    model = getModel(namespace)
+    fields, columns, columnDefs = getFields(model)
+    return render_template('home/tables.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
 
 
 @home.route('/ajax', methods=['GET'])
 @login_required
-def ajax():
+def ajax(*args):
     params = request.args.to_dict()
+    namespace = params['namespace']
+    search = params["search[value]"]
 
-    namespace = "media"
-    model = getModel(namespace)
-    items = model.query.all()
+    model = getModel(namespace)    
     fields, columns, columnDefs = getFields(model)
+    print fields
+    items = model.query.order_by(model.id.desc()).limit(100000)
+    print items
+
+    start = int(params['start'])
+    length = int(params['length'])
+
+    sort_column = int(params['order[0][column]']) # column number
+    sort_column_name = columns[sort_column]['data'] # column name
+    sort_direction = params['order[0][dir]']
 
     dt_data = []
     for row in items:
         dt_data.append(row.as_dict1(fields))
-    t = {"data": dt_data}
-    return json.dumps(t)
+    recordsTotal = len(dt_data)
+
+    dt_data = custom_sort(dt_data, fields, sort_column_name, sort_direction)
+    dt_data = custom_paging(dt_data, start, length)
+
+
+    t = json.dumps({"draw": params['draw'], "recordsTotal": recordsTotal, "recordsFiltered": recordsTotal, "data": dt_data})
+    return t
+
 
 @home.route('/upload', methods=['POST'])
 @login_required

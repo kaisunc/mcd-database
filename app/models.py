@@ -24,7 +24,7 @@ class Datatable():
         cols["select-checkbox"] = ""
         return cols
 
-class User(UserMixin, db.Model):
+class User(UserMixin, db.Model, Datatable):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), index=True, unique=True)
@@ -64,6 +64,14 @@ class Category(db.Model, Datatable):
     name = db.Column(db.Text())    
     name_chn = db.Column(db.Text())
 
+class Logs(db.Model, Datatable):
+    id = db.Column(db.Integer, primary_key=True)
+    action = db.Column(db.Text())
+    data = db.Column(db.Text())
+    timestamp = db.Column(db.DateTime(), server_default=db.func.now(), server_onupdate=db.func.now())
+    assigned = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -74,7 +82,9 @@ def getModel(selector):
     elif selector == "category":
         model = Category
     elif selector == "user":
-        model = User          
+        model = User        
+    elif selector == "logs":
+        model = Logs
     else:
         return False
     return model
@@ -126,6 +136,9 @@ def getFields(model):
             elif str(column[1].type) == "DATETIME":
                 col["type"] = "datetime"
                 col["d_type"] = "datetime"
+            elif str(column[1].type) == "BOOLEAN":
+                col["type"] = "boolean"
+                col["d_type"] = "boolean"
             elif str(column[1].type) == "INTEGER":
                 col["d_type"] = "integer"
                 if len(column[1].foreign_keys) == 1:

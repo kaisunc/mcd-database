@@ -2,6 +2,9 @@
   <div class="btn-group mr-2">
     <button class="btn dt_remove" ><i class="fa fa-trash-o"></i> Delete</button>
     <button class="btn dt_download_selected"><i class="fa fa-download"></i> Download</a></button>
+      {% if namespace == "category" or namespace == "logs" or namespace == "user" %}
+    <button class="btn dt_add" ><i class="fa fa-plus-circle"></i></button>
+      {% endif %}
     <form id="download_zip" action="/download_zip" method="POST"><input type="hidden" name="param1" value="value1"></form>
   </div>
 

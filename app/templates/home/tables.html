@@ -37,29 +37,32 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
     <a href="{{ url_for('home.media',category_filter='addons') }}" class="navbar-brand">MCD DB</a>
-    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <div class="collapse navbar-collapse row" id="navbarsExampleDefault">
       <ul class="nav nav-pills navbar-nav">
         {% if current_user.is_authenticated %}
-        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="0" href="{{ url_for('home.media',category_filter='upload') }}"><i class="fa fa-upload"></i> Upload</a></li>
-        <li class="nav-item active" namespace="project"><a class="nav-link" data-toggle="pill" filter_value="5" href="{{ url_for('home.media',category_filter='addons') }}">Addons</a></li>
-        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="4" href="{{ url_for('home.media',category_filter='effects') }}">Effects</a></li>
-        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="1" href="{{ url_for('home.media',category_filter='fonts') }}">Fonts</a></li>
-        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="3" href="{{ url_for('home.media',category_filter='images') }}">Images</a></li>
-        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="6" href="{{ url_for('home.media',category_filter='music') }}">Music</a></li>
-        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="7" href="{{ url_for('home.media',category_filter='sfx') }}">SFX</a></li>
-        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="2" href="{{ url_for('home.media',category_filter='software') }}">Software</a></li>
-        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="15" href="{{ url_for('home.media',category_filter='videos') }}">Videos</a></li>
-
+        <li class="nav-item active"><a class="nav-link" filter_value="0" href="{{ url_for('home.media',category_filter='upload') }}"><i class="fa fa-upload"></i> Upload</a></li>
+        <li class="nav-item active" namespace="project"><a class="nav-link" filter_value="1" href="{{ url_for('home.media',category_filter='addons') }}">Addons</a></li>
+        <li class="nav-item active"><a class="nav-link" filter_value="2" href="{{ url_for('home.media',category_filter='effects') }}">Effects</a></li>
+        <li class="nav-item active"><a class="nav-link" filter_value="3" href="{{ url_for('home.media',category_filter='fonts') }}">Fonts</a></li>
+        <li class="nav-item active"><a class="nav-link" filter_value="4" href="{{ url_for('home.media',category_filter='images') }}">Images</a></li>
+        <li class="nav-item active"><a class="nav-link" filter_value="5" href="{{ url_for('home.media',category_filter='music') }}">Music</a></li>
+        <li class="nav-item active"><a class="nav-link" filter_value="6" href="{{ url_for('home.media',category_filter='sfx') }}">SFX</a></li>
+        <li class="nav-item active"><a class="nav-link" filter_value="7" href="{{ url_for('home.media',category_filter='software') }}">Software</a></li>
+        <li class="nav-item active"><a class="nav-link" filter_value="8" href="{{ url_for('home.media',category_filter='videos') }}">Videos</a></li>
+      </ul>
+      <ul class="nav nav-pills navbar-nav">
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
+          <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
           <div class="dropdown-menu" aria-labelledby="dropdown01">
             <a class="dropdown-item" href="{{ url_for('home.category') }}">Category</a>
+            <a class="dropdown-item" href="{{ url_for('home.logs') }}">Logs</a>
+            <a class="dropdown-item" href="{{ url_for('home.user') }}">User</a>
           </div>
         </li>
         <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
-        <li class="nav-item"><a class="nav-link"> <i class="fa fa-user" aria-hidden="true" style="color: #992222" user-id="{{current_user.id}}"></i>{{ current_user.name }}!</a></li>
+        <li class="nav-item"><a class="nav-link"> <i class="fa fa-user" aria-hidden="true" style="color: #992222" user-id="{{current_user.id}}"></i>    {{ current_user.name }}!</a></li>
         {% else %}
         <li class="nav-item"><a class="nav-link" href="{{ url_for('home.homepage') }}">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
@@ -73,9 +76,9 @@
 
 
   {% include "./home/toolbar.html" %}
-      <button class="btn dt_add" ><i class="fa fa-plus-circle"></i></button>
+<!--       <button class="btn dt_add" ><i class="fa fa-plus-circle"></i></button>
       <button class="btn dt_remove" ><i class="fa fa-minus-circle"></i></button>
-      <button class="btn dt_edit" ><i class="fa fa-pencil"></i></button>
+      <button class="btn dt_edit" ><i class="fa fa-pencil"></i></button> -->
       <!-- <button class="btn dt_refresh" ><i class="fa fa-refresh"></i></button> -->
 
   <table id={{namespace}} class="compact table-striped table-bordered table-hover" cellspacing="0" width="100%">
@@ -84,11 +87,81 @@
   <footer class="container">
   </footer>
   <script>
+    function columnRender(columns, category_filter){
+      for(i=0;i<columns.length;i++){
+        delete columns[i]['render'];
+        delete columns[i]['mRender'];
+        delete columns[i]['mData'];
+        if(columns[i]['data'] == 'thumbnail'){
+          if(category_filter == 1){
+            columns[i]['render'] = generic_render;
+          }
+          else if(category_filter == 2){
+            columns[i]['render'] = generic_render;
+          }
+          else if(category_filter == 3){
+            columns[i]['render'] = font_render;
+          }
+          else if(category_filter == 4){
+            columns[i]['render'] = thumb_render;
+          }
+          else if(category_filter == 5){
+            columns[i]['render'] = sound_render;
+          }
+          else if(category_filter == 6){
+            columns[i]['render'] = sound_render;
+          }
+          else if(category_filter == 7){
+            columns[i]['render'] = generic_render;
+          }
+          else if(category_filter == 8){
+            columns[i]['render'] = video_render;
+          }
+          else if(category_filter == 0){
+            columns[i]['render'] = thumb_render;
+          }
+        }
+        if(columns[i]['data'] == 'category' || columns[i]['data'] == 'assigned'){
+          columns[i]['render'] = category_render;
+        }
+        if(columns[i]['data'] == 'timestamp'){
+          columns[i]['render'] = datetime_render;
+        }
+        if(columns[i]['data'] == 'tags'){
+          columns[i]['render'] = tags_render;
+        }        
+      }
+      return columns
+    }
+
+    datetime_render = function (data, meta, row) {
+      m = moment.utc(data);
+      return "<div>" + m.utc().format("MM/DD/YY HH:mm:ss") + "</div>"
+    }
+
+    category_render =  function ( data, meta, row ) {
+      return data.label;
+    };
+
     function initDT(namespace, columns, columnDefs, fields, category_filter){
 
     }
 
     function socketConnect(){
+/*      socket.on('add_response', function(msg) {
+        data = JSON.parse(msg["data"]);
+        category = data['category']['label'];
+        file_id = data['id'];
+        file_name = data['name'];
+        table.row.add(data).draw();
+        for(i=0;i<myDropzone.files.length;i++){
+          if(myDropzone.files[i].name == file_name){
+            myDropzone.processFile(myDropzone.files[i]);
+            table.row.add(data).draw();
+          }
+        }
+      })*/
+
       socket.on('update_response', function(msg) {
         d = JSON.parse(msg.data);
         table.row.add(d).draw('page');
@@ -117,26 +190,23 @@
   $(document).ready(function() {
     namespace = "{{namespace}}";
     socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-    //columns = columnRender(columns, category_filter)
     socketConnect();
-
+    columns = columnRender(columns, category_filter) //reset the object, functions seems to stick.
     table = $('#' + namespace).DataTable( {
         "dom": "<'row'<'col-sm-8 top-toolbar'><'col-sm-4'p>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-4'i><'col-sm-8'p>>",
         "pageLength": 10,
         "processing": true,
         "serverSide": true,
         "deferRender": true,
-        "ajax": function (data, callback, settings) {
-                  socket.emit('ajax_socket', {'namespace': namespace, 'settings':data, 'columns': columns, 'fields': fields, 'columnDefs': columnDefs, 'category_filter': category_filter});
-                    socket.on('init_response', function(response){
-                      output = JSON.parse(response);
-                      callback(output);
-                    })
-                },
-        "rowId": 'id',
+        "ajax": {
+          "url": "/ajax",
+          "data": {
+            "namespace": namespace
+            }
+          },
         "columns": columns,
         "columnDefs": columnDefs,
-        "order": [[ 2, "desc" ]],
+        "order": [[ 1, "desc" ]],
         "select": {
             "style": 'os',
             "selector": 'td:first-child'
@@ -152,7 +222,8 @@
             socket.emit('create', {'namespace': namespace, 'data': d.data[k], 'multiple': 'false'});
           }
           else if ( d.action === 'edit' ) {
-            socket.emit('update', {'namespace': namespace, 'id': k, 'data':d.data[k]});
+            console.log({'namespace': namespace, 'id': k, 'data':d.data[k]});
+            //socket.emit('update', {'namespace': namespace, 'id': k, 'data':d.data[k]});
           }
           else if ( d.action === 'remove' ) {
             var k = [];
@@ -180,6 +251,7 @@
       $("div.DTE_Field_InputControl select option:contains('" + category + "')").attr("selected", "selected");
       $("div.DTE_Field_InputControl select option:contains('" + category + "')").prop("selected", "selected");
     } );    
+
 
     $( ".dt_add" ).bind({
       click: function() {
@@ -234,6 +306,8 @@
       table.page.len(length).draw();
       table.ajax.reload();
     });
+
+ 
   });
 
 
