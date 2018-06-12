@@ -10,13 +10,13 @@ from flask_socketio import SocketIO, emit
 
 from config import app_config
 ip = socket.gethostbyname(socket.gethostname())
-#base_path = "C:/Users/julio/Dropbox/Projects/mcd_database/assets"
+
 print ip
 if ip == "192.168.161.102":
     base_path = "/mnt/assets"
 elif ip == "192.168.160.72":
     base_path = r"//mcd-one/database/mcd_db"
-
+    #base_path = "C:/Users/julio/Dropbox/Projects/mcd_database/assets"
 
 db = SQLAlchemy()
 login_manager = LoginManager()

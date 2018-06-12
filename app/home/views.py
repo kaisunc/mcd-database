@@ -45,11 +45,12 @@ def nameValue(fields, category_filter):
 
 @home.route('/')
 def homepage():
-    return render_template('home/index.html', title="Welcome")
+    return redirect(url_for('home.media'))
 
 
 # @home.route('/media/<category_filter>', defaults={'page': 1})
 # @home.route('/media/<category_filter>/<page>', methods=['GET'])    
+@home.route('/media', defaults={'category_filter': 4})    
 @home.route('/media/<category_filter>', methods=['GET'])    
 @login_required
 def media(category_filter):
@@ -87,7 +88,7 @@ def user():
     namespace = "user"
     model = getModel(namespace)
     fields, columns, columnDefs = getFields(model)
-    return render_template('home/tables.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
+    return render_template('home/tables.html', title='User', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
 
 @home.route('/logs', methods=['GET'])
 @login_required
@@ -95,7 +96,7 @@ def logs():
     namespace = "logs"
     model = getModel(namespace)
     fields, columns, columnDefs = getFields(model)
-    return render_template('home/tables.html', title='Category', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
+    return render_template('home/tables.html', title='Logs', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields)
 
 
 @home.route('/ajax', methods=['GET'])
@@ -107,9 +108,7 @@ def ajax(*args):
 
     model = getModel(namespace)    
     fields, columns, columnDefs = getFields(model)
-    print fields
     items = model.query.order_by(model.id.desc()).limit(100000)
-    print items
 
     start = int(params['start'])
     length = int(params['length'])
@@ -134,17 +133,43 @@ def ajax(*args):
 @home.route('/upload', methods=['POST'])
 @login_required
 def upload():
-    if request.method == 'POST':
-        f = request.files['file']
-        category  = request.args.get('category')
-        file_id = int(request.args.get('file_id'))
-        folder_path = "%s/%s/%08d" % (base_path, category, file_id)
+    print 'counting requests'
+    print request.args
+    if request.method == 'POST':    
+        fs = request.files.to_dict()
+        for k,v in fs.items():
+            f = request.files[k]
+            category  = request.args.get('category')
+            file_id = int(request.args.get('file_id'))
+            folder_path = "%s/%s/%08d" % (base_path, category, file_id)
 
-        if os.path.isdir(folder_path) is False:
-            os.makedirs(folder_path)
-        file_path = "%s/%s" % (folder_path, f.filename)            
-        f.save(file_path)
-        return "ok"
+            if os.path.isdir(folder_path) is False:
+                os.makedirs(folder_path)
+            file_path = "%s/%s" % (folder_path, f.filename)            
+            f.save(file_path)
+            return "ok"
+
+    # if request.method == 'POST':    
+    #     fs = request.files.to_dict()
+    #     for k,v in fs.items():
+    #         f = request.files[k]
+    #         folder_path = "%s/upload_temp" % (base_path)
+    #         file_path = "%s/%s" % (folder_path, f.filename)            
+    #         f.save(file_path)
+    #         print "saved" + k
+    #     return "ok"        
+
+    # if request.method == 'POST':
+    #     f = request.files['file']
+    #     category  = request.args.get('category')
+    #     file_id = int(request.args.get('file_id'))
+    #     folder_path = "%s/%s/%08d" % (base_path, category, file_id)
+
+    #     if os.path.isdir(folder_path) is False:
+    #         os.makedirs(folder_path)
+    #     file_path = "%s/%s" % (folder_path, f.filename)            
+    #     f.save(file_path)
+    #     return "ok"
 
 @home.route('/download/<category>/<file_id>/<string:filename>', methods=['GET', 'POST'])
 @login_required
@@ -155,5 +180,6 @@ def download(category, file_id, filename):
 @home.route('/download_zip', methods=['GET', 'POST'])
 @login_required
 def download_zip():
-    filename = base_path + "/files.zip"
+    unique_filename = request.form.to_dict()["uid"].replace("\"","")
+    filename = base_path + "/upload_temp/" + unique_filename
     return send_file(filename, attachment_filename="files.zip", as_attachment=True)

@@ -46,10 +46,12 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
     <a href="{{ url_for('home.media',category_filter='addons') }}" class="navbar-brand">MCD DB</a>
-    <div class="collapse navbar-collapse row" id="navbarsExampleDefault">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mcd_db_navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>    
+    <div class="collapse navbar-collapse row" id="mcd_db_navbar">
       <ul class="nav nav-pills navbar-nav">
         {% if current_user.is_authenticated %}
-        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="0" href="{{ url_for('home.media',category_filter='upload') }}"><i class="fa fa-upload"></i> Upload</a></li>
         <li class="nav-item active" namespace="project"><a class="nav-link" data-toggle="pill" filter_value="1" href="{{ url_for('home.media',category_filter='addons') }}">Addons</a></li>
         <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="2" href="{{ url_for('home.media',category_filter='effects') }}">Effects</a></li>
         <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="3" href="{{ url_for('home.media',category_filter='fonts') }}">Fonts</a></li>
@@ -58,8 +60,9 @@
         <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="6" href="{{ url_for('home.media',category_filter='sfx') }}">SFX</a></li>
         <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="7" href="{{ url_for('home.media',category_filter='software') }}">Software</a></li>
         <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="8" href="{{ url_for('home.media',category_filter='videos') }}">Videos</a></li>
+        <li class="nav-item active"><a class="nav-link" data-toggle="pill" filter_value="0" href="{{ url_for('home.media',category_filter='upload') }}"><i class="fa fa-upload"></i> Upload</a></li>
       </ul>
-      <ul class="nav nav-pills navbar-nav">
+      <ul class="nav nav-pills navbar-nav ml-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other</a>
           <div class="dropdown-menu" aria-labelledby="dropdown01">
@@ -129,8 +132,9 @@
   <script>
     var thumbs =[];
     var myDropzone = new Dropzone("#media_drop", {
-      url: "upload",
-      addRemoveLinks: true,
+      url: "../upload",
+      //addRemoveLinks: true,
+      uploadMultiple: true,
       maxFilesize: 100000, //10GB
       autoProcessQueue: false,
       thumbnailWidth: 120,
@@ -210,7 +214,6 @@
         }
         dz_data = {'namespace': 'media', 'data': itemlist, 'thumbs': thumbs, 'multiple': 'true'};
         socket.emit('create', dz_data);
-
       }
     });
 
@@ -357,18 +360,36 @@
     function socketConnect(){
       socket.on('add_response', function(msg) {
         data = JSON.parse(msg["data"]);
-        category = data['category']['label'];
-        file_id = data['id'];
-        file_name = data['name'];
-
-        myDropzone.options.url = "../upload?category=" + category + "&file_id=" + file_id;
-
+        stuff = [];
         for(i=0;i<myDropzone.files.length;i++){
-          if(myDropzone.files[i].name == file_name){
-            myDropzone.processFile(myDropzone.files[i]);
-            table.row.add(data).draw();
+          for(j=0;j<data.length;j++){
+            d = JSON.parse(data[j]);
+            file_name = d['name'];
+
+            if(myDropzone.files[i].name == file_name){
+              stuff.push(d);
+              category = d['category']['label'];
+              file_id = d['id'];              
+              myDropzone.options.url = "../upload?category=" + category + "&file_id=" + file_id;              
+
+              myDropzone.processFile(myDropzone.files[i]);
+              //table.row.add(d);
+            }
           }
         }
+        table.rows.add(stuff).draw();
+/*        myDropzone.processQueue();        
+        queuedFiles = myDropzone.getQueuedFiles();
+        while (queuedFiles.length>0){
+          i=0;
+          while (i < 3) {
+            if (!queuedFiles.length) {
+              return;
+            }
+            myDropzone.processFile(queuedFiles.shift());
+            i++;
+          }
+        } */       
       })
 
       socket.on('update_response', function(msg) {
@@ -400,9 +421,9 @@
         $('#popover-content').html(container);
       })
 
-      socket.on('zipped', function(){
-        $("#download_zip").submit();
-
+      socket.on('zipped', function(msg){
+        $("#uuid").attr("value", JSON.stringify(msg)); 
+        $('#download_zip').submit();
       })
     }
 
@@ -456,6 +477,10 @@
     //set nav bar pill to current location
     function initPage(){
       a = location.pathname;
+      if(a ==  "/media"){
+        a = "/media/images";
+        window.history.pushState("", "", window.location.origin + a);
+      }
       t = $('a.nav-link[href="' + a + '"]')[0];
       $(t).addClass('active');
       length = getCookie("length");
@@ -553,6 +578,7 @@
 
   $(document).ready(function() {
     namespace = "{{namespace}}";
+    category_filter = "{{category_filter}}";
     socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     columns = columnRender(columns, category_filter)
     socketConnect();
@@ -697,22 +723,21 @@
         };
     };
     debounceSearch();
-  });
-
-  initPage();
-  initPopover()
-
-  //dismiss popover by clicking outside
-  $(document).on('click', function (e) {
-    $('[data-toggle="popover"],[data-original-title],.i-close').each(function () {
-      if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-        (($(this).popover('hide').data('bs.popover')||{}).inState||{}).click = false  // fix for BS 3.3.6
-      }
+    initPage();
+    initPopover()
+    //dismiss popover by clicking outside
+    $(document).on('click', function (e) {
+      $('[data-toggle="popover"],[data-original-title],.i-close').each(function () {
+        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+          (($(this).popover('hide').data('bs.popover')||{}).inState||{}).click = false  // fix for BS 3.3.6
+        }
+      });
     });
-
-
-
   });
+
+
+
+
 
   </script>
 </body>

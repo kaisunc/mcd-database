@@ -2,7 +2,7 @@ from flask import session, json, send_from_directory
 from flask_login import current_user
 from flask_socketio import emit, join_room, leave_room
 from shutil import rmtree
-import base64, os, operator, zipfile
+import base64, os, operator, zipfile, uuid
 from PIL import Image
 from io import BytesIO
 from .. import db, socketio
@@ -40,6 +40,7 @@ output: json list, {label: '', value: ''}
 
 @socketio.on('ajax_socket')
 def ajax_socket(*args):
+    print 'upload here'
     '''
     main entry point for displaying datatables
     settings = {u'search': {u'regex': False, u'value': u''}, u'draw': 1, u'start': 0, u'length': 20, u'order': [{u'column': 1, u'dir': u'desc'}], u'columns': [{u'orderable': False, u'search': {u'regex': False, u'value': u''}, u'data': u'select-checkbox', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'id', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'name', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'category', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'timestamp', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'assigned', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'url', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'tags', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'description', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'thumbnail', u'name': u'', u'searchable': True}]}
@@ -52,12 +53,13 @@ def ajax_socket(*args):
     settings = args[0]['settings']
     columns = args[0]['columns']
     columnDefs = args[0]['columnDefs']
-    category_filter = args[0]['category_filter']
+    category_filter = int(args[0]['category_filter'])
     fields = args[0]['fields']
     search = settings['search']['value']
     model = getModel(namespace)        
 
     if category_filter != 0:
+
         if search == "":
             items = model.query.filter_by(category=category_filter).order_by(model.id.desc()).limit(100000)
         else:
@@ -169,8 +171,8 @@ def create(*args):
             pass            
 
     model = getModel(namespace)
-    l = Logs(action="create", assigned=current_user.id, data=json.dumps(data))
-    db.session.add(l)
+    #l = Logs(action="create", assigned=current_user.id, data=json.dumps(data))
+    #db.session.add(l)
     fields, columns, columnDefs = getFields(model)
     if multiple == 'true':
         for d in data:
@@ -200,7 +202,9 @@ def create(*args):
                     im = im.convert("RGB")
                     im.save(thumb_path + "/thumb.jpg", "JPEG", quality=80, optimize=True)
 
-            emit('add_response', {'data': dt_data}, broadcast=True)
+            output.append(dt_data)
+        print output
+        emit('add_response', {'data': json.dumps(output)}, broadcast=True)
 
     else:
         update = addRow(data)
@@ -288,16 +292,17 @@ def remove(*args):
 
 @socketio.on('download_selected')
 def download_selected(*args):
-    print 'download selected'
     oldwd = os.getcwd()
 
     data = args[0]['data']
     category_filter = args[0]['category_filter']
-    zf = zipfile.ZipFile(base_path + '/files.zip', mode='w')
+    unique_filename = str(uuid.uuid4()) + ".zip"
+
+    zf = zipfile.ZipFile(base_path + '/upload_temp/' + unique_filename, mode='w')
     for d in data:
         file_path = "%s/%s/%08d" % (base_path, category_filter, int(d['id']))
         os.chdir(file_path)
         zf.write(d['name'])
     zf.close()
-    emit('zipped')
+    emit('zipped', unique_filename)
 

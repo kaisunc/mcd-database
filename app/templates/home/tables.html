@@ -39,10 +39,12 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
     <a href="{{ url_for('home.media',category_filter='addons') }}" class="navbar-brand">MCD DB</a>
-    <div class="collapse navbar-collapse row" id="navbarsExampleDefault">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mcd_db_navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>    
+    <div class="collapse navbar-collapse row" id="mcd_db_navbar">
       <ul class="nav nav-pills navbar-nav">
         {% if current_user.is_authenticated %}
-        <li class="nav-item active"><a class="nav-link" filter_value="0" href="{{ url_for('home.media',category_filter='upload') }}"><i class="fa fa-upload"></i> Upload</a></li>
         <li class="nav-item active" namespace="project"><a class="nav-link" filter_value="1" href="{{ url_for('home.media',category_filter='addons') }}">Addons</a></li>
         <li class="nav-item active"><a class="nav-link" filter_value="2" href="{{ url_for('home.media',category_filter='effects') }}">Effects</a></li>
         <li class="nav-item active"><a class="nav-link" filter_value="3" href="{{ url_for('home.media',category_filter='fonts') }}">Fonts</a></li>
@@ -51,6 +53,7 @@
         <li class="nav-item active"><a class="nav-link" filter_value="6" href="{{ url_for('home.media',category_filter='sfx') }}">SFX</a></li>
         <li class="nav-item active"><a class="nav-link" filter_value="7" href="{{ url_for('home.media',category_filter='software') }}">Software</a></li>
         <li class="nav-item active"><a class="nav-link" filter_value="8" href="{{ url_for('home.media',category_filter='videos') }}">Videos</a></li>
+        <li class="nav-item active"><a class="nav-link" filter_value="0" href="{{ url_for('home.media',category_filter='upload') }}"><i class="fa fa-upload"></i> Upload</a></li>
       </ul>
       <ul class="nav nav-pills navbar-nav">
         <li class="nav-item dropdown">
@@ -194,7 +197,7 @@
     columns = columnRender(columns, category_filter) //reset the object, functions seems to stick.
     table = $('#' + namespace).DataTable( {
         "dom": "<'row'<'col-sm-8 top-toolbar'><'col-sm-4'p>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-4'i><'col-sm-8'p>>",
-        "pageLength": 10,
+        "pageLength": 100,
         "processing": true,
         "serverSide": true,
         "deferRender": true,
