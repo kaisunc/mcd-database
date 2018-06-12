@@ -193,10 +193,19 @@
       }
     });
 
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     myDropzone.on("thumbnail", function(file, dataUri) {
       t = {'name': file.name, 'thumb': dataUri}
       thumbs.push(t);
     });
+
+    myDropzone.on("complete", async function(file) {
+      await sleep(1500);
+      myDropzone.removeFile(file);
+    });    
 
     $( ".dz_add" ).bind({
       click: function() {
@@ -371,7 +380,6 @@
               category = d['category']['label'];
               file_id = d['id'];              
               myDropzone.options.url = "../upload?category=" + category + "&file_id=" + file_id;              
-
               myDropzone.processFile(myDropzone.files[i]);
               //table.row.add(d);
             }
