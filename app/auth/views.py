@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import flash, redirect, render_template, url_for
 from flask_login import login_required, login_user, logout_user
 
@@ -30,9 +31,9 @@ def login():
         user = User.query.filter_by(name=form.name.data).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user)
-            return redirect(url_for('home.media', category_filter='addons'))
+            return redirect(url_for('home.media', category_filter='images'))
         else:
-            flash('Invalid name or password')
+            flash(u'不存在使用者或密碼錯誤!')
     return render_template('auth/login.html', form=form, title='Login')
 
 

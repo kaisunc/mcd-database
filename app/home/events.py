@@ -40,7 +40,6 @@ output: json list, {label: '', value: ''}
 
 @socketio.on('ajax_socket')
 def ajax_socket(*args):
-    print 'upload here'
     '''
     main entry point for displaying datatables
     settings = {u'search': {u'regex': False, u'value': u''}, u'draw': 1, u'start': 0, u'length': 20, u'order': [{u'column': 1, u'dir': u'desc'}], u'columns': [{u'orderable': False, u'search': {u'regex': False, u'value': u''}, u'data': u'select-checkbox', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'id', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'name', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'category', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'timestamp', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'assigned', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'url', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'tags', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'description', u'name': u'', u'searchable': True}, {u'orderable': True, u'search': {u'regex': False, u'value': u''}, u'data': u'thumbnail', u'name': u'', u'searchable': True}]}
@@ -203,7 +202,6 @@ def create(*args):
                     im.save(thumb_path + "/thumb.jpg", "JPEG", quality=80, optimize=True)
 
             output.append(dt_data)
-        print output
         emit('add_response', {'data': json.dumps(output)}, broadcast=True)
 
     else:
@@ -249,7 +247,6 @@ import time
 # if category is in use by any media, can't delete
 @socketio.on('remove')
 def remove(*args):
-    print 'remove'
     namespace = ""
     if len(args) != 0:
         ids = args[0]['ids']

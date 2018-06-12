@@ -133,7 +133,8 @@
     var thumbs =[];
     var myDropzone = new Dropzone("#media_drop", {
       url: "../upload",
-      //addRemoveLinks: true,
+      addRemoveLinks: true,
+      parallelUploads: 4,
       uploadMultiple: true,
       maxFilesize: 100000, //10GB
       autoProcessQueue: false,
@@ -381,7 +382,6 @@
               file_id = d['id'];              
               myDropzone.options.url = "../upload?category=" + category + "&file_id=" + file_id;              
               myDropzone.processFile(myDropzone.files[i]);
-              //table.row.add(d);
             }
           }
         }
@@ -619,28 +619,6 @@
       table.search( this.value ).draw();
     } );
 
-/*    $( ".dt_add" ).bind({
-      click: function() {
-        if(namespace == 'media'){
-          if($("#media_drop").css("display") == "block"){
-            $('#media_drop').css("display", "none");
-            $('#dz-toolbar').css("display", "none");
-            $('#dt-toolbar').css("display", "block");
-            $('#media_wrapper').css("display", "block");
-
-          } else if($("#media_drop").css("display") == "none"){ //open dropzone and dz toolbar
-            $('#media_drop').css("display", "block");
-            $('#dz-toolbar').css("display", "block");
-            $('#dt-toolbar').css("display", "none");
-            $('#media_wrapper').css("display", "none");
-          }
-        } else if(namespace == 'category'){
-          editor.create({
-            buttons: 'Create'
-          });
-        }
-      }
-    });*/
     $( ".dt_remove" ).bind({
       click: function() {
         editor
@@ -650,15 +628,6 @@
         .remove(table.rows( { selected: true } ).indexes());
       }
     });
-
-/*    $( ".dt_edit" ).bind({
-      click: function() {
-        editor
-        .title( 'Update Entry')
-        .buttons( 'Update' )
-        .edit(table.rows( { selected: true } ).indexes());
-      }
-    });*/
 
     $( ".dt_refresh" ).bind({
       click: function() {
@@ -742,10 +711,6 @@
       });
     });
   });
-
-
-
-
 
   </script>
 </body>

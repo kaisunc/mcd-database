@@ -116,6 +116,15 @@
       {{ render_field(form.password) }}
     </div>
     <div class="inputGroup inputGroup3">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}     
         {{ form.submit(class="btn waves-effect waves-light") }}    
     </div>  
 </form>
