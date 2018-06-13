@@ -433,6 +433,11 @@
         $("#uuid").attr("value", JSON.stringify(msg)); 
         $('#download_zip').submit();
       })
+
+      socket.on('append_tags', function(msg){
+        table.ajax.reload();
+      })
+
     }
 
     function columnRender(columns, category_filter){
@@ -659,6 +664,34 @@
         socket.emit('download_selected', {'data': data, 'category_filter': category_filter})
       }
     });
+
+    function append_tags() {
+      data = [];
+      rows = table.rows('.selected').data();
+      append_tags = $('.append_tags').val();
+      for(i=0;i<rows.length;i++){
+        data.push({'id': rows[i]['id'], 'tags': rows[i]['tags']});
+        category_filter = rows[i]['category']['label']
+      }
+      socket.emit('append_tags', {'data': data, 'category_filter': category_filter, 'append_tags': append_tags})
+      $('.append_tags').val("");
+    }
+
+    $(".dt_append_tags").bind({
+      click: function(msg) {
+        append_tags();
+      }
+    });    
+
+    $(".append_tags").keyup(function(event) {
+      if (event.keyCode === 13) {
+        append_tags();
+      }
+    });
+
+
+
+
 
     $(".dropdown-menu a").click(function(){
       tt = $(this).parent().parent().find('.dropdown-toggle');

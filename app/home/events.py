@@ -303,3 +303,24 @@ def download_selected(*args):
     zf.close()
     emit('zipped', unique_filename)
 
+@socketio.on('append_tags')
+def append_tags(*args):
+    data = args[0]['data']
+    category_filter = args[0]['category_filter']
+    append_tags = args[0]['append_tags'].split(",")
+    namespace = "media"
+    model = getModel(namespace)
+    fields, columns, columnDefs = getFields(model)
+
+    for d in data:
+        tags = d['tags'].split(",")
+        tags = tags + append_tags
+        pid = d['id']
+            
+        update = Media.query.filter_by(id=pid).first()
+        update.tags = ",".join(tags)
+        db.session.commit()
+        #update = model.query.filter_by(id=pid).first()
+
+        dt_data = json.dumps(update.as_dict1(fields))    
+        emit('update_response', {'data': dt_data}, broadcast=False)
