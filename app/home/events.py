@@ -4,6 +4,7 @@ from flask_socketio import emit, join_room, leave_room
 from shutil import rmtree
 import base64, os, operator, zipfile, uuid
 from PIL import Image
+import time
 from io import BytesIO
 from .. import db, socketio
 from .. import base_path
@@ -243,7 +244,7 @@ def update(*args):
     dt_data = json.dumps(update.as_dict1(fields))
     emit('update_response', {'data': dt_data}, broadcast=False)
 
-import time
+
 # if category is in use by any media, can't delete
 @socketio.on('remove')
 def remove(*args):
@@ -319,8 +320,6 @@ def append_tags(*args):
             
         update = Media.query.filter_by(id=pid).first()
         update.tags = ",".join(tags)
-        db.session.commit()
-        #update = model.query.filter_by(id=pid).first()
+    db.session.commit()
 
-        dt_data = json.dumps(update.as_dict1(fields))    
-        emit('update_response', {'data': dt_data}, broadcast=False)
+    emit('append_tags', {'data': dt_data}, broadcast=False)

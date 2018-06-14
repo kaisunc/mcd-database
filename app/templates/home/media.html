@@ -248,30 +248,29 @@
     };
     generic_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
+      var url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + row['name'];
       return '<a href="' + url +'" download><i class="fa fa-file fa-2xx" aria-hidden="true"></i></a>';
     }
 
     thumb_render = function ( data, meta, row ) {
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
-      var thumb_url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/thumb.jpg";
+      var url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + row['name'];
+      var thumb_url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + "/thumb.jpg";
       return '<a href="' + url +'" download><img class="thumbnail" src="'+thumb_url+'"/><span><img data-src="' + url + '"/><br /></span></a>'
-      /*return '<a href="' + url +'" download><img class="thumbnail" src="'+thumb_url+'"/><span><br /></span></a>';*/
     };
     sound_render = function (data, meta, row){
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
+      var url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + row['name'];
       return "<audio controls loop><source src='" + url + "'></audio>";
     };
     video_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'] + "#t=10";
+      var url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + row['name'] + "#t=10";
       return "<video preload='metadata' src=" + url + " controls loop></video>"
     };
     font_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.host + "/download/" + row['category']['label'] + "/" + id + "/" + row['name'];
+      var url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + row['name'];
       return "<a href=" + url + " download><div class='font-preview-sm' style='font-family: &quot;" + id + "&quot;'>Aa<span><div class='font-preview' style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥<br/>The quick brown fox jumped over the lazy dog</div><br /></span></div></a>"
     };
     datetime_render = function (data, meta, row) {
@@ -304,15 +303,31 @@
                       socket.on('init_response', function(response){
                         output = JSON.parse(response);
                         if(category_filter == 3){
-                          var newStyle = document.createElement('style');
-                          for(i=0;i<output['data'].length;i++){
-                            var id = ("00000000" + output['data'][i]['id']).substr(-8,8);
-                            var font_url = "http://" + window.location.host + "/download/fonts/" + id + "/" + output['data'][i]['name'];
-                            var font_face = "@font-face {font-family: '" + id + "'; src: url('" + font_url  + "') format('truetype');}"
-                            newStyle.appendChild(document.createTextNode(font_face));
+                          var head = document.head || document.getElementsByTagName('head')[0]                          
+                          if($('style').length == 0){
+                            var newStyle = document.createElement('style');  
+                            head.appendChild(newStyle);  
+                          } else {
+                            newStyle = $('style');
                           }
-                          var head = document.head || document.getElementsByTagName('head')[0]
-                          head.appendChild(newStyle);
+                          var sheets = document.styleSheets;                          
+                          var sheet = sheets[sheets.length -1];
+                          var existing_ids = [];
+                          for(h=0;h<sheet.rules.length;h++){
+                            var existing_id = parseInt(sheet.rules[h].style.fontFamily.replace(/['"]+/g, ''))
+                            existing_ids.push(existing_id);
+                          }
+                          for(i=0;i<output['data'].length;i++){
+                            var new_id = parseInt(output['data'][i]['id']);
+                            if(existing_ids.indexOf(new_id) > -1){
+                            } else {
+                              var id = ("00000000" + output['data'][i]['id']).substr(-8,8);
+                              var font_url = "http://" + window.location.host + "/download?category=fonts&file_id=" + id + "&filename=" + output['data'][i]['name'];                            
+                              var font_face = "@font-face {font-family: '" + id + "'; src: url('" + font_url  + "') format('truetype');}"
+                              newStyle.append(document.createTextNode(font_face));                              
+                            }
+
+                          }
                         }
                         callback(output);
                       })

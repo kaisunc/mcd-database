@@ -1,5 +1,6 @@
-import os, operator, jinja2
-from flask import flash, request, redirect, render_template, url_for, json, send_from_directory, send_file
+# -*- coding: utf-8 -*-
+import os, operator, jinja2, urllib
+from flask import flash, request, redirect, render_template, url_for, json, send_from_directory, send_file, make_response
 from flask_login import login_required, current_user
 from werkzeug import secure_filename
 from .. import base_path
@@ -171,11 +172,33 @@ def upload():
     #     f.save(file_path)
     #     return "ok"
 
-@home.route('/download/<category>/<file_id>/<string:filename>', methods=['GET', 'POST'])
-@login_required
-def download(category, file_id, filename):
-    directory = "%s/%s/%s" % (base_path, category, str(file_id))
-    return send_from_directory(directory=directory, filename=filename)
+# @home.route('/download/<category>/<file_id>/<string:filename>', methods=['GET', 'POST']) 
+# @login_required 
+# def download(category, file_id, filename): 
+#     directory = "%s/%s/%s" % (base_path, category, str(file_id)) 
+#     return send_from_directory(directory=directory, filename=unicode(filename), as_attachment=True)
+
+@home.route('/download', methods=['GET', 'POST']) 
+@login_required 
+def download(): 
+    params = request.args.to_dict()
+
+    category = params['category']
+    file_id = params['file_id']
+    filename = params['filename']
+    
+    out_file = "%s/%s/%s/%s" % (base_path, category, str(file_id), filename) 
+    response = make_response(send_file(out_file))
+    response.headers["Content-Disposition"] = "attachment; filename*=UTF-8''{utf_filename}".format(utf_filename=urllib.quote(filename.encode('utf-8')))
+
+    # response.headers["Content-Disposition"] = \
+    #     "attachment;" \
+    #     "filename*=UTF-8''{utf_filename}".format(
+    #         utf_filename=urllib.quote(filename.encode('utf-8'))
+    #     )
+
+
+    return response
 
 @home.route('/download_zip', methods=['GET', 'POST'])
 @login_required
