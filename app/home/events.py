@@ -249,13 +249,13 @@ def update(*args):
 @socketio.on('remove')
 def remove(*args):
     namespace = ""
+    print 'removing'
     if len(args) != 0:
         ids = args[0]['ids']
         namespace = args[0]["namespace"]
 
     l = Logs(action="remove", assigned=current_user.id, data=json.dumps(ids))
     db.session.add(l)
-
 
     db.session.flush()
     model = getModel(namespace)
