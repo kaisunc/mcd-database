@@ -271,7 +271,7 @@
     font_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
       var url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + row['name'];
-      return "<a href=" + url + " download><div class='font-preview-sm' style='font-family: &quot;" + id + "&quot;'>Aa<span><div class='font-preview' style='font-family: &quot;" + id + "&quot;'>烏飛白頭竄帝子　馬挾紅粉啼宮娥<br/>The quick brown fox jumped over the lazy dog</div><br /></span></div></a>"
+      return "<a href=" + url + " download><div class='font-preview-sm' style='font-family: &quot;" + id + "&quot;'>Aa<span><div class='font-preview' style='font-family: &quot;" + id + "&quot;'>进入维基百科的用户都可以编写和修改里面的文章<br/>進入維基百科的用戶都可以編寫和修改裡面的文章<br/>The quick brown fox jumped over the lazy dog</div><br /></span></div></a>"
     };
     datetime_render = function (data, meta, row) {
       m = moment.utc(data);
@@ -704,10 +704,6 @@
       }
     });
 
-
-
-
-
     $(".dropdown-menu a").click(function(){
       tt = $(this).parent().parent().find('.dropdown-toggle');
       $(tt).text($(this).text());
@@ -718,8 +714,6 @@
       $('input.table-search').val("");
       table.search("").draw();
     });
-
-
 
     function debounceSearch() {
         var $searchBox = $('.table-search');

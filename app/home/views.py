@@ -191,13 +191,6 @@ def download():
     response = make_response(send_file(out_file))
     response.headers["Content-Disposition"] = "attachment; filename*=UTF-8''{utf_filename}".format(utf_filename=urllib.quote(filename.encode('utf-8')))
 
-    # response.headers["Content-Disposition"] = \
-    #     "attachment;" \
-    #     "filename*=UTF-8''{utf_filename}".format(
-    #         utf_filename=urllib.quote(filename.encode('utf-8'))
-    #     )
-
-
     return response
 
 @home.route('/download_zip', methods=['GET', 'POST'])

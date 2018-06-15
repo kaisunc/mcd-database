@@ -98,23 +98,24 @@ def getWeirdTags(im):
 #%%
 size = (120, 120)
 #filename  = "67183490.jpg"
-category = r"電子"
-image_path = r"//mcd-one/web_project/(4)素材區/素材-圖庫/3_%s" % category
+category = r"其他"
+image_path = r"//mcd-one/web_project/(4)素材區/素材-圖庫/10_%s" % category
 image_path = image_path.decode("utf8")
 
 
 #full_path = image_path + "/" + filename
 
 image_list_temp = os.listdir(image_path)
+
 image_list = []
 for image in image_list_temp:
     if 'jpg' in image and "." not in image[0]:
         image_list.append(image)
 len(image_list)
-for image in image_list:        
-    full_path = "%s/%s" % (image_path, image)
-    tags = ""
+
+for idx, image in enumerate(image_list):      
     print image
+    full_path = "%s/%s" % (image_path, image)
     tags = ""
     if os.path.isfile(full_path):
         im = Image.open(full_path)
@@ -156,4 +157,26 @@ for image in image_list:
             db.session.flush()
 
 #%%
-getTags(im, full_path)
+
+
+font_path = u"//mcd-one/web_project/(4)素材區/字型/1_中文/方正系列"
+
+font_list_temp = os.listdir(font_path)
+
+font_list = []
+for font in font_list_temp:
+    if "." not in font[0] and "Thumbs.db" not in font:
+        font_list.append(font)
+len(font_list)
+for idx, font in enumerate(font_list):
+    full_path = "%s/%s" % (font_path, font)
+    print font
+    tags = [u"中文", u"方正"]
+    if u"繁" in font:
+        tags.append(u"繁")
+    elif u"简" in font:
+        tags.append(u"简")
+    m = Media(name=font, category=3, assigned=1, tags=",".join(tags), thumbnail="")
+    db.session.add(m)
+db.session.commit()
+
