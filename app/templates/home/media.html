@@ -23,7 +23,7 @@
     var fields = JSON.parse('{{fields | tojson | safe}}');
     var category_filter = "{{category_filter}}";
     var page = "{{page}}";
-
+    var current_user = "{{current_user.name}}";
   </script>
   <script src="{{ url_for('static', filename='lib/socket.io.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='lib/DataTables/datatables.min.js') }}"></script>
@@ -84,42 +84,7 @@
 
   <div class="row nav-spacer"></div>
 
-  <div class="container dz_container">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="dropzone" id="media_drop"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-1">
-        <div class="btn-toolbar" id="dz-toolbar">
-          <div class="btn-group">
-            <button class="btn dz_add" ><i class="fa fa-upload"></i></button>
-            <button class="btn dz_clear" ><i class="fa fa-trash-o"></i></button>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-2">
-        <div class="category_menu dropdown">
-          <button id="select_category" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="1">Fonts</button>
-          <div class="dropdown-menu" aria-labelledby="select_category" id="select_category_dropdown">
-            {% if ff %}
-              {% for d in ff[1].options %}
-                <a class="dropdown-item" href="javascript:void(0);" value="{{d.value}}">{{d.label}}</a>
-              {% endfor %}
-            {% endif %}
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-9">
-        <div class="add-tags">
-          <input type="text" id="input-tags" class="" value="" placeholder="input tag here!">
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
-
+  {% include "./home/dropzone.html" %}
 
   {% include "./home/toolbar.html" %}
 
@@ -127,7 +92,7 @@
   </table>
 
   <footer class="container">
-    <input type='text' class='input-page' placeholder='頁' aria-label='Page'> </input>
+    <!-- <input type='text' class='input-page' placeholder='頁' aria-label='Page'> </input> -->
   </footer>
   <script>
     var thumbs =[];
@@ -141,6 +106,13 @@
       thumbnailWidth: 120,
       timeout: 3600000 //60mins
     });
+
+    var thumb_drop = new Dropzone("#thumb_drop", {
+      dictDefaultMessage: "加縮圖",      
+      url: "../dummy",
+      addRemoveLinks: true,
+      thumbnailWidth: 120
+    });    
 
     function dz_clear(){
       var acceptedFiles = myDropzone.getAcceptedFiles();
@@ -271,7 +243,7 @@
     font_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
       var url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + row['name'];
-      return "<a href=" + url + " download><div class='font-preview-sm' style='font-family: &quot;" + id + "&quot;'>Aa<span><div class='font-preview' style='font-family: &quot;" + id + "&quot;'>进入维基百科的用户都可以编写和修改里面的文章<br/>進入維基百科的用戶都可以編寫和修改裡面的文章<br/>The quick brown fox jumped over the lazy dog</div><br /></span></div></a>"
+      return "<a href=" + url + " download><div class='font-preview-sm' style='font-family: &quot;" + id + "&quot;'>Aa<span><div class='font-preview' style='font-family: &quot;" + id + "&quot;'>进入维基百科的用户都可以编写和修改里面的文章<br/>進入維基百科的用戶都可以編寫和修改裡面的文章<br />The quick brown fox jumped over the lazy dog</div><br /></span></div></a>"
     };
     datetime_render = function (data, meta, row) {
       m = moment.utc(data);
@@ -355,10 +327,18 @@
             }
             else if ( d.action === 'remove' ) {
               var k = [];
-              $.each( d.data, function (id) {
+              var deletable = true;
+              $.each( d.data, function (id, data) {
+                if(data.assigned.label != current_user){
+                  deletable = false;
+                }
                 k.push(id);
               } );
-              socket.emit('remove', {'namespace': namespace, 'ids': k});
+              if (deletable == true){
+                socket.emit('remove', {'namespace': namespace, 'ids': k});                
+              } else {
+                alert('不是你的檔案');
+              }
             }
             successCallback(output);
           },
@@ -401,24 +381,12 @@
           }
         }
         table.rows.add(stuff).draw();
-/*        myDropzone.processQueue();        
-        queuedFiles = myDropzone.getQueuedFiles();
-        while (queuedFiles.length>0){
-          i=0;
-          while (i < 3) {
-            if (!queuedFiles.length) {
-              return;
-            }
-            myDropzone.processFile(queuedFiles.shift());
-            i++;
-          }
-        } */       
-      })
+      });
 
       socket.on('update_response', function(msg) {
         d = JSON.parse(msg.data);
         table.row.add(d).draw('page');
-      })
+      });
 
       socket.on('delete_response', function(msg) {
         data = JSON.parse(msg['ids']);
@@ -426,7 +394,7 @@
           id = data[i];
           table.row('#' + parseInt(id)).remove().draw();
         }
-      })
+      });
 
       socket.on('tag_response', function(msg){
         tags = msg;
@@ -442,17 +410,16 @@
         }
         container.addClass('custom-popover');
         $('#popover-content').html(container);
-      })
+      });
 
       socket.on('zipped', function(msg){
         $("#uuid").attr("value", JSON.stringify(msg)); 
         $('#download_zip').submit();
-      })
+      });
 
-      socket.on('append_tags', function(msg){
+      socket.on('append_tag_response', function(msg){
         table.ajax.reload();
-      })
-
+      });
     }
 
     function columnRender(columns, category_filter){
@@ -694,13 +661,21 @@
 
     $(".dt_append_tags").bind({
       click: function(msg) {
-        append_tags();
+        data = [];
+        rows = table.rows('.selected').data();
+        append_tags = $('.append_tags').val();
+        for(i=0;i<rows.length;i++){
+          data.push({'id': rows[i]['id'], 'tags': rows[i]['tags']});
+          category_filter = rows[i]['category']['label']
+        }
+        socket.emit('append_tags', {'data': data, 'category_filter': category_filter, 'append_tags': append_tags})
+        $('.append_tags').val("");
       }
     });    
 
     $(".append_tags").keyup(function(event) {
       if (event.keyCode === 13) {
-        append_tags();
+        $(".dt_append_tags").click();
       }
     });
 

@@ -159,7 +159,7 @@ for idx, image in enumerate(image_list):
 #%%
 
 
-font_path = u"//mcd-one/web_project/(4)素材區/字型/1_中文/方正系列"
+font_path = u"//mcd-one/web_project/(4)素材區/字型/1_中文/迷你系列"
 
 font_list_temp = os.listdir(font_path)
 
@@ -169,14 +169,26 @@ for font in font_list_temp:
         font_list.append(font)
 len(font_list)
 for idx, font in enumerate(font_list):
-    full_path = "%s/%s" % (font_path, font)
     print font
-    tags = [u"中文", u"方正"]
+    full_path = "%s/%s" % (font_path, font)
+    tags = [u"中文", u"迷你"]
     if u"繁" in font:
         tags.append(u"繁")
     elif u"简" in font:
         tags.append(u"简")
+
     m = Media(name=font, category=3, assigned=1, tags=",".join(tags), thumbnail="")
     db.session.add(m)
-db.session.commit()
+    db.session.commit()
+    mid = m.id
+    upload_path = r"//mcd-one/database/mcd_db/fonts/%08d" % int(mid)
+    if not os.path.exists(upload_path):
+        os.mkdir(upload_path)
+    shutil.copyfile(full_path, upload_path + "/" + font)
+#%%    
 
+
+#    if u"繁" in font:
+#        tags.append(u"繁")
+#    elif u"简" in font:
+#        tags.append(u"简")

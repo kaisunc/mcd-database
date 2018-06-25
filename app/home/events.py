@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 from flask import session, json, send_from_directory
 from flask_login import current_user
 from flask_socketio import emit, join_room, leave_room
 from shutil import rmtree
 import base64, os, operator, zipfile, uuid
 from PIL import Image
-import time
+import time, sys
 from io import BytesIO
 from .. import db, socketio
 from .. import base_path
@@ -59,7 +60,6 @@ def ajax_socket(*args):
     model = getModel(namespace)        
 
     if category_filter != 0:
-
         if search == "":
             items = model.query.filter_by(category=category_filter).order_by(model.id.desc()).limit(100000)
         else:
@@ -321,5 +321,4 @@ def append_tags(*args):
         update = Media.query.filter_by(id=pid).first()
         update.tags = ",".join(tags)
     db.session.commit()
-
-    emit('append_tags', {'data': dt_data}, broadcast=False)
+    emit('append_tag_response', broadcast=False)

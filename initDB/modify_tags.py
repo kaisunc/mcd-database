@@ -10,7 +10,8 @@ Created on Thu Jun 14 09:37:44 2018
 
 model = Media
 fields, columns, columnDefs = getFields(model)
-search=u"行動裝置 OR 城市 OR 錢 OR 背景 OR 其他"
+#search=u"简"
+search=u"簡"
 items = model.query.whoosh_search(search).all()
 len(items)
 
@@ -24,25 +25,27 @@ for item in items:
     tags = item.tags.split(",")
     new_tags = []
     for tag in tags:
-        if tag == u"多人":
+        if tag == u"簡":
             pass
         else:
             new_tags.append(tag)
-    #tags = tags.replace(",多人", "")
+    new_tags.append(u"簡")
     item.tags = ",".join(new_tags)
 db.session.commit()
     
-
+db.session.rollback()
 
 db.session.flush()
 now = db.func.now()
 for k, v in data.iteritems():
     setattr(update, k, v)
+#dt_data = json.dumps(update.dt_data_row())
     if 'timestamp' in cols:
         update.timestamp = now
 db.session.commit()
 update = model.query.filter_by(id=pid).first()
-#dt_data = json.dumps(update.dt_data_row())
 
 dt_data = json.dumps(update.as_dict1(fields))
 emit('update_response', {'data': dt_data}, broadcast=False)
+print u"中文".encode("utf8")
+r"中文"
