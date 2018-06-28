@@ -186,8 +186,9 @@ def download():
     category = params['category']
     file_id = params['file_id']
     filename = params['filename']
-    
+
     out_file = "%s/%s/%s/%s" % (base_path, category, str(file_id), filename) 
+
     response = make_response(send_file(out_file))
     response.headers["Content-Disposition"] = "attachment; filename*=UTF-8''{utf_filename}".format(utf_filename=urllib.quote(filename.encode('utf-8')))
 

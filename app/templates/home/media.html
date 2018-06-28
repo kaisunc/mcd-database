@@ -92,7 +92,7 @@
   </table>
 
   <footer class="container">
-    <!-- <input type='text' class='input-page' placeholder='頁' aria-label='Page'> </input> -->
+    <input type='text' class='input-page' placeholder='頁' aria-label='Page'> </input>
   </footer>
   <script>
     var thumbs =[];
@@ -232,8 +232,8 @@
     };
     sound_render = function (data, meta, row){
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + row['name'];
-      return "<audio controls loop><source src='" + url + "'></audio>";
+      var url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + encodeURIComponent(row['name']);
+      return "<audio id='sound' controls loop preload='none'><source src='" + url + "'></audio>";
     };
     video_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
@@ -329,9 +329,13 @@
               var k = [];
               var deletable = true;
               $.each( d.data, function (id, data) {
-                if(data.assigned.label != current_user){
+/*                if(data.assigned.label != current_user){
                   deletable = false;
-                }
+                } 
+
+                if(data.assigned.label == "julio"){
+                  deletable = true;
+                }*/
                 k.push(id);
               } );
               if (deletable == true){
@@ -399,7 +403,12 @@
       socket.on('tag_response', function(msg){
         tags = msg;
         var container = $('<div />');
-        default_tags = ["視訊", "電子", "彩票", "體育", "人物", "行動裝置","城市","錢","背景","其他"];
+        if(category_filter == 6){
+          default_tags = ["常用音效", "機率音效", "Splice", "Soundly"]
+        } else {
+          default_tags = ["視訊", "電子", "彩票", "體育", "人物", "行動裝置","城市","錢","背景","其他"];  
+        }
+        
         for(j=0;j<default_tags.length;j++){
           tag_container = '<span class="badge badge-warning search-tag">' + default_tags[j] + '<div class="tag-close"><i class="fa fa-times" aria-hidden="true"></i></div></span>';
           container.append(tag_container);
@@ -516,18 +525,17 @@
             $(this).attr("show", true);
             $(this).children("div").css("display", "inline-block");
           } else {
-            input = $('.table-search').val().split(" "); 
+            input = $('.table-search').val(); 
             if($(this).attr("show") == "true"){
               $(this).attr("show", false);
               $(this).children("div").css("display", "");
-              i = input.indexOf(tags);
-              input.splice(i, 1);              
+              input = input.replace(tags, "");
             } else {
               $(this).attr("show", true);
               $(this).children("div").css("display", "inline-block");
-              input.push(tags);
+              input = input + " " + tags;
             }
-            $('.table-search').val(input.join(" "));
+            $('.table-search').val(input);
           }
           search = $('.table-search').val();
           table.search(search).draw();
@@ -719,6 +727,7 @@
     debounceSearch();
     initPage();
     initPopover()
+    $('#sound').volume = 0.2;
     //dismiss popover by clicking outside
     $(document).on('click', function (e) {
       $('[data-toggle="popover"],[data-original-title],.i-close').each(function () {

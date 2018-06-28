@@ -49,3 +49,14 @@ dt_data = json.dumps(update.as_dict1(fields))
 emit('update_response', {'data': dt_data}, broadcast=False)
 print u"中文".encode("utf8")
 r"中文"
+
+#%%
+items = Media.query.filter(Media.id <= 27845).filter(Media.id >= 27784)
+for item in items:
+    item.tags = item.tags.replace("Aircraft - Jets","") + ",Aircraft - Jets"
+    print item.tags
+db.session.commit()    
+
+
+
+
