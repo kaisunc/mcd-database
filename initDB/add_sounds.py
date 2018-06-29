@@ -41,6 +41,8 @@ sound_path = u"//192.168.163.63/audio/MCD Database/Splice/Delectable House/DR_De
 sound_path = u"//192.168.163.63/audio/MCD Database/Splice/Delectable House"
 
 #%%
+
+
 import os    
 sound_path = u"//192.168.163.63/audio/MCD Database/Splice/Delectable House"
 def find_files( files, dirs=[], extensions=[]):
@@ -98,11 +100,11 @@ import queue
 #sound_path = u"//mcd-one/audio/MCD Database/常用音效/常用音效_分類統整區"
 sound_path = u"d:/Hybrid Library"
 dirs = os.listdir(sound_path)
-this_tag = dirs[5]
-this_path = "%s/%s" % (sound_path, this_tag)
+#print dirs[15:20]
+
 
 q = queue.Queue()
-for d in dirs[6:10]:
+for d in dirs[7:10]:
     this_path = "%s/%s" % (sound_path, d)
     for root, dirs, files in os.walk(this_path, topdown=False):
         files = [ fi for fi in files if fi.endswith((".mp3",".wav",".ogg")) ]
@@ -110,13 +112,12 @@ for d in dirs[6:10]:
             q.put([name, root])
         #file_path = (os.path.join(root, name))
 #%%
-while q.qsize() != 0:
-    print q.get()
+q.get()
 #%%            
 def addFile(q):
     while q.qsize() != 0:
         name, root = q.get()
-        #print name
+        tags = []
         tags = root.replace(sound_path,"")[1:].split("\\")
         tags.append(u"Pro Sound Effects")
         tags.append(u"PSE")
@@ -126,7 +127,7 @@ def addFile(q):
         db.session.add(m)
         db.session.commit() 
         mid = m.id
-        upload_path = r"//mcd-one/database/mcd_db/sfx/%08d" % int(mid)            
+        upload_path = r"//art-server/database/mcd_db/sfx/%08d" % int(mid)            
         if not os.path.exists(upload_path):
             os.mkdir(upload_path)
 
@@ -141,3 +142,19 @@ for i in range(0,1):
 
 #t.join()    
 #%%
+import time
+def test(q):
+    while q.qsize != 0:
+        name, root = q.get()
+        print name, root
+        time.sleep(5)
+for i in range(10)        :
+    t = Thread(target=test, args=(q,))
+    t.start()
+    
+    
+        
+#%%
+Media.query
+
+

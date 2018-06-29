@@ -59,32 +59,36 @@ def ajax_socket(*args):
     search = settings['search']['value']
     model = getModel(namespace)        
 
+    
+    start = int(settings['start'])
+    length = int(settings['length'])
+    sort_column = int(settings['order'][0]['column']) # column number
+    sort_column_name = columns[sort_column]['data'] # column name
+    sort_direction = settings['order'][0]['dir']
+
+    order_func = "%s.%s.%s()" % ("Media", sort_column_name, sort_direction)
+
+    #print start
+    recordsTotal = model.query.filter_by(category=category_filter).count()
     if category_filter != 0:
         if search == "":
-            items = model.query.filter_by(category=category_filter).order_by(model.id.desc()).limit(100000)
+            items = model.query.filter_by(category=category_filter).order_by(eval(order_func)).offset(start).limit(length)
         else:
-            items = model.query.filter_by(category=category_filter).whoosh_search(search).all()
+            items = model.query.filter_by(category=category_filter).order_by(eval(order_func)).whoosh_search(search)
+            recordsTotal = sum(1 for _ in items)
+            items = items.offset(start).limit(length)
     else:
         if search == "":
             items = model.query.order_by(model.id.desc()).limit(1000)
         else:
             items = model.query.whoosh_search(search).all()
 
-    start = int(settings['start'])
-    length = int(settings['length'])
-
-    sort_column = int(settings['order'][0]['column']) # column number
-    sort_column_name = columns[sort_column]['data'] # column name
-    sort_direction = settings['order'][0]['dir']
-
     dt_data = []
     for row in items:
         dt_data.append(row.as_dict1(fields))
-    recordsTotal = len(dt_data)
 
-    dt_data = custom_sort(dt_data, fields, sort_column_name, sort_direction)
-    dt_data = custom_paging(dt_data, start, length)
-
+    #dt_data = custom_sort(dt_data, fields, sort_column_name, sort_direction)
+    #dt_data = custom_paging(dt_data, start, length)
 
     t = json.dumps({"draw": settings['draw'], "recordsTotal": recordsTotal, "recordsFiltered": recordsTotal, "data": dt_data})
     emit('init_response', t, broadcast=False)

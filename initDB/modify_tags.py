@@ -60,3 +60,8 @@ db.session.commit()
 
 
 
+#%%
+Media.query.filter(Media.id > 28355).delete()
+db.session.commit()
+
+    
