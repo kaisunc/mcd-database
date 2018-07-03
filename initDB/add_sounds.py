@@ -40,26 +40,6 @@ sound_path = u"//mcd-one/audio/MCD Database/機率音效/小e公版"
 sound_path = u"//192.168.163.63/audio/MCD Database/Splice/Delectable House/DR_Delectable_House/DR_DGDH_DRUMS_PACK/DGDH_LP_DRUM_PARTS/LP_DRUMS"
 sound_path = u"//192.168.163.63/audio/MCD Database/Splice/Delectable House"
 
-#%%
-
-
-import os    
-sound_path = u"//192.168.163.63/audio/MCD Database/Splice/Delectable House"
-def find_files( files, dirs=[], extensions=[]):
-    new_dirs = []
-    for d in dirs:
-        try:
-            new_dirs += [ os.path.join(d, f) for f in os.listdir(d) ]
-        except OSError:
-            if os.path.splitext(d)[1] in extensions:
-                files.append(d)
-
-    if new_dirs:
-        find_files(files, new_dirs, extensions )
-    else:
-        return
-files = []        
-find_files(files, dirs=sound_path, extensions=[".wav"])        
 
 #%%
 import os, shutil
@@ -98,32 +78,30 @@ from threading import Thread
 import queue
 
 #sound_path = u"//mcd-one/audio/MCD Database/常用音效/常用音效_分類統整區"
-sound_path = u"d:/Hybrid Library"
+#sound_path = u"d:/Hybrid Library"
+sound_path = u"//mcd-one/2d_material/UI資料庫/Button"
 dirs = os.listdir(sound_path)
-#print dirs[15:20]
-
 
 q = queue.Queue()
-for d in dirs[7:10]:
+for d in dirs:
     this_path = "%s/%s" % (sound_path, d)
     for root, dirs, files in os.walk(this_path, topdown=False):
-        files = [ fi for fi in files if fi.endswith((".mp3",".wav",".ogg")) ]
+        files = [ fi for fi in files if fi.endswith((".jpg",".psd")) ]
         for name in files:
             q.put([name, root])
         #file_path = (os.path.join(root, name))
 #%%
-q.get()
+print q.get()[1]
+q.qsize()
 #%%            
 def addFile(q):
     while q.qsize() != 0:
         name, root = q.get()
         tags = []
         tags = root.replace(sound_path,"")[1:].split("\\")
-        tags.append(u"Pro Sound Effects")
-        tags.append(u"PSE")
-        tags.append(u"hybrid library")    
+        tags.append(u"2d")
         file_path = (os.path.join(root, name))
-        m = Media(name=name, category=6, assigned=1, tags=",".join(tags), thumbnail="")
+        m = Media(name=name, category=4, assigned=1, tags=",".join(tags), thumbnail="")
         db.session.add(m)
         db.session.commit() 
         mid = m.id
@@ -142,19 +120,83 @@ for i in range(0,1):
 
 #t.join()    
 #%%
-import time
-def test(q):
-    while q.qsize != 0:
-        name, root = q.get()
-        print name, root
-        time.sleep(5)
-for i in range(10)        :
-    t = Thread(target=test, args=(q,))
-    t.start()
-    
-    
-        
-#%%
-Media.query
 
+import sys, os, shutil
+base = r"\\mcd-one\2d_material".decode("utf8")
+sound_path = r"\\mcd-one\2d_material\UI資料庫\Text".decode("utf8")
+dirs = [x for x in os.listdir(sound_path) if os.path.isdir(os.path.join(sound_path, x))]
+
+for d in dirs:
+    sub_path = os.path.join(sound_path, d)
+    files = [f for f in os.listdir(sub_path) if f.endswith("jpg")]
+    for f in files:
+        tags = sub_path.replace(base,"")[1:].split(u"\\")
+        tags.append("2d")
+        file_path = os.path.join(sub_path, f)
+        psd = f.replace(".jpg", "_work.psd")
+        psd_path = os.path.join(sub_path, psd)
+
+        print os.path.isfile(psd_path), psd_path
+        print os.path.isfile(file_path), file_path
+
+        m = Media(name=psd, category=4, assigned=1, tags=",".join(tags), thumbnail="")
+        db.session.add(m)
+        db.session.commit() 
+        mid = m.id
+        upload_path = r"//art-server/database/mcd_db/images/%08d" % int(mid)            
+        if not os.path.exists(upload_path):
+            os.mkdir(upload_path)
+    
+        shutil.copyfile(file_path, upload_path + "/thumb.jpg")
+        shutil.copyfile(psd_path, upload_path + "/" + psd)
+        print psd
+        print tags
+    
+#%%
+def addFile(name, base_path, tags=[], category=4, assigned=1):
+    category_name = Category.query.filter_by(id=category).first().name
+    db.session.flush()
+    
+    base_path = game_path
+    file_path = os.path.join(base_path, name)
+    name = gameplay
+    m = Media(name=name, category=category, assigned=assigned, tags=",".join(tags), thumbnail="")
+    db.session.add(m)
+    db.session.commit() 
+    mid = m.id
+   
+    upload_path = u"%s\\%s\\%08d" % ("\\\\art-server\\database\\mcd_db", category_name, int(mid))
+
+    if not os.path.exists(upload_path):
+        os.mkdir(upload_path)
+
+    shutil.copyfile(file_path, upload_path + "\\" + name)
+
+
+#%%
+import sys, os, shutil
+ta_path = r"\\mcd-one\ta\2_Datebase\GameSources".decode("utf8")
+base = r"\\mcd-one\ta\2_Datebase".decode("utf8")
+
+dirs = [x for x in os.listdir(ta_path) if os.path.isdir(os.path.join(ta_path, x)) and x != "_Index"]
+    
+game_sub_dirs = ["Atlas", "Fonts", "Scene", "Symbol", "UI"]    
+for d in dirs:
+    game_path = os.path.join(ta_path, d)
+    #tags = game_path.replace(ta_path,"")[1:].split(u"\\")
+    gameplay = [x for x in os.listdir(game_path) if ".mp4" in x][0]
+    if len(gameplay) != 0:
+        addFile(gameplay, game_path, tags=tags, category=8)
+    
+    gamefiles = [(root, dirs, files) for (root, dirs, files) in os.walk(game_path, topdown=False) if root != game_path]
+    for root, dirs, files in gamefiles:
+        for f in [f for f in files if f.endswith((".jpg",".png",".gif"))]:
+            file_path = os.path.join(root, f)
+            tags = root.replace(base,"")[1:].split(u"\\")
+            tags.append("TA")
+            addFile(f, file_path, tags=",".join(tags), category=4)
+
+        
+
+    
 

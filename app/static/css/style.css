@@ -310,11 +310,14 @@ left: 90px; /*position where enlarged image should offset horizontally */
 }
 
 .tags1{
-background-color:#eee;
-border: 1px solid #ccc;
-margin:0px 10px 10px 0px;
-line-height: 200%;
-padding:2px 0 2px 2px;
+    background-color:#eee;
+    border: 1px solid #ccc;
+    margin:0px 10px 10px 0px;
+    line-height: 200%;
+    padding:2px 0 2px 2px;
+}
+.popover {
+    max-width: 60%;
 }
 
 .popover-title {

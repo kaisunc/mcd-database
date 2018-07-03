@@ -130,7 +130,7 @@ def get_tags(*args):
             else:
                 tags[tag] = 1
     
-    tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)[0:25]
+    tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)[0:100]
     tags_list = []
     for t in tags:
         tags_list.append({'tag':t[0], 'count':t[1]})    

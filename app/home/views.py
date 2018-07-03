@@ -62,18 +62,18 @@ def media(category_filter):
     ff = fields # for dropzone dropdown menu selection
     category_filter = nameValue(fields, category_filter)
 
-    items = model.query.filter_by(category=category_filter).all()
-    tags = {}
-    for item in items:
-        for tag in item.tags.split(","):
-            if tag in tags:
-                tags[tag] = tags[tag] + 1
-            else:
-                tags[tag] = 1
+    # items = model.query.filter_by(category=category_filter).all()
+    # tags = {}
+    # for item in items:
+    #     for tag in item.tags.split(","):
+    #         if tag in tags:
+    #             tags[tag] = tags[tag] + 1
+    #         else:
+    #             tags[tag] = 1
     
-    tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)          
+    # tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)          
 
-    return render_template('home/media.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter, tags=tags[0:30])
+    return render_template('home/media.html', title='Media', namespace=namespace, columns=columns, columnDefs=columnDefs, fields=fields, ff=ff,category_filter=category_filter)
 
 @home.route('/category', methods=['GET'])
 @login_required
@@ -189,7 +189,7 @@ def download():
 
     out_file = "%s/%s/%s/%s" % (base_path, category, str(file_id), filename) 
 
-    response = make_response(send_file(out_file))
+    response = make_response(send_file(out_file, conditional=True)) # conditional makes video/audio seeking possible, read http 206 partial content
     response.headers["Content-Disposition"] = "attachment; filename*=UTF-8''{utf_filename}".format(utf_filename=urllib.quote(filename.encode('utf-8')))
 
     return response

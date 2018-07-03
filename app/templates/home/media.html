@@ -237,8 +237,8 @@
     };
     video_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
-      var url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + row['name'] + "#t=10";
-      return "<video preload='metadata' src=" + url + " controls loop></video>"
+      var url = "http://" + window.location.host + "/download?category=" + row['category']['label'] + "&file_id=" + id + "&filename=" + encodeURIComponent(row['name']);
+      return "<video preload='metadata' src=" + url + " controls></video>"
     };
     font_render = function (data, meta, row) {
       var id = ("00000000" + row['id']).substr(-8,8);
@@ -404,7 +404,7 @@
         tags = msg;
         var container = $('<div />');
         if(category_filter == 6){
-          default_tags = ["常用音效", "機率音效", "Splice", "Soundly"]
+          default_tags = ["常用音效", "機率音效", "Splice", "Soundly", "Pro_Sound_Effects"]
         } else {
           default_tags = ["視訊", "電子", "彩票", "體育", "人物", "行動裝置","城市","錢","背景","其他"];  
         }
@@ -462,7 +462,7 @@
             columns[i]['render'] = video_render;
           }
           else if(category_filter == 0){
-            columns[i]['render'] = thumb_render;
+            columns[i]['render'] = generic_render;
           }
         }
         if(columns[i]['data'] == 'category' || columns[i]['data'] == 'assigned'){
@@ -655,6 +655,7 @@
       }
     });
 
+    //add tags to multiple selections
     function append_tags() {
       data = [];
       rows = table.rows('.selected').data();
