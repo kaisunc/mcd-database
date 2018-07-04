@@ -404,7 +404,7 @@
         most_tagged = msg;
         var container = $('<div />');
         if(category_filter == 6){
-          default_tags = ["常用音效", "機率音效", "Splice", "Soundly", "Pro_Sound_Effects"]
+          default_tags = {"audio": ["常用音效", "機率音效", "Splice", "Soundly", "Pro_Sound_Effects"]};
         } else if(category_filter == 4){
             default_tags = {
                 "web": ["web", "123RF", "視訊", "電子", "彩票", "體育", "人物", "行動裝置","城市","錢","背景","其他"],
@@ -427,6 +427,8 @@
                 badge = "badge-success";
             } else if(depts[k] == "ca"){
                 badge = "badge-primary";
+            } else if(depts[k] == "audio"){
+                badge = "badge-warning";
             }
             for(l=0;l<tags.length;l++){
                 tag_container = '<span class="badge ' + badge + ' search-tag">' + tags[l] + '<div class="tag-close"><i class="fa fa-times" aria-hidden="true"></i></div></span>';
