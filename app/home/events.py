@@ -69,8 +69,9 @@ def ajax_socket(*args):
     order_func = "%s.%s.%s()" % ("Media", sort_column_name, sort_direction)
 
     #print start
-    recordsTotal = model.query.filter_by(category=category_filter).count()
+    
     if category_filter != 0:
+        recordsTotal = model.query.filter_by(category=category_filter).count()        
         if search == "":
             items = model.query.filter_by(category=category_filter).order_by(eval(order_func)).offset(start).limit(length)
         else:
@@ -78,10 +79,13 @@ def ajax_socket(*args):
             recordsTotal = sum(1 for _ in items)
             items = items.offset(start).limit(length)
     else:
+        recordsTotal = model.query.count()                
         if search == "":
-            items = model.query.order_by(model.id.desc()).limit(1000)
+            items = model.query.order_by(eval(order_func)).offset(start).limit(length)
         else:
             items = model.query.whoosh_search(search).all()
+            recordsTotal = sum(1 for _ in items)
+            items = items.offset(start).limit(length)            
 
     dt_data = []
     for row in items:

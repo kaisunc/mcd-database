@@ -154,27 +154,30 @@ for d in dirs:
     
 #%%
 def addFile(name, base_path, tags=[], category=4, assigned=1):
+    size = 120, 120
     category_name = Category.query.filter_by(id=category).first().name
-    db.session.flush()
-    
-    base_path = game_path
     file_path = os.path.join(base_path, name)
-    name = gameplay
     m = Media(name=name, category=category, assigned=assigned, tags=",".join(tags), thumbnail="")
     db.session.add(m)
     db.session.commit() 
     mid = m.id
    
     upload_path = u"%s\\%s\\%08d" % ("\\\\art-server\\database\\mcd_db", category_name, int(mid))
-
     if not os.path.exists(upload_path):
         os.mkdir(upload_path)
+    
+    if file_path.endswith((".jpg",".png",".gif")):
+        im = Image.open(file_path).convert('RGB')
+        im.thumbnail(size)
+        im.save(upload_path + "\\thumb.jpg", "JPEG")    
 
     shutil.copyfile(file_path, upload_path + "\\" + name)
 
 
 #%%
 import sys, os, shutil
+from PIL import Image
+import glob, os
 ta_path = r"\\mcd-one\ta\2_Datebase\GameSources".decode("utf8")
 base = r"\\mcd-one\ta\2_Datebase".decode("utf8")
 
@@ -183,18 +186,19 @@ dirs = [x for x in os.listdir(ta_path) if os.path.isdir(os.path.join(ta_path, x)
 game_sub_dirs = ["Atlas", "Fonts", "Scene", "Symbol", "UI"]    
 for d in dirs:
     game_path = os.path.join(ta_path, d)
-    #tags = game_path.replace(ta_path,"")[1:].split(u"\\")
+    tags = game_path.replace(ta_path,"")[1:].split(u"\\")
     gameplay = [x for x in os.listdir(game_path) if ".mp4" in x][0]
     if len(gameplay) != 0:
+        tags = tags = ["TA","GameSources"]
         addFile(gameplay, game_path, tags=tags, category=8)
     
     gamefiles = [(root, dirs, files) for (root, dirs, files) in os.walk(game_path, topdown=False) if root != game_path]
     for root, dirs, files in gamefiles:
         for f in [f for f in files if f.endswith((".jpg",".png",".gif"))]:
-            file_path = os.path.join(root, f)
+            #file_path = os.path.join(root, f)
             tags = root.replace(base,"")[1:].split(u"\\")
             tags.append("TA")
-            addFile(f, file_path, tags=",".join(tags), category=4)
+            addFile(f, root, tags=tags, category=4)
 
         
 

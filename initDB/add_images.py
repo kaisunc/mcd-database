@@ -187,8 +187,6 @@ for idx, font in enumerate(font_list):
     shutil.copyfile(full_path, upload_path + "/" + font)
 #%%    
 
-
-#    if u"繁" in font:
-#        tags.append(u"繁")
-#    elif u"简" in font:
-#        tags.append(u"简")
+m = Media(name="test", category=3, assigned=1, tags="testing", thumbnail="")
+db.session.add(m)
+db.session.commit()
