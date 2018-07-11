@@ -81,7 +81,16 @@
       datetime_render = function (data, meta, row) {
         m = moment(data);
         return "<div>" + m.format("MM/DD") + "</div>"
-      }
+      };
+      tags_render = function (data, meta, row) {
+        var container = $('<div />');
+        tags = data.split(",")
+        for(i=0;i<tags.length;i++){
+          container.append('<span class="badge badge-secondary search-tag sm-badge">' + tags[i] + '</span>');
+        }      
+        return "<div class=>" + container.html() + "</div>"
+      };
+
 
 
       //column with render or mrender
@@ -142,7 +151,10 @@
         }
         if(columns[i]['data'] == 'timestamp'){        
           columns[i]['render'] = datetime_render; 
-        }          
+        }      
+        if(columns[i]['data'] == 'tags'){
+          columns[i]['render'] = tags_render;
+        }             
       } 
 
       var socketon = false; //ajax init socket 1 time only

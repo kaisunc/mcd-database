@@ -248,7 +248,7 @@
     datetime_render = function (data, meta, row) {
       m = moment.utc(data);
       return "<div>" + m.utc().format("MM/DD/YY HH:mm:ss") + "</div>"
-    }
+    };
     tags_render = function (data, meta, row) {
       var container = $('<div />');
       tags = data.split(",")
@@ -256,7 +256,7 @@
         container.append('<span class="badge badge-secondary search-tag sm-badge">' + tags[i] + '</span>');
       }      
       return "<div class=>" + container.html() + "</div>"
-    }
+    };
 
     function initDT(namespace, columns, columnDefs, fields, category_filter){
       //length = parseInt($(".page-len").attr('value'));
@@ -402,7 +402,9 @@
 
       socket.on('tag_response', function(msg){
         most_tagged = msg;
+        console.log(most_tagged);
         var container = $('<div />');
+        default_tags = {};
         if(category_filter == 6){
           default_tags = {"audio": ["常用音效", "機率音效", "Splice", "Soundly", "Pro_Sound_Effects"]};
         } else if(category_filter == 4){
@@ -440,7 +442,7 @@
           container.append(tag_container);
         }*/
         for(i=0;i<most_tagged.length;i++){
-          tag_container ='<span class="badge badge-secondary search-tag">' + most_tagged[i]['tag'] + '<div class="tag-close"><i class="fa fa-times" aria-hidden="true"></i></div></span>';
+          tag_container ='<span class="badge badge-secondary search-tag">' + most_tagged[i] + '<div class="tag-close"><i class="fa fa-times" aria-hidden="true"></i></div></span>';
           container.append(tag_container);
         }
         container.addClass('custom-popover');
@@ -577,7 +579,6 @@
       $('input-page').appendTo("body");
       table.destroy();
       socket.destroy();
-
       socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
       socket.emit('get_tags', {'category_filter':category_filter, 'namespace': namespace});
       socketConnect()

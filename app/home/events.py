@@ -123,22 +123,24 @@ def init(*args):
 def get_tags(*args):
     namespace = args[0]["namespace"]
     category_filter = args[0]['category_filter']
-
-    model = getModel(namespace)    
-    items = model.query.filter_by(category=category_filter).all()
-    tags = {}
-    for item in items:
-        for tag in item.tags.split(","):
-            if tag in tags:
-                tags[tag] = tags[tag] + 1
-            else:
-                tags[tag] = 1
+    print category_filter
+    tags = Category.query.filter_by(id=4).first().tags.encode('utf8')
+    print tags
+    # model = getModel(namespace)    
+    # items = model.query.filter_by(category=category_filter).all()
+    # tags = {}
+    # for item in items:
+    #     for tag in item.tags.split(","):
+    #         if tag in tags:
+    #             tags[tag] = tags[tag] + 1
+    #         else:
+    #             tags[tag] = 1
     
-    tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)[0:100]
-    tags_list = []
-    for t in tags:
-        tags_list.append({'tag':t[0], 'count':t[1]})    
-    emit('tag_response', tags_list)
+    # tags = sorted(tags.items(), key=operator.itemgetter(1), reverse=True)[0:100]
+    # tags_list = []
+    # for t in tags:
+    #     tags_list.append({'tag':t[0], 'count':t[1]})    
+    emit('tag_response', tags.split(","))
    
     #tags = [(u'fitness', 185), (u'poetry', 178), (u'dating', 175), (u'writing', 174), (u'business', 172), (u'inspiration', 172), (u'tips', 171), (u'uk', 170), (u'bible', 170), (u'love', 169), (u'homes', 169), (u'women', 167), (u'comedy', 167), (u'marketing', 166), (u'culture', 165), (u'landscape', 165), (u'music', 165), (u'blogging', 164), (u'life', 164), (u'photo', 163), (u'environment', 163), (u'philosophy', 162), (u'science', 161), (u'indie', 161), (u'film', 161), (u'dogs', 160), (u'comics', 160), (u'politics', 160), (u'religion', 159), (u'fashion', 159)]
 
@@ -179,8 +181,8 @@ def create(*args):
             pass            
 
     model = getModel(namespace)
-    #l = Logs(action="create", assigned=current_user.id, data=json.dumps(data))
-    #db.session.add(l)
+    l = Logs(action="create", assigned=current_user.id, data=json.dumps(data))
+    db.session.add(l)
     fields, columns, columnDefs = getFields(model)
     if multiple == 'true':
         for d in data:

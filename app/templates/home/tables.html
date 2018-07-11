@@ -146,6 +146,15 @@
       return data.label;
     };
 
+    tags_render = function (data, meta, row) {
+      var container = $('<div />');
+      tags = data.split(",")
+      for(i=0;i<tags.length;i++){
+        container.append('<span class="badge badge-secondary search-tag sm-badge">' + tags[i] + '</span>');
+      }      
+      return "<div class=>" + container.html() + "</div>"
+    };
+    
     function initDT(namespace, columns, columnDefs, fields, category_filter){
 
     }

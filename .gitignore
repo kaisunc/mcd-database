@@ -8,3 +8,5 @@ app/static/lib/selectize/selectize\.js-master/
 *.pyc
 
 whoosh_index/
+
+initDB/

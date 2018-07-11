@@ -24,6 +24,7 @@ class Datatable():
         cols["select-checkbox"] = ""
         return cols
 
+
 class User(UserMixin, db.Model, Datatable):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -63,6 +64,7 @@ class Category(db.Model, Datatable):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text())    
     name_chn = db.Column(db.Text())
+    tags = db.Column(db.Text())
 
 class Logs(db.Model, Datatable):
     id = db.Column(db.Integer, primary_key=True)
