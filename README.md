@@ -16,3 +16,10 @@ Notable components used in this project
 6. Dropzone(js)
 7. Selectize(js)
 9. Flask Socketio(py, js)
+
+Important Notes:
+Search Index(Whoosh) will not search correctly after Weekends. Most likely due to server resets, and/or network shutdown during weekends. Restarting the mcd_db server will show socket in use. Using lsof -i:80 will show those sockets are still up. Kill those, and the server will run, however, the database will be off synced and not reconnect properly. To fix, I have devised a plan where i will,
+	1. automatically reset the server on monday mornings
+	2. rebuild the index by running build_index.py as a service in /etc/systemd/system/build_index.service
+	3. run mcd_db.service.
+
