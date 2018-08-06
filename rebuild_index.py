@@ -16,15 +16,20 @@ db_string = "postgresql://{DB_USER}:{DB_PASS}@{DB_ADDR}/{DB_NAME}".format(DB_USE
 from flask import Flask
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
-import json
+import json, os, datetime
 import flask_whooshalchemy
 
-from whoosh.analysis import *
+#from whoosh.analysis import *
+from whoosh.index import open_dir, create_in
+from whoosh.fields import Schema, TEXT, ID
+from whoosh import analysis
 
+
+os.rmdir("/mnt/assets/whoosh_index")
 
 app = Flask(__name__)
 #app.config['WHOOSH_BASE'] = "//art-server/database/mcd_db/whoosh_index"
-#app.config['WHOOSH_BASE'] = "c:/Users/julio/Dropbox/Projects/mcd_database/whoosh_index"
+app.config['WHOOSH_BASE'] = "/mnt/assets/whoosh_index"
 app.config['WHOOSH_ANALYZER'] = analyzer
 app.config['SQLALCHEMY_DATABASE_URI'] = db_string
 
@@ -142,12 +147,8 @@ def rebuild_index(model):
 
     log("Rebuilt {0} {1} search index entries.".format(str(entry_count), model.__name__))
 
-from whoosh.index import open_dir, create_in
-from whoosh.fields import Schema, TEXT, ID
-from whoosh import analysis
-index_writer = flask_whooshalchemy.whoosh_index(app, Media)
-
-import datetime                                    
+#%%
+index_writer = flask_whooshalchemy.whoosh_index(app, Media)                               
 program_start = datetime.datetime.utcnow()
 rebuild_index(Media)    
 
