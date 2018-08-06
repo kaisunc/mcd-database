@@ -24,13 +24,16 @@ from whoosh.index import open_dir, create_in
 from whoosh.fields import Schema, TEXT, ID
 from whoosh import analysis
 
-
-os.rmdir("/mnt/assets/whoosh_index")
+try:
+    os.rmdir("/mnt/assets/whoosh_index")
+except:
+    pass
+os.mkdir("/mnt/assets/whoosh_index")
 
 app = Flask(__name__)
 #app.config['WHOOSH_BASE'] = "//art-server/database/mcd_db/whoosh_index"
 app.config['WHOOSH_BASE'] = "/mnt/assets/whoosh_index"
-app.config['WHOOSH_ANALYZER'] = analyzer
+#app.config['WHOOSH_ANALYZER'] = analyzer
 app.config['SQLALCHEMY_DATABASE_URI'] = db_string
 
 db = SQLAlchemy(app)
